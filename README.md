@@ -1,8 +1,17 @@
 # Apto
 
-Free, unofficial practice app for the Spanish nationality exams: **CCSE** and **DELE A2**.
+Free, independent practice app for Spain’s **CCSE** (constitution and society) and **DELE A2** (Spanish language) exams.
 Interface in Spanish, English, Russian and Ukrainian. Progress is stored only on the user’s device.
 Not affiliated with the Instituto Cervantes.
+
+**Live:** https://badlvnds.github.io/apto/
+
+<p>
+  <img src="docs/screenshots/home.png" width="200" alt="Home: choose CCSE or DELE A2">
+  <img src="docs/screenshots/question.png" width="200" alt="A CCSE practice question">
+  <img src="docs/screenshots/feedback.png" width="200" alt="Answer feedback with a WHY explanation">
+  <img src="docs/screenshots/mock-exam.png" width="200" alt="CCSE mock exam">
+</p>
 
 ## What’s inside
 

@@ -46,12 +46,13 @@ function setMeta(x){ $('#bar-meta').textContent = x; }
 function stopTimer(){ if (timer){ clearInterval(timer); timer = null; } }
 function go(fn){
   if (!PACKS_READY){ view.innerHTML = `<div class="stack" aria-busy="true"><p class="note">${esc(t().loading)}</p></div>`; PACKS.then(() => go(fn), () => { view.innerHTML = `<div class="stack"><p class="note">${esc(t().loadFail)}</p></div>`; }); return; }
+  if (!S.set.langChosen && fn !== home){ S.set.langChosen = true; save(); }
   EXAM_ON = false; recStop(); if (typeof SPK_T !== 'undefined' && SPK_T){ clearInterval(SPK_T.id); SPK_T = null; } const mm = document.getElementById('bar-meta'); if (mm) mm.classList.remove('warn'); stopTimer(); try { TTS.stop(); } catch(e){} current = fn; setMeta(''); fn(); window.scrollTo(0,0); }
 function chrome(){
   document.documentElement.lang = S.set.lang; applyTheme();
   $('#lang').value = S.set.lang;
   $('#set-btn').setAttribute('aria-label', t().settings);
-  $('#foot').innerHTML = `<span>${esc(t().foot1)}</span><span>${esc(t().foot2)} <a href="${MANUAL_URL}" target="_blank" rel="noopener">${esc(t().manualName)}</a> ${esc(t().foot2b)}</span><span>${esc(t().foot3)} <button class="linkbtn" id="about-btn" type="button">${esc(t().aboutBtn)}</button> · <button class="linkbtn" id="share-btn" type="button">${esc(t().share)}</button></span>`;
+  $('#foot').innerHTML = `<span>${esc(t().foot1)} ${esc(t().foot3)}</span><span><button class="linkbtn" id="about-btn" type="button">${esc(t().aboutBtn)}</button> · <button class="linkbtn" id="share-btn" type="button">${esc(t().share)}</button></span>`;
   $('#about-btn').onclick = () => guardLeave(about); $('#share-btn').onclick = shareApto;
 }
 
@@ -92,7 +93,7 @@ function renderQuestion(container, q, {shuffleOpts=true, onAnswer, after}){
     record(q.id, correct);
     const fb = container.querySelector('.fb');
     const sq = S.q[q.id], back = correct && sq && sq.box >= 1 ? SRS_DAYS[sq.box] : 0;
-    fb.innerHTML = `<p class="feedback ${correct?'ok':'no'}">${correct?esc(t().correct):esc(t().incorrect)+' <span lang="es">'+esc(q.opts[right])+'</span>'}${back?` <span class="chip">${esc(t().nextDue(back))}</span>`:''}</p>${typeof explHTML==='function'?explHTML(q):''}${reportHTML()}`;
+    fb.innerHTML = `<p class="feedback ${correct?'ok':'no'}">${correct?esc(t().correct):esc(t().incorrect)+' <span lang="es">'+esc(q.opts[right])+'</span>'}</p>${back?`<p class="note srs">${esc(t().nextDue(back))}</p>`:(!correct?`<p class="note srs">${esc(t().backLater)}</p>`:'')}${typeof explHTML==='function'?explHTML(q):''}${reportHTML()}`;
     wireReport(fb, 'CCSE ' + q.id, q.q);
     onAnswer && onAnswer(correct);
     after && after(fb);
@@ -145,7 +146,7 @@ function study({tarea=0, mode='all'}){
     const q = nextFor(pool, prev); prev = q.id;
     renderQuestion($('#card'), q, {
       onAnswer: c => { answeredNow.add(q.id); done++; if (c) okc++; $('#sess').textContent = T_.answered(okc, done); },
-      after: fb => { fb.insertAdjacentHTML('beforeend', `<div class="row" style="margin-top:12px"><span class="sp"></span><button class="btn primary" id="nx" type="button">${esc(T_.next)}</button></div>`); const nx=$('#nx'); nx.onclick = next; nx.focus(); }
+      after: fb => { fb.insertAdjacentHTML('beforeend', `<div class="row next"><span class="sp"></span><button class="btn primary" id="nx" type="button">${esc(T_.next)}</button></div>`); const nx=$('#nx'); nx.onclick = next; nx.focus(); }
     });
   }
   next();
@@ -355,7 +356,7 @@ function settings(){
 
 $('#home-btn').onclick = () => guardLeave(home);
 $('#set-btn').onclick = () => guardLeave(settings);
-$('#lang').onchange = e => { S.set.lang = e.target.value; save(); chrome(); if (current === examView) examView(); else go(current); };
+$('#lang').onchange = e => { S.set.lang = e.target.value; S.set.langChosen = true; save(); chrome(); if (current === examView) examView(); else go(current); };
 $('#lang').innerHTML = Object.keys(I18N).map(l=>`<option value="${l}">${l.toUpperCase()}</option>`).join('');
 chrome();
-if (S.set.langChosen) home(); else firstRun();
+home();

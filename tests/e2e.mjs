@@ -17,8 +17,12 @@ page.on('pageerror', e => errors.push(e.message));
 const step = async (name, fn) => { try { await fn(); console.log('✓', name); } catch (e) { errors.push(name + ': ' + e.message); console.log('✗', name); } };
 
 await page.goto('http://localhost:4174/');
-await step('first run language picker', async () => { await page.click('[data-l="ru"]'); await page.waitForSelector('#go-ccse'); });
-await step('CCSE sample question + explanation', async () => { await page.click('#go-ccse'); await page.click('#try .opt'); await page.waitForSelector('#try .tipbox'); });
+await step('first visit: home right away, language row, start list', async () => {
+  await page.waitForSelector('#go-ccse'); await page.waitForSelector('.jump [data-j="ctry"]');
+  await page.click('.langrow [data-l="ru"]'); await page.waitForSelector('#go-ccse');
+  if (await page.$('.langrow')) throw new Error('language row should hide after choosing');
+});
+await step('CCSE sample question + explanation + review line', async () => { await page.click('#go-ccse'); await page.click('#try .opt'); await page.waitForSelector('#try .tipbox'); await page.waitForSelector('#try .note.srs'); });
 await step('CCSE mock exam', async () => {
   await page.click('#go-exam');
   for (let i = 0; i < 25; i++) await page.click('.opts .opt >> nth=0');

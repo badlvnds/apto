@@ -65,15 +65,6 @@ function guardLeave(target){
   box.querySelector('[data-yes]').onclick = () => { TTS.stop(); go(target); };
 }
 
-// ---------- first run ----------
-function firstRun(){
-  current = firstRun;
-  view.innerHTML = `<div class="stack"><div class="intro"><span class="eyebrow">Apto</span><h1>Hola · Hello · Привет · Привіт</h1>
-    <p class="lede">${Object.keys(I18N).map(l=>esc(I18N[l].welcome)).join('<br>')}</p></div>
-    <div class="cards2">${Object.keys(I18N).map(l=>`<button class="bigcard lang" type="button" data-l="${l}"><span class="bc-tag">${l.toUpperCase()}</span><span class="bc-t">${esc(I18N[l].lang)}</span></button>`).join('')}</div></div>`;
-  view.querySelectorAll('[data-l]').forEach(b => b.onclick = () => { S.set.lang = b.dataset.l; S.set.langChosen = true; save(); chrome(); go(home); });
-}
-
 // ---------- error report ----------
 function reportHTML(){ return `<div class="report"><button type="button" class="linkbtn rep-open">${esc(t().report)}</button></div>`; }
 function wireReport(box, ref, text){

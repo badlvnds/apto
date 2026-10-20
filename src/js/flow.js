@@ -63,12 +63,12 @@ function partAcc(prefix){ let n=0, ok=0; Object.keys(S.dq).forEach(k => { if (k.
 function home(){
   const T_ = t();
   view.innerHTML = `<div class="stack">
-    <div class="intro"><span class="eyebrow">${esc(T_.homeEyebrow)}</span><h1>${esc(T_.homeH1)}</h1><p class="lede">${esc(T_.homeLede)}</p></div>
+    ${S.set.langChosen ? '' : langRowHTML()}<div class="intro"><span class="eyebrow">${esc(T_.homeEyebrow)}</span><h1>${esc(T_.homeH1)}</h1><p class="lede">${esc(T_.homeLede)}</p></div>
     <div class="cards2">
-      <button class="bigcard" id="go-ccse" type="button"><span class="bc-tag">CCSE</span><span class="bc-t">${esc(T_.ccseCard)}</span><span class="bc-s">${esc(T_.ccseCardSub)}</span></button>
-      <button class="bigcard" id="go-dele" type="button"><span class="bc-tag">DELE A2</span><span class="bc-t">${esc(T_.deleCard)}</span><span class="bc-s">${esc(T_.deleCardSub)}</span></button>
-    </div>${resumeHTML()}${S.set.langChosen && (S.exams.length || Object.keys(S.q).length || Object.keys(S.dq).length) ? jumpHTML() : ''}${installHTML()}<button class="linkbtn" id="go-guide" type="button">${esc(T_.guideBtn)}</button></div>`;
-  wireResume(); wireJump(); wireInstall(); $('#go-guide').onclick = () => go(guide);
+      <button class="bigcard" id="go-ccse" type="button"><span class="bc-tag">CCSE<span class="bc-go" aria-hidden="true">→</span></span><span class="bc-t">${esc(T_.ccseCard)}</span><span class="bc-s">${esc(T_.ccseCardSub)}</span></button>
+      <button class="bigcard" id="go-dele" type="button"><span class="bc-tag">DELE A2<span class="bc-go" aria-hidden="true">→</span></span><span class="bc-t">${esc(T_.deleCard)}</span><span class="bc-s">${esc(T_.deleCardSub)}</span></button>
+    </div>${resumeHTML()}${jumpHTML()}${installHTML()}<button class="linkbtn" id="go-guide" type="button">${esc(T_.guideBtn)}</button></div>`;
+  wireResume(); wireJump(); wireInstall(); wireLangRow(); $('#go-guide').onclick = () => go(guide);
   $('#go-ccse').onclick = () => go(ccseHub);
   $('#go-dele').onclick = () => go(deleHub);
 }
@@ -78,18 +78,18 @@ function ccseHub(){
   const T_ = t(), mastered = Q.filter(q=>isMastered(q.id)).length, last = S.exams[S.exams.length-1];
   view.innerHTML = `<div class="stack">${backRow(home, T_.hubBack)}
     <div class="intro"><span class="eyebrow">CCSE</span><h1>${esc(T_.h1)}</h1><p class="lede">${esc(T_.lede)}</p></div>
-    <section class="panel" aria-labelledby="h-try"><span class="eyebrow" id="h-try">${esc(T_.tryOne)}</span><div id="try" class="qcard"></div></section>
+    <section class="panel try" aria-labelledby="h-try"><h2 class="sec" id="h-try">${esc(T_.tryOne)}</h2><div id="try" class="qcard"></div></section>
     <div class="actions">
       <button class="btn" id="go-study" type="button">${esc(T_.studyTopics)}<small>${dueCount()?esc(T_.dueSub(dueCount())):esc(T_.studyTopicsSub)}</small></button>
       <button class="btn primary" id="go-exam" type="button">${esc(T_.exam)}<small>${esc(T_.examSub)}</small></button>
       <button class="btn" id="go-report" type="button">${esc(T_.myProgress)}<small>${mastered}/300 · ${last?esc(T_.lastExam(last.score)):esc(T_.myProgressSub)}</small></button>
-    </div>${planSectionHTML('c')}</div>`;
+    </div>${planSectionHTML('c')}<p class="note">${esc(T_.attrib)} <a href="${MANUAL_URL}" target="_blank" rel="noopener">${esc(T_.manualName)}</a> ${esc(T_.attribB)}</p></div>`;
   wireBack(home); wirePlanSection('c');
   $('#go-study').onclick = () => go(studyPick);
   $('#go-exam').onclick = () => go(examStart);
   $('#go-report').onclick = () => go(report);
   const pool = Q.filter(q=>!isMastered(q.id)), src = pool.length ? pool : Q;
-  renderQuestion($('#try'), src[Math.floor(Math.random()*src.length)], {after: fb => { fb.insertAdjacentHTML('beforeend', `<div class="row" style="margin-top:12px"><button class="btn" id="try-more" type="button">${esc(T_.keepStudying)}</button></div>`); $('#try-more').onclick = () => go(() => study({tarea:0})); }});
+  renderQuestion($('#try'), src[Math.floor(Math.random()*src.length)], {after: fb => { fb.insertAdjacentHTML('beforeend', `<div class="row next"><button class="btn soft" id="try-more" type="button">${esc(T_.keepStudying)} →</button></div>`); $('#try-more').onclick = () => go(() => study({tarea:0})); }});
 }
 function deleHub(){
   const T_ = t(), wrong = dWrongKeys().length, last = S.dmocks[S.dmocks.length-1];

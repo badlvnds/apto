@@ -281,3 +281,32 @@ label.btn{display:inline-block}
 .vcard{min-height:280px;justify-content:space-between}
 a.btn{text-decoration:none;display:inline-flex;align-items:center}
 .note.kbd{font-size:14px;color:var(--muted)}
+/* UI refinement checklist (20 Oct) */
+html{scroll-padding-top:84px}
+header.bar{z-index:10;background:var(--bg);box-shadow:0 1px 0 var(--line)}
+/* answered options: the labels carry the result, so the line below stays neutral */
+.opts + .fb .feedback{color:var(--ink);font-weight:600;font-size:18px}
+.opts + .fb .feedback::before{content:none}
+.note.srs{font-size:15px;color:var(--ink2);margin-top:4px}
+.opt.right,.opt.wrong{padding-top:9px;padding-bottom:9px}
+.opt.right .ot::after,.opt.wrong .ot::after{margin-top:0;line-height:1.25}
+.fb{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.fb .tipbox{margin-top:6px}
+.fb .report{margin-top:2px}
+.row.next{margin-top:6px}
+/* continuation and navigation affordances */
+.btn.soft{background:var(--tint);border-color:transparent;color:var(--ink)}
+.btn.soft:hover:not(:disabled){border-color:var(--accent);background:var(--tint)}
+.bc-tag{display:flex;justify-content:space-between;align-items:center}
+.bc-go{font-family:var(--f-body);font-size:20px;color:var(--accent);transition:transform .15s}
+.bigcard:hover .bc-go{transform:translateX(3px)}
+.bigcard:hover,.bigcard:focus-visible{border-color:var(--accent)}
+h2.sec{font-size:18px;font-family:var(--f-display);font-weight:600;color:var(--ink)}
+.panel.try{background:var(--surface)}
+.langrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.langrow .eyebrow{margin-right:6px}
+.langrow .chip{cursor:pointer;font-size:13px;padding:6px 12px;min-height:36px}
+.langrow .chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+footer{gap:8px}
+@media (prefers-reduced-motion:reduce){.bigcard:hover .bc-go{transform:none}}
+.langrow .chip{font-family:var(--f-body);font-size:14px;padding:5px 11px}
