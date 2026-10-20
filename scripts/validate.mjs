@@ -19,17 +19,17 @@ for (const q of Q) {
 }
 
 // DELE: evaluate content files in a sandbox with stub globals the content code needs
-const content = ['i18n.js','aud.js','aud-b.js','v2-aud.js','v3-aud.js','read-a.js','read-b.js','v2-read.js','v2-read-b.js','v3-read.js','dele.js','ws.js'];
+const content = ['i18n.js','aud.js','aud-b.js','v2-aud.js','v3-aud.js','v4-aud.js','read-a.js','read-b.js','v2-read.js','v2-read-b.js','v3-read.js','v4-read.js','dele.js','ws.js','more.js'];
 const ctx = vm.createContext({ console, I18N: undefined });
-const exportNames = 'I18N,AUD,AUDG,AUD_TOPICS,AUD_V2,AUD_V3,AUDG_V2,AUDG_V3,READ_A,READ_B,READ_V2,READ_V3,GRAM,WRITE,SPEAK';
+const exportNames = 'I18N,AUD,AUDG,AUD_TOPICS,AUD_V2,AUD_V3,AUD_V4,AUDG_V2,AUDG_V3,AUDG_V4,READ_A,READ_B,READ_V2,READ_V3,READ_V4,GRAM,WRITE,SPEAK';
 vm.runInContext(content.map(f => read('js/' + f)).join('\n') + `\n;globalThis.__x = {${exportNames}};`, ctx);
 const X = ctx.__x;
 [...X.READ_A, ...X.READ_B].forEach(R => R.v = R.v || 1); X.AUD.forEach(a => a.v = a.v || 1); X.AUDG.forEach(g => g.v = g.v || 1);
-const READ = [...X.READ_A, ...X.READ_B, ...X.READ_V2, ...X.READ_V3];
-const AUD = [...X.AUD, ...X.AUD_V2, ...X.AUD_V3], AUDG = [...X.AUDG, ...X.AUDG_V2, ...X.AUDG_V3];
+const READ = [...X.READ_A, ...X.READ_B, ...X.READ_V2, ...X.READ_V3, ...X.READ_V4];
+const AUD = [...X.AUD, ...X.AUD_V2, ...X.AUD_V3, ...X.AUD_V4], AUDG = [...X.AUDG, ...X.AUDG_V2, ...X.AUDG_V3, ...X.AUDG_V4];
 const ids = [...READ.map(r => r.id), ...AUD.map(a => a.id), ...AUDG.map(g => g.id)];
 if (new Set(ids).size !== ids.length) fail('DELE: duplicate ids');
-for (const v of [1,2,3]) {
+for (const v of [1,2,3,4]) {
   const r = [1,2,3,4].map(n => READ.filter(R => R.v === v && R.task === n).reduce((s,R) => s + R.qs.length, 0));
   const a = [1,2].map(n => AUD.filter(x => x.v === v && x.task === n).length).concat([3,4].map(n => AUDG.find(g => g.v === v && g.task === n)?.qs.length || 0));
   if (r.join() !== '5,8,6,6') fail(`DELE v${v} reading counts ${r}`);

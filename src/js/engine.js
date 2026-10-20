@@ -1,8 +1,8 @@
 // ---------- DELE A2 full format: reading 4 tareas, listening 4 tareas ----------
 [...READ_A, ...READ_B].forEach(R => R.v = R.v || 1); AUD.forEach(a => a.v = a.v || 1); AUDG.forEach(g => g.v = g.v || 1);
-AUD.push(...AUD_V2, ...AUD_V3); AUDG.push(...AUDG_V2, ...AUDG_V3);
-const READ = [...READ_A, ...READ_B, ...READ_V2, ...READ_V3].sort((a,b) => a.task - b.task);
-const VARIANTS = [1,2,3];
+AUD.push(...AUD_V2, ...AUD_V3, ...AUD_V4); AUDG.push(...AUDG_V2, ...AUDG_V3, ...AUDG_V4);
+const READ = [...READ_A, ...READ_B, ...READ_V2, ...READ_V3, ...READ_V4].sort((a,b) => a.task - b.task);
+const VARIANTS = [1,2,3,4];
 let CURV = 1;
 const RT = (n, v = CURV) => READ.filter(R => R.task === n && R.v === v);
 const AT = (n, v = CURV) => AUD.filter(a => a.task === n && a.v === v);
@@ -113,7 +113,7 @@ function audGroup(box, G, {exam=true, feedback=true, chosen={}, onAnswer, only}=
   const ctxTr = G.select ? null : (x && x.ctx);
   box.innerHTML = `<div class="qhead"><span class="chip t">${esc(taskTitle('a', G.task))}</span><span class="sp"></span>${show&&trm==='tap'&&lang!=='es'?`<button type="button" class="trbtn" aria-expanded="false">${esc(T_.translate)}</button>`:''}</div>
     <p class="note" lang="es">${esc(G.ctx)}</p>${show&&ctxTr?`<p class="tr"${hid}>${esc(ctxTr)}</p>`:''}
-    <div class="player"><button class="btn primary a-play" type="button">${esc(T_.play)}</button>${exam?'':`<label class="radio slow"><input type="checkbox" class="a-slow" ${S.set.audSlow?'checked':''}> ${esc(T_.slow)}</label>`}<span class="note a-left" role="status">${exam?esc(T_.playsLeft(2)):''}</span></div>
+    <div class="player"><button class="btn primary a-play" type="button">${esc(T_.play)}</button>${exam?'':`<label class="radio slow"><input type="checkbox" class="a-slow" ${S.set.audSlow?'checked':''}> ${esc(T_.slow)}</label>`}<span class="note a-left" role="status">${exam?esc(T_.playsLeft(2)):''}</span></div>${noVoiceHTML(lines, G.names ? {f:G.names[0], m:G.names[1]} : null)}
     ${stmtList}
     <div class="gqs">${idx.map(k=>{const q=G.qs[k];
       if (G.select) return `<div class="gq" data-k="${k}"><label class="selrow"><span class="qtext sm" lang="es">${esc(q.q)}</span><select data-k="${k}" aria-label="${esc(q.q)}"><option value="">${esc(T_.choose)}</option>${G.stmts.map((s,i)=>`<option value="${i}" ${chosen[k]===i?'selected':''}>${'ABCDEFGHIJ'[i]}. ${esc(s)}</option>`).join('')}</select></label><div class="fb"></div></div>`;
@@ -129,7 +129,6 @@ function audGroup(box, G, {exam=true, feedback=true, chosen={}, onAnswer, only}=
     if (exam) leftEl.textContent = T_.playsLeft(Math.max(0, 2 - plays));
     TTS.speak(lines, (!exam && S.set.audSlow) ? 0.7 : 0.95, () => { playBtn.dataset.on=''; playBtn.textContent = T_.play; if (exam && plays >= 2 && left > 0){ playBtn.disabled = true; leftEl.textContent = T_.noPlays; } });
   };
-  if (!TTS.ok || !TTS.list().length) leftEl.textContent = TTS.ok ? T_.noVoices : T_.noTTS;
   const answer = (k, val, wrap) => {
     const q = G.qs[k], ok = val === q.a;
     if (!feedback){ onAnswer && onAnswer(k, val, ok); return; }

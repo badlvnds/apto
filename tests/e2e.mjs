@@ -3,8 +3,8 @@ import { chromium } from 'playwright';
 import { serve } from '../scripts/serve.mjs';
 
 const server = await serve(4174);
-const browser = await chromium.launch();
-const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+const browser = await chromium.launch({ args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'] });
+const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, permissions: ['microphone'], acceptDownloads: true });
 // Fake Spanish voices so listening tasks can be exercised headlessly.
 await ctx.addInitScript(() => {
   const voices = [{name:'Mónica',lang:'es-ES'},{name:'Jorge',lang:'es-ES'}];
@@ -43,6 +43,52 @@ await step('grammar diagnostic', async () => {
 await step('writing word counter', async () => {
   await page.click('#home-btn'); await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-write'); await page.click('[data-w="W1a"]');
   await page.fill('#w-txt', 'uno dos tres'); if (!(await page.textContent('#w-count')).includes('3')) throw new Error('count');
+});
+await step('DELE variant 4 reading + listening', async () => {
+  await page.click('#home-btn'); await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-read');
+  await page.click('[data-v="4"]'); await page.click('[data-n="3"]');
+  if ((await page.$$('.qcard')).length !== 6) throw new Error('expected 6 questions');
+  if (!(await page.textContent('main')).includes('El Molino')) throw new Error('variant 4 text missing');
+  await page.click('#home-btn'); await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-aud'); await page.click('[data-n="3"]');
+  if (!(await page.textContent('#gcard')).includes('Nuria')) throw new Error('variant 4 listening missing');
+});
+await step('spaced repetition: due questions come back', async () => {
+  await page.click('#home-btn'); await page.click('#go-ccse'); await page.click('#go-study'); await page.click('[data-t="1"]');
+  await page.click('#card .opt >> nth=0'); await page.waitForSelector('#nx');
+  await page.evaluate(() => { const k = 'ccse2026.v1', o = JSON.parse(localStorage.getItem(k)); for (const id in o.q) o.q[id].due = Date.now() - 1000; localStorage.setItem(k, JSON.stringify(o)); });
+  await page.reload(); await page.click('#go-ccse'); await page.click('#go-study');
+  const sub = await page.textContent('#go-due small'); if (!/\d/.test(sub)) throw new Error('no due count: ' + sub);
+  await page.click('#go-due'); await page.waitForSelector('#card .opt');
+});
+await step('progress file: download, reset, load back', async () => {
+  await page.click('#set-btn');
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#f-save')]);
+  const file = await dl.path();
+  const before = await page.evaluate(() => JSON.parse(localStorage.getItem('ccse2026.v1')).exams.length);
+  await page.click('#reset'); await page.click('#r-yes'); await page.click('#set-btn');
+  if (await page.evaluate(() => JSON.parse(localStorage.getItem('ccse2026.v1')).exams.length) !== 0) throw new Error('reset failed');
+  await page.setInputFiles('#f-load', file); await page.waitForFunction(n => JSON.parse(localStorage.getItem('ccse2026.v1')).exams.length === n, before);
+});
+await step('about and privacy page', async () => {
+  await page.click('#about-btn'); const txt = await page.textContent('main');
+  if (!txt.includes('GitHub') || !txt.includes('apto.feedback@icloud.com')) throw new Error('about content');
+});
+await step('speaking: record and play back', async () => {
+  await page.click('#home-btn'); await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-speak'); await page.click('[data-s^="t1:"]');
+  await page.click('.rec-b'); await page.waitForTimeout(600); await page.click('.rec-b');
+  await page.waitForSelector('.rec-a:not([hidden])');
+});
+await step('no Spanish voice: help + read the text instead', async () => {
+  const c2 = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await c2.addInitScript(() => { Object.defineProperty(window, 'speechSynthesis', {configurable:true, value:{getVoices:()=>[], cancel(){}, speak(){}, onvoiceschanged:null}}); window.SpeechSynthesisUtterance = function(t){ this.text = t; }; localStorage.setItem('ccse2026.v1', JSON.stringify({set:{lang:'en', langChosen:true}})); });
+  const p2 = await c2.newPage(); p2.on('pageerror', e => errors.push('no-voice: ' + e.message));
+  await p2.goto('http://localhost:4174/'); await p2.click('#go-dele'); await p2.click('#d-study'); await p2.click('#s-aud'); await p2.click('[data-n="1"]');
+  await p2.waitForSelector('.novoice details'); await c2.close();
+});
+await step('no third-party requests', async () => {
+  const ext = []; page.on('request', r => { const u = new URL(r.url()); if (!['localhost', ''].includes(u.hostname) && !u.protocol.startsWith('blob')) ext.push(r.url()); });
+  await page.reload(); await page.click('#go-ccse'); await page.waitForTimeout(300);
+  if (ext.length) throw new Error(ext.join(', '));
 });
 await step('hub buttons share one width', async () => {
   for (const vw of [360, 430, 820]) {

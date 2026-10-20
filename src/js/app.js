@@ -14,7 +14,7 @@ try { const raw = localStorage.getItem(KEY); if (raw){ const o = JSON.parse(raw)
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
 function st(id){ return S.q[id] || (S.q[id] = {seen:0, ok:0, streak:0, last:0, wrong:false}); }
 function record(id, correct){
-  const s = st(id); s.seen++; s.last = Date.now(); bumpDay('c');
+  const s = st(id); if (s.seen) srs(id); s.seen++; s.last = Date.now(); bumpDay('c'); srsUpdate(s, correct);
   if (correct){ s.ok++; s.streak++; if (s.streak >= MASTER) s.wrong = false; }
   else { s.streak = 0; s.wrong = true; }
   save();
@@ -40,12 +40,13 @@ const view = $('#view');
 let timer = null, current = home;
 function setMeta(x){ $('#bar-meta').textContent = x; }
 function stopTimer(){ if (timer){ clearInterval(timer); timer = null; } }
-function go(fn){ EXAM_ON = false; if (typeof SPK_T !== 'undefined' && SPK_T){ clearInterval(SPK_T.id); SPK_T = null; } const mm = document.getElementById('bar-meta'); if (mm) mm.classList.remove('warn'); stopTimer(); try { TTS.stop(); } catch(e){} current = fn; setMeta(''); fn(); window.scrollTo(0,0); }
+function go(fn){ EXAM_ON = false; recStop(); if (typeof SPK_T !== 'undefined' && SPK_T){ clearInterval(SPK_T.id); SPK_T = null; } const mm = document.getElementById('bar-meta'); if (mm) mm.classList.remove('warn'); stopTimer(); try { TTS.stop(); } catch(e){} current = fn; setMeta(''); fn(); window.scrollTo(0,0); }
 function chrome(){
   document.documentElement.lang = S.set.lang;
   $('#lang').value = S.set.lang;
   $('#set-btn').setAttribute('aria-label', t().settings);
-  $('#foot').innerHTML = `<span>${esc(t().foot1)}</span><span>${esc(t().foot2)} <a href="${MANUAL_URL}" target="_blank" rel="noopener">${esc(t().manualName)}</a> ${esc(t().foot2b)}</span><span>${esc(t().foot3)}</span>`;
+  $('#foot').innerHTML = `<span>${esc(t().foot1)}</span><span>${esc(t().foot2)} <a href="${MANUAL_URL}" target="_blank" rel="noopener">${esc(t().manualName)}</a> ${esc(t().foot2b)}</span><span>${esc(t().foot3)} <button class="linkbtn" id="about-btn" type="button">${esc(t().aboutBtn)}</button></span>`;
+  $('#about-btn').onclick = () => guardLeave(about);
 }
 
 // translation block under a question
@@ -72,7 +73,7 @@ function renderQuestion(container, q, {shuffleOpts=true, onAnswer, after}){
   const order = (shuffleOpts && q.opts.length === 3) ? shuffle([0,1,2]) : q.opts.map((_,i)=>i);
   const T = trHTML(q, false);
   container.innerHTML = `
-    <div class="qhead"><span class="chip t">${t().tarea} ${q.tarea}</span><span class="chip">${q.id}</span>${isWrong(q.id)?`<span class="chip">${esc(t().failedBefore)}</span>`:''}<span class="sp"></span>${TTS.ok?`<button type="button" class="iconbtn sm" data-say aria-label="${esc(t().listenQ)}">${SPK}</button>`:''}${T.btn}</div>
+    <div class="qhead"><span class="chip t">${t().tarea} ${q.tarea}</span><span class="chip">${q.id}</span>${isWrong(q.id)?`<span class="chip">${esc(t().failedBefore)}</span>`:isDue(q.id)?`<span class="chip">${esc(t().dueChip)}</span>`:''}<span class="sp"></span>${TTS.ok?`<button type="button" class="iconbtn sm" data-say aria-label="${esc(t().listenQ)}">${SPK}</button>`:''}${T.btn}</div>
     <div class="qblock"><p class="qtext" lang="es">${esc(q.q)}</p>${T.q}</div>
     <div class="opts">${order.map((oi,k)=>`<button type="button" class="opt" data-oi="${oi}"><span class="l">${L[k]}</span><span class="ot"><span lang="es">${esc(q.opts[oi])}</span>${T.o(oi)}</span></button>`).join('')}</div>
     <div class="fb"></div>`;
@@ -84,7 +85,8 @@ function renderQuestion(container, q, {shuffleOpts=true, onAnswer, after}){
       if (oi === right) x.classList.add('right'); else if (oi === chosen) x.classList.add('wrong'); });
     record(q.id, correct);
     const fb = container.querySelector('.fb');
-    fb.innerHTML = `<p class="feedback ${correct?'ok':'no'}">${correct?esc(t().correct):esc(t().incorrect)+' <span lang="es">'+esc(q.opts[right])+'</span>'}</p>${typeof explHTML==='function'?explHTML(q):''}${reportHTML()}`;
+    const sq = S.q[q.id], back = correct && sq && sq.box >= 1 ? SRS_DAYS[sq.box] : 0;
+    fb.innerHTML = `<p class="feedback ${correct?'ok':'no'}">${correct?esc(t().correct):esc(t().incorrect)+' <span lang="es">'+esc(q.opts[right])+'</span>'}${back?` <span class="chip">${esc(t().nextDue(back))}</span>`:''}</p>${typeof explHTML==='function'?explHTML(q):''}${reportHTML()}`;
     wireReport(fb, 'CCSE ' + q.id, q.q);
     onAnswer && onAnswer(correct);
     after && after(fb);
@@ -101,9 +103,9 @@ function tareaBars(mFn, sFn, labelFn){
 // ---------- STUDY ----------
 function studyPick(){
   const T_ = t();
-  const wrong = Q.filter(q=>isWrong(q.id)).length;
+  const wrong = Q.filter(q=>isWrong(q.id)).length, due = dueCount();
   view.innerHTML = `<div class="stack">${backRow(ccseHub, 'CCSE')}<h1>${esc(T_.pickTitle)}</h1><p class="lede">${esc(T_.pickLede)}</p>
-    <div class="actions"><button class="btn" id="go-wrong" type="button" ${wrong?'':'disabled'}>${esc(T_.wrong)}<small>${esc(T_.pending(wrong))}</small></button><button class="btn" id="go-browse" type="button">${esc(T_.browse)}<small>${T_.tarea} 1–5</small></button></div>
+    <div class="actions"><button class="btn${due?' primary':''}" id="go-due" type="button">${esc(T_.dueBtn)}<small>${esc(T_.dueSub(due))}</small></button><button class="btn" id="go-wrong" type="button" ${wrong?'':'disabled'}>${esc(T_.wrong)}<small>${esc(T_.pending(wrong))}</small></button><button class="btn" id="go-browse" type="button">${esc(T_.browse)}<small>${T_.tarea} 1–5</small></button></div>
     <div class="tareas" style="gap:10px">
       <button class="btn" data-t="0" type="button">${esc(T_.allT)}<small>${esc(T_.masteredOf(Q.filter(q=>isMastered(q.id)).length, Q.length))}</small></button>
       ${TAREAS.map(x=>{const qs=Q.filter(q=>q.tarea===x.n);return `<button class="btn" data-t="${x.n}" type="button">${T_.tarea} ${x.n}. ${esc(tname(x.n))}<small>${esc(T_.masteredOf(qs.filter(q=>isMastered(q.id)).length, qs.length))} · ${esc(T_.inExam(x.exam))}</small></button>`}).join('')}
@@ -111,20 +113,21 @@ function studyPick(){
   view.querySelectorAll('[data-t]').forEach(b => b.onclick = () => go(() => study({tarea:+b.dataset.t})));
   wireBack(ccseHub);
   $('#go-wrong').onclick = () => go(() => study({mode:'wrong'}));
+  $('#go-due').onclick = () => go(() => study({mode:'due'}));
   $('#go-browse').onclick = () => go(browse);
 }
 function nextFor(pool, prevId){
   const cand = pool.filter(q=>q.id!==prevId), list = cand.length ? cand : pool;
-  const score = q => { const s = S.q[q.id]; if (!s) return 1; if (s.wrong) return 0; if (s.streak < MASTER) return 2; return 3; };
+  const score = q => { const s = S.q[q.id]; if (!s) return 2; if (s.wrong) return 0; if (isDue(q.id)) return 1; if (s.streak < MASTER) return 3; return 4; };
   const best = Math.min(...list.map(score)), tier = list.filter(q=>score(q)===best);
-  if (best === 3){ tier.sort((a,b)=>S.q[a.id].last-S.q[b.id].last); return tier[0]; }
+  if (best === 4){ tier.sort((a,b)=>(srs(a.id).due)-(srs(b.id).due)); return tier[0]; }
   return tier[Math.floor(Math.random()*tier.length)];
 }
 function study({tarea=0, mode='all'}){
   const T_ = t();
-  const label = mode==='wrong' ? T_.wrong : tarea ? `${T_.tarea} ${tarea}` : T_.allT;
-  let done = 0, okc = 0, prev = null;
-  const poolFn = () => mode==='wrong' ? Q.filter(q=>isWrong(q.id)) : Q.filter(q=>!tarea || q.tarea===tarea);
+  const label = mode==='wrong' ? T_.wrong : mode==='due' ? T_.dueBtn : tarea ? `${T_.tarea} ${tarea}` : T_.allT;
+  let done = 0, okc = 0, prev = null; const answeredNow = new Set();
+  const poolFn = () => mode==='wrong' ? Q.filter(q=>isWrong(q.id)) : mode==='due' ? Q.filter(q=>isDue(q.id) && !answeredNow.has(q.id)) : Q.filter(q=>!tarea || q.tarea===tarea);
   view.innerHTML = `<div class="stack">
     <div class="row"><span class="eyebrow">${esc(label)}</span><span class="sp"></span><span class="chip" id="sess">${esc(T_.zero)}</span></div>
     <section class="panel qcard" id="card"></section>
@@ -132,10 +135,10 @@ function study({tarea=0, mode='all'}){
   $('#exit').onclick = () => go(ccseHub);
   function next(){
     const pool = poolFn();
-    if (!pool.length){ $('#card').innerHTML = `<h2>${esc(T_.noErr)}</h2><p class="lede">${esc(T_.noErrLede(MASTER))}</p><div class="row"><button class="btn primary" id="h" type="button">${esc(T_.back)}</button></div>`; $('#h').onclick=()=>go(ccseHub); return; }
+    if (!pool.length){ $('#card').innerHTML = mode==='due' ? `<h2>${esc(T_.dueNone)}</h2><p class="lede">${esc(T_.dueNoneLede)}</p><div class="row"><button class="btn primary" id="h" type="button">${esc(T_.keepStudying)}</button></div>` : `<h2>${esc(T_.noErr)}</h2><p class="lede">${esc(T_.noErrLede(MASTER))}</p><div class="row"><button class="btn primary" id="h" type="button">${esc(T_.back)}</button></div>`; $('#h').onclick=()=>go(mode==='due' ? () => study({tarea:0}) : ccseHub); return; }
     const q = nextFor(pool, prev); prev = q.id;
     renderQuestion($('#card'), q, {
-      onAnswer: c => { done++; if (c) okc++; $('#sess').textContent = T_.answered(okc, done); },
+      onAnswer: c => { answeredNow.add(q.id); done++; if (c) okc++; $('#sess').textContent = T_.answered(okc, done); },
       after: fb => { fb.insertAdjacentHTML('beforeend', `<div class="row" style="margin-top:12px"><span class="sp"></span><button class="btn primary" id="nx" type="button">${esc(T_.next)}</button></div>`); const nx=$('#nx'); nx.onclick = next; nx.focus(); }
     });
   }
@@ -273,13 +276,13 @@ function chart(ex){
 }
 function backupHTML(){
   const T_ = t();
-  return `<section class="panel"><h2>${esc(T_.backup)}</h2><p class="note">${esc(T_.backupLede)}</p>
+  return `<section class="panel"><h2>${esc(T_.codeT)}</h2>
     <div class="row"><button class="btn" id="b-copy" type="button">${esc(T_.copy)}</button><span id="b-msg" class="note" role="status"></span></div>
     <textarea id="b-code" rows="3" aria-label="${esc(T_.paste)}" placeholder="${esc(T_.paste)}"></textarea>
     <div class="row"><button class="btn" id="b-load" type="button">${esc(T_.import)}</button><span class="sp"></span><button class="linkbtn" id="reset" type="button">${esc(T_.reset)}</button></div>
     <div id="reset-box"></div></section>`;
 }
-function exportCode(){ const s = JSON.stringify({v:1, q:S.q, exams:S.exams, aud:S.aud, audRuns:S.audRuns, gram:S.gram, read:S.read, dq:S.dq, dmocks:S.dmocks}); return 'CCSE1.' + btoa(unescape(encodeURIComponent(s))); }
+function exportCode(){ const s = JSON.stringify(Object.assign({v:2}, backupData())); return 'CCSE1.' + btoa(unescape(encodeURIComponent(s))); }
 function wireBackup(){
   const T_ = t(), msg = $('#b-msg'), box = $('#b-code');
   $('#b-copy').onclick = () => {
@@ -290,8 +293,7 @@ function wireBackup(){
   $('#b-load').onclick = () => {
     try { const raw = box.value.trim(); if (!raw.startsWith('CCSE1.')) throw 0;
       const o = JSON.parse(decodeURIComponent(escape(atob(raw.slice(6)))));
-      if (!o || typeof o.q !== 'object' || !Array.isArray(o.exams)) throw 0;
-      S.q = o.q; S.exams = o.exams; S.aud = o.aud||{}; S.audRuns = o.audRuns||[]; S.gram = o.gram||{}; S.read = o.read||{}; S.dq = o.dq||{}; S.dmocks = o.dmocks||[]; save(); go(settings); setTimeout(()=>{ const m=$('#b-msg'); if (m) m.textContent = T_.imported; }, 0);
+      applyBackup(o); go(settings); setTimeout(()=>{ const m=$('#b-msg'); if (m) m.textContent = T_.imported; }, 0);
     } catch(e){ msg.textContent = T_.badCode; }
   };
   $('#reset').onclick = () => {
@@ -332,12 +334,14 @@ function settings(){
       <label class="radio"><input type="checkbox" id="trexam" ${s.trExam?'checked':''}> ${esc(T_.setTrExam)}</label><p class="note">${esc(T_.setTrExamHint)}</p>
     </section>
     ${datesHTML()}
+    ${fileHTML()}
     ${backupHTML()}
+    <p><button class="linkbtn" id="s-about" type="button">${esc(T_.aboutBtn)}</button></p>
     <div class="row"><button class="btn primary" id="s-done" type="button">${esc(T_.home)}</button></div></div>`;
   view.querySelectorAll('input[name=lang]').forEach(i => i.onchange = () => { S.set.lang = i.value; save(); chrome(); go(settings); });
   view.querySelectorAll('input[name=tr]').forEach(i => i.onchange = () => { S.set.tr = i.value; save(); });
   $('#trexam').onchange = e => { S.set.trExam = e.target.checked; save(); };
-  wireBackup(); wireDates();
+  wireBackup(); wireDates(); wireFile(); $('#s-about').onclick = () => go(about);
   $('#s-done').onclick = () => go(home);
 }
 

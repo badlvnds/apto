@@ -6,7 +6,7 @@ Object.assign(I18N.es,{resumeT:'Tienes un examen sin terminar',resumeLeft:x=>`Qu
  report:'Avisar de un error',reportPh:'¿Qué está mal? (opcional)',reportCopy:'Copiar el aviso',reportDone:REPORT_CONTACT?`Copiado. Envíalo a ${REPORT_CONTACT}.`:'Copiado. Pégalo en un mensaje a la autora del proyecto.',
  planT:'Plan para hoy',planNoDate:'Indica la fecha de tu examen y te calculamos cuánto estudiar cada día.',planDate:'Fecha del examen',planDays:n=>`Faltan ${n} día${n===1?'':'s'}`,planPast:'La fecha ya ha pasado. Cámbiala en Ajustes.',
  planCcse:(d,t)=>`Hoy: ${d} de ${t} preguntas`,planDele:(d,t)=>`Hoy: ${d} de ${t} ejercicios`,planGo:'Estudiar ahora',planDone:'¡Objetivo de hoy cumplido!',streak:n=>`Racha: ${n} día${n===1?'':'s'} seguidos`,
- planMockSoon:'Quedan menos de dos semanas: haz un examen de prueba cada dos o tres días.',planCcseHint:'Primero los errores, luego preguntas nuevas.',planDeleHint:'Una tarea al día + repasar errores.',
+ planMockSoon:'Quedan menos de dos semanas: haz un examen de prueba cada dos o tres días.',planCcseHint:'Primero los errores, luego el repaso de hoy y después preguntas nuevas.',planDeleHint:'Una tarea al día + repasar errores.',
  datesT:'Fechas de tus exámenes',guideBtn:'Cómo inscribirse y qué llevar',guideT:'Cómo son los exámenes',guideAsOf:'Información de octubre de 2026. Comprueba siempre los datos en las webs oficiales.'});
 Object.assign(I18N.en,{resumeT:'You have an unfinished exam',resumeLeft:x=>`${x} left`,resumeGo:'Continue',resumeEnd:'Finish and see the result',warn5:'5 minutes left.',
  leaveQ:'Leave the exam? It’s saved and you can continue from the home screen. The clock keeps running.',leaveYes:'Leave',leaveNo:'Back to the exam',
@@ -14,7 +14,7 @@ Object.assign(I18N.en,{resumeT:'You have an unfinished exam',resumeLeft:x=>`${x}
  report:'Report a mistake',reportPh:'What’s wrong? (optional)',reportCopy:'Copy the report',reportDone:REPORT_CONTACT?`Copied. Send it to ${REPORT_CONTACT}.`:'Copied. Paste it into a message to the project’s author.',
  planT:'Today’s plan',planNoDate:'Set your exam date and we’ll work out how much to study each day.',planDate:'Exam date',planDays:n=>`${n} day${n===1?'':'s'} to go`,planPast:'That date has passed. Change it in Settings.',
  planCcse:(d,t)=>`Today: ${d} of ${t} questions`,planDele:(d,t)=>`Today: ${d} of ${t} exercises`,planGo:'Study now',planDone:'Today’s goal done!',streak:n=>`Streak: ${n} day${n===1?'':'s'} in a row`,
- planMockSoon:'Less than two weeks left: take a mock exam every two or three days.',planCcseHint:'Mistakes first, then new questions.',planDeleHint:'One task a day + review mistakes.',
+ planMockSoon:'Less than two weeks left: take a mock exam every two or three days.',planCcseHint:'Mistakes first, then today’s review, then new questions.',planDeleHint:'One task a day + review mistakes.',
  datesT:'Your exam dates',guideBtn:'How to register and what to bring',guideT:'How the exams work',guideAsOf:'Information as of October 2026. Always check the details on the official websites.'});
 Object.assign(I18N.ru,{resumeT:'У вас незаконченный экзамен',resumeLeft:x=>`Осталось ${x}`,resumeGo:'Продолжить',resumeEnd:'Завершить и посмотреть результат',warn5:'Осталось 5 минут.',
  leaveQ:'Выйти из экзамена? Он сохранится, продолжить можно с главной. Время продолжает идти.',leaveYes:'Выйти',leaveNo:'Вернуться к экзамену',
@@ -22,7 +22,7 @@ Object.assign(I18N.ru,{resumeT:'У вас незаконченный экзам�
  report:'Сообщить об ошибке',reportPh:'Что не так? (необязательно)',reportCopy:'Скопировать сообщение',reportDone:REPORT_CONTACT?`Скопировано. Отправьте на ${REPORT_CONTACT}.`:'Скопировано. Вставьте в сообщение автору проекта.',
  planT:'План на сегодня',planNoDate:'Укажите дату экзамена — посчитаем, сколько заниматься в день.',planDate:'Дата экзамена',planDays:n=>`До экзамена: ${n} дн.`,planPast:'Эта дата уже прошла. Измените её в настройках.',
  planCcse:(d,t)=>`Сегодня: ${d} из ${t} вопросов`,planDele:(d,t)=>`Сегодня: ${d} из ${t} упражнений`,planGo:'Заниматься',planDone:'Цель на сегодня выполнена!',streak:n=>`Серия: ${n} дн. подряд`,
- planMockSoon:'Осталось меньше двух недель: проходите пробный экзамен раз в два-три дня.',planCcseHint:'Сначала ошибки, потом новые вопросы.',planDeleHint:'Одно задание в день + работа над ошибками.',
+ planMockSoon:'Осталось меньше двух недель: проходите пробный экзамен раз в два-три дня.',planCcseHint:'Сначала ошибки, потом повторение на сегодня, затем новые вопросы.',planDeleHint:'Одно задание в день + работа над ошибками.',
  datesT:'Даты ваших экзаменов',guideBtn:'Как записаться и что взять с собой',guideT:'Как устроены экзамены',guideAsOf:'Информация на октябрь 2026 года. Всегда проверяйте данные на официальных сайтах.'});
 Object.assign(I18N.uk,{resumeT:'У вас незавершений іспит',resumeLeft:x=>`Залишилось ${x}`,resumeGo:'Продовжити',resumeEnd:'Завершити й побачити результат',warn5:'Залишилось 5 хвилин.',
  leaveQ:'Вийти з іспиту? Його збережено, продовжити можна з головної. Час іде далі.',leaveYes:'Вийти',leaveNo:'Повернутися до іспиту',
@@ -30,7 +30,7 @@ Object.assign(I18N.uk,{resumeT:'У вас незавершений іспит',r
  report:'Повідомити про помилку',reportPh:'Що не так? (необов’язково)',reportCopy:'Скопіювати повідомлення',reportDone:REPORT_CONTACT?`Скопійовано. Надішліть на ${REPORT_CONTACT}.`:'Скопійовано. Вставте в повідомлення авторці проєкту.',
  planT:'План на сьогодні',planNoDate:'Вкажіть дату іспиту — порахуємо, скільки займатися щодня.',planDate:'Дата іспиту',planDays:n=>`До іспиту: ${n} дн.`,planPast:'Ця дата вже минула. Змініть її в налаштуваннях.',
  planCcse:(d,t)=>`Сьогодні: ${d} із ${t} питань`,planDele:(d,t)=>`Сьогодні: ${d} із ${t} вправ`,planGo:'Займатися',planDone:'Мету на сьогодні виконано!',streak:n=>`Серія: ${n} дн. поспіль`,
- planMockSoon:'Залишилось менше двох тижнів: проходьте пробний іспит раз на два-три дні.',planCcseHint:'Спочатку помилки, потім нові питання.',planDeleHint:'Одне завдання на день + робота над помилками.',
+ planMockSoon:'Залишилось менше двох тижнів: проходьте пробний іспит раз на два-три дні.',planCcseHint:'Спочатку помилки, потім повторення на сьогодні, далі нові питання.',planDeleHint:'Одне завдання на день + робота над помилками.',
  datesT:'Дати ваших іспитів',guideBtn:'Як записатися й що взяти з собою',guideT:'Як влаштовані іспити',guideAsOf:'Інформація на жовтень 2026 року. Завжди перевіряйте дані на офіційних сайтах.'});
 
 // ---------- toast ----------
@@ -114,7 +114,7 @@ function wirePlan(kind){
   const inp = $('#plan-date'); if (inp) inp.onchange = () => { if (!inp.value) return; if (kind === 'c') S.set.dateC = inp.value; else S.set.dateD = inp.value; save(); go(current); };
   const b = $('#plan-go'); if (!b) return;
   b.onclick = () => {
-    if (kind === 'c'){ const wrong = Q.filter(q=>isWrong(q.id)).length; go(() => study(wrong ? {mode:'wrong'} : {tarea:0})); }
+    if (kind === 'c'){ const wrong = Q.filter(q=>isWrong(q.id)).length; go(() => study(wrong ? {mode:'wrong'} : dueCount() ? {mode:'due'} : {tarea:0})); }
     else { if (dWrongKeys().length) return go(deleMistakes);
       const cand = [...[1,2,3,4].map(n=>({p:'r',n,a:taskAcc('r',n)})), ...[1,2,3,4].map(n=>({p:'a',n,a:taskAcc('a',n)}))].sort((x,y)=>(x.a===null?-1:x.a)-(y.a===null?-1:y.a))[0];
       go(() => cand.p === 'r' ? readTask(cand.n) : (cand.n <= 2 ? audRun(cand.n, 0, []) : groupRun(cand.n))); }

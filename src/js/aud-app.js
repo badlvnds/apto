@@ -62,12 +62,12 @@ const TTS = {
     });
   }
 };
-if (TTS.ok) try { speechSynthesis.onvoiceschanged = () => { TTS.cast = null; const el = document.getElementById('voice-box'); if (el){ el.outerHTML = voiceBoxHTML(); wireVoiceBox(); } }; } catch(e){}
+if (TTS.ok) try { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => { TTS.cast = null; const el = document.getElementById('voice-box'); if (el){ el.outerHTML = voiceBoxHTML(); wireVoiceBox(); } voicesArrived(); }; } catch(e){}
 
 function voiceBoxHTML(){
   const T_ = t();
   if (!TTS.ok) return `<div id="voice-box" class="note">${esc(T_.noTTS)}</div>`;
-  if (!TTS.list().length) return `<div id="voice-box" class="note">${esc(T_.noVoices)}</div>`;
+  if (!TTS.list().length) return `<div id="voice-box" class="note">${esc(T_.noVoices)} ${esc(T_.vh[platform()])}</div>`;
   return `<div id="voice-box" class="row"><p class="note" style="flex:1;min-width:200px">${esc(T_.voicesRandom(TTS.list().length))}</p><button type="button" class="trbtn" id="v-test">${esc(T_.testVoice)}</button></div>`;
 }
 function wireVoiceBox(){
@@ -87,7 +87,7 @@ function audItem(box, it, {exam=true, feedback=true, chosen, onAnswer}={}){
     <div class="qblock"><p class="note" lang="es">${esc(it.ctx)}</p>${show?`<p class="tr"${hid}>${esc(x[0])}</p>`:''}</div>
     <div class="player"><button class="btn primary a-play" type="button">${esc(T_.play)}</button>
       ${exam?'':`<label class="radio slow"><input type="checkbox" class="a-slow" ${S.set.audSlow?'checked':''}> ${esc(T_.slow)}</label>`}
-      <span class="note a-left" role="status">${exam?esc(T_.playsLeft(2)):''}</span></div>
+      <span class="note a-left" role="status">${exam?esc(T_.playsLeft(2)):''}</span></div>${noVoiceHTML(it.lines)}
     <div class="qblock"><p class="qtext" lang="es">${esc(it.q)}</p>${show?`<p class="tr"${hid}>${esc(x[1])}</p>`:''}</div>
     <div class="opts">${shuffle(it.opts.map((_,k)=>k)).map((k,pos)=>{const o=it.opts[k]; return `<button type="button" class="opt ${chosen===k?'sel':''}" data-k="${k}"><span class="l">${L[pos]}</span><span class="ot"><span lang="es">${esc(o)}</span>${show?`<span class="tr"${hid}>${esc(x[2+k])}</span>`:''}</span></button>`;}).join('')}</div>
     <div class="fb"></div>`;
@@ -104,7 +104,6 @@ function audItem(box, it, {exam=true, feedback=true, chosen, onAnswer}={}){
       if (exam && plays >= 2 && !answered){ playBtn.disabled = true; left.textContent = T_.noPlays; }
     });
   };
-  if (!TTS.ok || !TTS.list().length) left.textContent = TTS.ok ? T_.noVoices : T_.noTTS;
   box.querySelectorAll('.opt').forEach(b => b.onclick = () => {
     const k = +b.dataset.k, ok = k === it.ans;
     if (!feedback){ box.querySelectorAll('.opt').forEach(o => o.classList.toggle('sel', o === b)); onAnswer && onAnswer(ok, k); return; }

@@ -81,7 +81,7 @@ function ccseHub(){
     ${planHTML('c')}
     <section class="panel" aria-labelledby="h-try"><span class="eyebrow" id="h-try">${esc(T_.tryOne)}</span><div id="try" class="qcard"></div></section>
     <div class="actions">
-      <button class="btn" id="go-study" type="button">${esc(T_.studyTopics)}<small>${esc(T_.studyTopicsSub)}</small></button>
+      <button class="btn" id="go-study" type="button">${esc(T_.studyTopics)}<small>${dueCount()?esc(T_.dueSub(dueCount())):esc(T_.studyTopicsSub)}</small></button>
       <button class="btn primary" id="go-exam" type="button">${esc(T_.exam)}<small>${esc(T_.examSub)}</small></button>
       <button class="btn" id="go-report" type="button">${esc(T_.myProgress)}<small>${mastered}/300 · ${last?esc(T_.lastExam(last.score)):esc(T_.myProgressSub)}</small></button>
     </div></div>`;

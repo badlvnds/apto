@@ -26,11 +26,15 @@ const css = readFileSync(src('styles.css'), 'utf8');
 const jsName = `app.${hash(js)}.js`, cssName = `styles.${hash(css)}.css`;
 writeFileSync(join(dist, jsName), js);
 writeFileSync(join(dist, cssName), css);
-writeFileSync(join(dist, 'index.html'), readFileSync(src('index.html'), 'utf8').replace('__JS__', jsName).replace('__CSS__', cssName));
+// Static files version: changes whenever an icon/font/image changes, so browsers drop cached favicons.
+const walk = d => readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)]);
+const pubFiles = walk(join(root, 'public')).sort();
+const assetV = hash(pubFiles.map(f => readFileSync(f).toString('base64')).join());
+writeFileSync(join(dist, 'index.html'), readFileSync(src('index.html'), 'utf8').replace('__JS__', jsName).replace('__CSS__', cssName).replaceAll('__V__', assetV));
 
 // Service worker: precache the app shell; version changes whenever any asset changes.
-const files = ['./', 'index.html', jsName, cssName, 'manifest.webmanifest', ...readdirSync(join(dist, 'icons')).map(f => 'icons/' + f)];
-const version = hash(files.join() + js + css);
+const files = ['./', 'index.html', jsName, cssName, ...pubFiles.map(f => f.slice(join(root, 'public').length + 1).split('\\').join('/')).filter(f => !/\.(txt|png)$/.test(f) || f.startsWith('icons/'))];
+const version = hash(files.join() + js + css + assetV);
 writeFileSync(join(dist, 'sw.js'), readFileSync(join(root, 'scripts/sw.template.js'), 'utf8')
   .replace('__VERSION__', version).replace('__FILES__', JSON.stringify(files)));
 
