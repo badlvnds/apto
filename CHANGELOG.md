@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.4 · October 2026
+
+UI review fixes.
+
+- Reading: a "Go to the questions" link above each text, in practice and in the mock. "Show the text" now also works in practice mode (it only worked in the mock).
+- Speaking: the timer button says "Start timer" and the recorder says "Record my voice", so the two actions aren't confused.
+- Vocabulary: the card header shows how many words of the topic are learned.
+- Home: tighter spacing so "Start here" is visible sooner.
+
 ## 1.0.3 · October 2026
 
 Real photos in speaking task 2.

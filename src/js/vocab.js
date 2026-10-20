@@ -128,7 +128,7 @@ function vocRun(keys, back){
       $('#v-back').onclick = () => go(back); return;
     }
     const key = queue[i], d = vocById(key), w = d.w;
-    $('#v-count').textContent = `${loc(d.T.name)} · ${i+1} / ${queue.length}`;
+    $('#v-count').textContent = `${loc(d.T.name)} · ${i+1} / ${queue.length} · ${T_.vocLearned(vocLearned(d.T), d.T.w.length)}`;
     const tr = lang === 'es' ? w[1] : w[VLX[lang]];
     $('#v-card').innerHTML = `<div class="qhead"><span class="sp"></span>${TTS.ok?`<button type="button" class="iconbtn sm" id="v-say" aria-label="${esc(T_.listenQ)}">${SPK}</button>`:''}</div>
       <p class="vword" lang="es">${esc(w[0])}</p><div class="vback" id="v-back" hidden><span class="eyebrow">${esc(T_.vocMeaning)}</span><p class="vtr">${esc(tr)}</p></div>

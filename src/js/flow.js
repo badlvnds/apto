@@ -62,7 +62,7 @@ function partAcc(prefix){ let n=0, ok=0; Object.keys(S.dq).forEach(k => { if (k.
 // ---------- HOME / HUBS ----------
 function home(){
   const T_ = t();
-  view.innerHTML = `<div class="stack">
+  view.innerHTML = `<div class="stack home">
     ${S.set.langChosen ? '' : langRowHTML()}<div class="intro"><span class="eyebrow">${esc(T_.homeEyebrow)}</span><h1>${esc(T_.homeH1)}</h1><p class="lede">${esc(T_.homeLede)}</p></div>
     ${resumeHTML()}<div class="cards2">
       <button class="bigcard" id="go-ccse" type="button"><span class="bc-tag">CCSE<span class="bc-go" aria-hidden="true">→</span></span><span class="bc-t">${esc(T_.ccseCard)}</span><span class="bc-s">${esc(T_.ccseCardSub)}</span></button>

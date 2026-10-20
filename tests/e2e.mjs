@@ -35,6 +35,8 @@ await step('CCSE mock exam', async () => {
 await step('DELE reading task (variant 2)', async () => {
   await page.click('#home-btn'); await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-read');
   await page.click('[data-v="2"]'); await page.click('[data-n="1"]');
+  await page.click('.toqs'); await page.waitForTimeout(1200); if (Math.abs(await page.$eval('.qcard', c => c.getBoundingClientRect().top)) > 200) throw new Error('practice: jump to questions');
+  await page.click('.qcard .totext'); await page.waitForSelector('#backq'); await page.click('#backq');
   for (const c of await page.$$('.qcard')) await (await c.$$('.opt'))[0].click();
   await page.waitForSelector('#t-res:not([hidden])');
 });
@@ -168,11 +170,12 @@ await step('keyboard: number key answers', async () => {
   await page.click('#home-btn'); await page.click('#go-ccse'); await page.click('#go-study'); await page.click('[data-t="2"]');
   await page.keyboard.press('2'); await page.waitForSelector('#card .opt.right');
 });
-await step('DELE mock: jump to text and back, previous task, answers survive a reload', async () => {
+await step('DELE mock: jump to questions, to text and back, previous task, answers survive a reload', async () => {
+  const toq = async () => { const b = await page.waitForSelector('.stack.mock .toqs', {timeout: 5000}); await b.click(); await page.waitForTimeout(1200); const top = await page.$eval('.qcard', c => c.getBoundingClientRect().top); if (top > 200 || top < -50) throw new Error('jump to questions: ' + top); };
   await page.click('#home-btn'); const l = await page.$('.confirm.leave [data-yes]'); if (l) await l.click();
   await page.click('#go-dele'); await page.click('#d-mock'); await page.check('input[name=mkind][value=short]');
   if (!(await page.textContent('.summary')).includes('8')) throw new Error('summary');
-  await page.click('#m-start');
+  await page.click('#m-start'); await toq(); await page.evaluate(() => scrollTo(0, 0));
   if (!/1/.test(await page.textContent('.stack.mock .eyebrow'))) throw new Error('progress label');
   const card = page.locator('.qcard').nth(2); await card.locator('.opt').nth(1).click();
   await card.locator('.totext').click(); await page.waitForSelector('#backq'); await page.click('#backq');

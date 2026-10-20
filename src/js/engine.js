@@ -99,13 +99,14 @@ function readTask(n){
   current = () => readTask(n);
   const T_ = t(), list = RT(n); let total = list.reduce((s,R)=>s+R.qs.length,0), done = 0, ok = 0;
   view.innerHTML = `<div class="stack">${backRow(reading, T_.backTasks)}<span class="eyebrow">DELE A2 · ${esc(T_.kRead)}</span><h1>${esc(taskTitle('r',n))}</h1><span class="chip" style="align-self:flex-start">${esc(T_.variant)} ${CURV}</span>
-    ${list.map(R=>`<div class="group">${docHTML(R)}${R.qs.map((_,k)=>`<section class="panel qcard" id="q-${R.id}-${k}"></section>`).join('')}<div class="trd" id="trd-${R.id}" hidden>${trDetails(R)}</div></div>`).join('')}
+    ${list.map(R=>`<div class="group">${R.task !== 2?`<button type="button" class="trbtn toqs" data-q="q-${R.id}-0">↓ ${esc(T_.toQs)}</button>`:''}${docHTML(R)}${R.qs.map((_,k)=>`<section class="panel qcard" id="q-${R.id}-${k}"></section>`).join('')}<div class="trd" id="trd-${R.id}" hidden>${trDetails(R)}</div></div>`).join('')}
     <section class="panel" id="t-res" hidden></section></div>`;
   wireBack(reading);
   let qi = 0;
   list.forEach(R => { let left = R.qs.length; R.qs.forEach((_,k) => readQ($(`#q-${R.id}-${k}`), R, k, {label: T_.qOf(++qi, total), toText: R.task !== 2, onAnswer: r => { done++; if (r) ok++; if (--left === 0) $(`#trd-${R.id}`).hidden = false;
     if (done === total){ const box = $('#t-res'); box.hidden = false; box.innerHTML = `<span class="eyebrow">${esc(T_.taskRes)}</span><div class="stat"><b>${ok}/${total}</b><span>${esc(T_.readScore(ok,total))}</span></div><div class="row">${n<4?`<button class="btn primary" id="t-next" type="button">${esc(T_.nextTask)}</button>`:''}<button class="btn" id="t-all" type="button">${esc(T_.backTasks)}</button></div>`;
       const nx = $('#t-next'); if (nx) nx.onclick = () => go(() => readTask(n+1)); $('#t-all').onclick = () => go(reading); } }})); });
+  wireToText();
 }
 
 // ---------- listening group renderer (tareas 3 and 4) ----------
@@ -242,7 +243,7 @@ function mockRead(n){
   const T_ = t(), list = RT(n);
   const total = list.reduce((s,R)=>s+R.qs.length,0); let qi = 0;
   view.innerHTML = `<div class="stack mock"><span class="eyebrow">${esc(T_.readTaskOf(n))}</span><h2 class="task-t">${esc(loc(TASKN.r[n]))}</h2>
-    ${list.map(R=>`<div class="group">${docHTML(R)}${R.qs.map((_,k)=>`<section class="panel qcard" id="q-${R.id}-${k}"></section>`).join('')}</div>`).join('')}
+    ${list.map(R=>`<div class="group">${R.task !== 2?`<button type="button" class="trbtn toqs" data-q="q-${R.id}-0">↓ ${esc(T_.toQs)}</button>`:''}${docHTML(R)}${R.qs.map((_,k)=>`<section class="panel qcard" id="q-${R.id}-${k}"></section>`).join('')}</div>`).join('')}
     <div class="row">${n>1?`<button class="btn" id="m-prev" type="button">${esc(T_.prevTask)}</button>`:''}<span class="sp"></span><button class="btn primary" id="m-next" type="button">${esc(n<4?T_.nextTask:T_.toAud)}</button></div></div>`;
   EXAM_ON = true; saveCur({t:'dele', DM, at:{p:'r', n}});
   list.forEach(R => R.qs.forEach((_,k) => { const key = `r:${R.id}:${k}`; readQ($(`#q-${R.id}-${k}`), R, k, {exam:true, chosen: DM.ans[key], label: T_.qOf(++qi, total), toText: R.task !== 2, onAnswer: j => { DM.ans[key] = j; save(); }}); }));
