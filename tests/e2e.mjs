@@ -59,7 +59,7 @@ await step('DELE variant 4 reading + listening', async () => {
 await step('spaced repetition: due questions come back', async () => {
   await page.click('#home-btn'); await page.click('#go-ccse'); await page.click('#go-study'); await page.click('[data-t="1"]');
   await page.click('#card .opt >> nth=0'); await page.waitForSelector('#nx');
-  await page.evaluate(() => { const k = 'ccse2026.v1', o = JSON.parse(localStorage.getItem(k)); for (const id in o.q) o.q[id].due = Date.now() - 1000; localStorage.setItem(k, JSON.stringify(o)); });
+  await page.evaluate(() => { for (const id in S.q) S.q[id].due = Date.now() - 1000; save(); });
   await page.reload(); await page.click('#go-ccse'); await page.click('#go-study');
   const sub = await page.textContent('#go-due small'); if (!/\d/.test(sub)) throw new Error('no due count: ' + sub);
   await page.click('#go-due'); await page.waitForSelector('#card .opt');
@@ -149,6 +149,21 @@ await step('full DELE mock: reading → listening → writing → speaking → r
 await step('keyboard: number key answers', async () => {
   await page.click('#home-btn'); await page.click('#go-ccse'); await page.click('#go-study'); await page.click('[data-t="2"]');
   await page.keyboard.press('2'); await page.waitForSelector('#card .opt.right');
+});
+await step('DELE mock: jump to text and back, previous task, answers survive a reload', async () => {
+  await page.click('#home-btn'); const l = await page.$('.confirm.leave [data-yes]'); if (l) await l.click();
+  await page.click('#go-dele'); await page.click('#d-mock'); await page.check('input[name=mkind][value=short]');
+  if (!(await page.textContent('.summary')).includes('8')) throw new Error('summary');
+  await page.click('#m-start');
+  if (!/1/.test(await page.textContent('.stack.mock .eyebrow'))) throw new Error('progress label');
+  const card = page.locator('.qcard').nth(2); await card.locator('.opt').nth(1).click();
+  await card.locator('.totext').click(); await page.waitForSelector('#backq'); await page.click('#backq');
+  await page.click('#m-next'); await page.click('#m-prev');
+  if (await page.locator('.qcard').nth(2).locator('.opt.sel').count() !== 1) throw new Error('answer lost after going back');
+  await page.reload(); await page.waitForSelector('#cur-go'); await page.click('#cur-go');
+  if (await page.locator('.qcard').nth(2).locator('.opt.sel').count() !== 1) throw new Error('answer lost after reload');
+  await page.click('#home-btn'); const l2 = await page.$('.confirm.leave [data-yes]'); if (l2) await l2.click();
+  await page.click('#cur-end'); await page.waitForSelector('#mr-hub');
 });
 await step('hub buttons share one width', async () => {
   for (const vw of [360, 430, 820]) {

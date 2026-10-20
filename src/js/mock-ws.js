@@ -92,3 +92,33 @@ function wsResultHTML(D){
     <details class="script"><summary>${esc(T_.modelT)} · ${esc(s1.title)}</summary><p lang="es">${esc(s1.model)}</p></details>
     <details class="script"><summary>${esc(T_.modelT)} · ${esc(s2.title)}</summary><p lang="es">${esc(s2.model)}</p></details></section>`;
 }
+
+// ---------- mock exam: overview, progress labels, jump between text and question ----------
+Object.assign(I18N.es,{mSumShort:'2 partes · 8 tareas · 100 minutos',mSumFull:'4 partes · 13 tareas · unas 2 h 50 min',rulesT:'Antes de empezar',breakdownT:'Ver todas las tareas',
+ mRules:f=>[`Cada parte tiene su propio tiempo: lectura 60 min, audición 40 min${f?', escritura 45 min; el oral tiene 12 min de preparación':''}. El tiempo que sobra no pasa a la parte siguiente.`,'En lectura puedes volver a tareas anteriores y cambiar respuestas. En audición, como en el examen, cada audio suena dos veces y se avanza hacia delante. Al pasar a otra parte ya no se puede volver.','Tus respuestas se guardan solas. Si cierras la página o se recarga, sigue desde el inicio: el tiempo continúa corriendo.','Verás si aciertas solo al final, como en el examen real.'],
+ verPick:'Elige una versión del examen',verHint:'Las versiones 1–4 tienen tareas y preguntas distintas. Puedes hacerlas todas.',readTaskOf:n=>`Lectura · tarea ${n} de 4`,audTaskOf:n=>`Audición · tarea ${n} de 4`,qOf:(k,n)=>`Pregunta ${k} de ${n}`,recOf:(k,n)=>`audio ${k} de ${n}`,
+ toText:'Ver el texto',backToQ:'Volver a la pregunta',prevTask:'Tarea anterior',timeLeft:x=>`Tiempo restante: ${x}`,timerEnd:'Se acabó el tiempo.'});
+Object.assign(I18N.en,{mSumShort:'2 parts · 8 tasks · 100 minutes',mSumFull:'4 parts · 13 tasks · about 2 h 50 min',rulesT:'Before you start',breakdownT:'See all the tasks',
+ mRules:f=>[`Each part has its own time: reading 60 min, listening 40 min${f?', writing 45 min; speaking has 12 min of preparation':''}. Time you don’t use doesn’t carry over to the next part.`,'In reading you can go back to earlier tasks and change answers. In listening, as in the exam, each recording plays twice and you move forward. Once you move to another part you can’t go back.','Your answers save themselves. If you close the page or it reloads, continue from the home screen: the clock keeps running.','You’ll see whether you’re right only at the end, as in the real exam.'],
+ verPick:'Choose an exam version',verHint:'Versions 1–4 contain different tasks and questions. You can take them all.',readTaskOf:n=>`Reading · task ${n} of 4`,audTaskOf:n=>`Listening · task ${n} of 4`,qOf:(k,n)=>`Question ${k} of ${n}`,recOf:(k,n)=>`recording ${k} of ${n}`,
+ toText:'Show the text',backToQ:'Back to the question',prevTask:'Previous task',timeLeft:x=>`Time left: ${x}`,timerEnd:'Time’s up.'});
+Object.assign(I18N.ru,{mSumShort:'2 части · 8 заданий · 100 минут',mSumFull:'4 части · 13 заданий · около 2 ч 50 мин',rulesT:'Перед началом',breakdownT:'Все задания',
+ mRules:f=>[`У каждой части своё время: чтение 60 мин, аудирование 40 мин${f?', письмо 45 мин; на подготовку к устной части 12 мин':''}. Неиспользованное время на следующую часть не переносится.`,'В чтении можно вернуться к предыдущим заданиям и поменять ответы. В аудировании, как на экзамене, каждая запись звучит дважды и вы идёте только вперёд. После перехода к следующей части вернуться нельзя.','Ответы сохраняются сами. Если закрыть страницу или она перезагрузится, продолжите с главной: время при этом идёт.','Верно или нет, вы увидите только в конце, как на настоящем экзамене.'],
+ verPick:'Выберите вариант экзамена',verHint:'В вариантах 1–4 разные задания и вопросы. Можно пройти все.',readTaskOf:n=>`Чтение · задание ${n} из 4`,audTaskOf:n=>`Аудирование · задание ${n} из 4`,qOf:(k,n)=>`Вопрос ${k} из ${n}`,recOf:(k,n)=>`запись ${k} из ${n}`,
+ toText:'К тексту',backToQ:'Вернуться к вопросу',prevTask:'Предыдущее задание',timeLeft:x=>`Осталось: ${x}`,timerEnd:'Время вышло.'});
+Object.assign(I18N.uk,{mSumShort:'2 частини · 8 завдань · 100 хвилин',mSumFull:'4 частини · 13 завдань · близько 2 год 50 хв',rulesT:'Перед початком',breakdownT:'Усі завдання',
+ mRules:f=>[`Кожна частина має свій час: читання 60 хв, аудіювання 40 хв${f?', письмо 45 хв; на підготовку до усної частини 12 хв':''}. Невикористаний час на наступну частину не переноситься.`,'У читанні можна повернутися до попередніх завдань і змінити відповіді. В аудіюванні, як на іспиті, кожен запис звучить двічі й ви йдете лише вперед. Після переходу до наступної частини повернутися не можна.','Відповіді зберігаються самі. Якщо закрити сторінку або вона перезавантажиться, продовжте з головної: час при цьому йде.','Правильно чи ні, ви побачите лише наприкінці, як на справжньому іспиті.'],
+ verPick:'Оберіть варіант іспиту',verHint:'У варіантах 1–4 різні завдання й питання. Можна пройти всі.',readTaskOf:n=>`Читання · завдання ${n} із 4`,audTaskOf:n=>`Аудіювання · завдання ${n} із 4`,qOf:(k,n)=>`Питання ${k} із ${n}`,recOf:(k,n)=>`запис ${k} із ${n}`,
+ toText:'До тексту',backToQ:'Повернутися до питання',prevTask:'Попереднє завдання',timeLeft:x=>`Залишилося: ${x}`,timerEnd:'Час вийшов.'});
+// "Show the text" scrolls up to the passage; a floating button brings you back to the same question
+function wireToText(){
+  const smooth = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; } catch(e){ return 'auto'; } };
+  view.querySelectorAll('.totext').forEach(b => b.onclick = () => {
+    const doc = document.getElementById(b.dataset.doc), card = b.closest('.qcard'); if (!doc || !card) return;
+    doc.scrollIntoView({behavior: smooth(), block:'start'});
+    let fb = document.getElementById('backq');
+    if (!fb){ fb = document.createElement('button'); fb.id = 'backq'; fb.type = 'button'; fb.className = 'btn primary backq'; view.appendChild(fb); }
+    fb.textContent = '↓ ' + t().backToQ;
+    fb.onclick = () => { card.scrollIntoView({behavior: smooth(), block:'start'}); const o = card.querySelector('.opt.sel') || card.querySelector('.opt'); if (o) o.focus({preventScroll:true}); fb.remove(); };
+  });
+}

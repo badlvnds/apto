@@ -16,7 +16,7 @@ const AT = (n, v = CURV) => AUD.filter(a => a.task === n && a.v === v);
 const AG = (n, v = CURV) => AUDG.find(g => g.task === n && g.v === v);
 Object.assign(I18N.es,{variant:'Variante'}); Object.assign(I18N.en,{variant:'Version'}); Object.assign(I18N.ru,{variant:'Вариант'}); Object.assign(I18N.uk,{variant:'Варіант'});
 function syncV(){ CURV = (S.set && S.set.dv) || 1; }
-function varPickHTML(){ return `<div class="filters" role="group" aria-label="${esc(t().variant)}"><span class="note" style="align-self:center">${esc(t().variant)}:</span>${VARIANTS.map(v=>`<button type="button" class="chip" data-v="${v}" aria-pressed="${v===CURV}">${v}</button>`).join('')}</div>`; }
+function varPickHTML(label){ return `<div class="filters" role="group" aria-label="${esc(label||t().variant)}"><span class="note" style="align-self:center">${esc(label||t().variant)}:</span>${VARIANTS.map(v=>`<button type="button" class="chip" data-v="${v}" aria-pressed="${v===CURV}">${v}</button>`).join('')}</div>`; }
 function wireVar(rerender){ view.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { S.set.dv = +b.dataset.v; save(); syncV(); go(rerender); }); }
 const TASKN = {
  r:{1:{es:'Correo personal',en:'Personal email',ru:'Личное письмо',uk:'Особистий лист'},2:{es:'Textos breves',en:'Short texts',ru:'Короткие тексты',uk:'Короткі тексти'},3:{es:'Relacionar textos',en:'Match the texts',ru:'Сопоставление текстов',uk:'Зіставлення текстів'},4:{es:'Texto largo',en:'Long text',ru:'Длинный текст',uk:'Довгий текст'}},
@@ -63,13 +63,13 @@ const barCls = p => p === null ? '' : p >= 80 ? 'm' : p >= 60 ? 's' : 'b';
 
 // ---------- reading renderers ----------
 function docHTML(R){
-  return R.docs.map(d => `<article class="panel doc" lang="es">${d.label?`<span class="doclabel">${esc(d.label)}</span>`:''}<h2>${esc(d.title)}</h2>${d.text.map(p=>`<p>${esc(p)}</p>`).join('')}</article>`).join('');
+  return R.docs.map((d,i) => `<article class="panel doc" lang="es"${i===0?` id="doc-${R.id}"`:''}>${d.label?`<span class="doclabel">${esc(d.label)}</span>`:''}<h2>${esc(d.title)}</h2>${d.text.map(p=>`<p>${esc(p)}</p>`).join('')}</article>`).join('');
 }
-function readQ(box, R, k, {exam=false, chosen, onAnswer}={}){
+function readQ(box, R, k, {exam=false, chosen, onAnswer, label, toText=false}={}){
   const T_ = t(), q = R.qs[k], lang = S.set.lang, x = lang==='es' ? null : q.tr[lang];
   const trm = lang === 'es' ? 'off' : (exam && !S.set.trExam ? 'off' : S.set.tr), hid = trm === 'tap' ? ' hidden' : '', show = x && trm !== 'off';
   const optLabel = j => R.match ? `${q.o[j]} · ${R.docs[j].title}` : q.o[j];
-  box.innerHTML = `<div class="qhead"><span class="chip">${R.task===2?esc(R.docs[0].title):k+1}</span><span class="sp"></span>${show&&trm==='tap'?`<button type="button" class="trbtn" aria-expanded="false">${esc(T_.translate)}</button>`:''}</div>
+  box.innerHTML = `<div class="qhead"><span class="chip">${esc(label || T_.qOf(k+1, R.qs.length))}</span><span class="sp"></span>${toText?`<button type="button" class="trbtn totext" data-doc="doc-${R.id}">↑ ${esc(T_.toText)}</button>`:''}${show&&trm==='tap'?`<button type="button" class="trbtn" aria-expanded="false">${esc(T_.translate)}</button>`:''}</div>
     <div class="qblock"><p class="qtext" lang="es">${esc(q.q)}</p>${show?`<p class="tr"${hid}>${esc(x[0])}</p>`:''}</div>
     <div class="opts">${(R.match ? q.o.map((_,j)=>j) : shuffle(q.o.map((_,j)=>j))).map((j,pos)=>{const o=q.o[j]; return `<button type="button" class="opt ${chosen===j?'sel':''}" data-j="${j}"><span class="l">${R.match?esc(o):L[pos]}</span><span class="ot"><span lang="es">${esc(R.match?R.docs[j].title:o)}</span>${show&&x[1+j]&&x[1+j]!==o?`<span class="tr"${hid}>${esc(x[1+j])}</span>`:''}</span></button>`;}).join('')}</div><div class="fb"></div>`;
   wireTr(box);
@@ -102,7 +102,8 @@ function readTask(n){
     ${list.map(R=>`<div class="group">${docHTML(R)}${R.qs.map((_,k)=>`<section class="panel qcard" id="q-${R.id}-${k}"></section>`).join('')}<div class="trd" id="trd-${R.id}" hidden>${trDetails(R)}</div></div>`).join('')}
     <section class="panel" id="t-res" hidden></section></div>`;
   wireBack(reading);
-  list.forEach(R => { let left = R.qs.length; R.qs.forEach((_,k) => readQ($(`#q-${R.id}-${k}`), R, k, {onAnswer: r => { done++; if (r) ok++; if (--left === 0) $(`#trd-${R.id}`).hidden = false;
+  let qi = 0;
+  list.forEach(R => { let left = R.qs.length; R.qs.forEach((_,k) => readQ($(`#q-${R.id}-${k}`), R, k, {label: T_.qOf(++qi, total), toText: R.task !== 2, onAnswer: r => { done++; if (r) ok++; if (--left === 0) $(`#trd-${R.id}`).hidden = false;
     if (done === total){ const box = $('#t-res'); box.hidden = false; box.innerHTML = `<span class="eyebrow">${esc(T_.taskRes)}</span><div class="stat"><b>${ok}/${total}</b><span>${esc(T_.readScore(ok,total))}</span></div><div class="row">${n<4?`<button class="btn primary" id="t-next" type="button">${esc(T_.nextTask)}</button>`:''}<button class="btn" id="t-all" type="button">${esc(T_.backTasks)}</button></div>`;
       const nx = $('#t-next'); if (nx) nx.onclick = () => go(() => readTask(n+1)); $('#t-all').onclick = () => go(reading); } }})); });
 }
@@ -211,32 +212,40 @@ function groupRun(n){
 let DM = null;
 const AUD_STEPS = () => [...AT(1).map(it=>({it})), ...AT(2).map(it=>({it})), {G:AG(3)}, {G:AG(4)}];
 function deleMock(){
-  syncV(); const T_ = t();
-  view.innerHTML = `<div class="stack">${backRow(deleHub, 'DELE A2')}<span class="eyebrow">DELE A2</span><h1>${esc(T_.mockTitle)}</h1><p class="lede">${esc(T_.mockLede)}</p>
-    <section class="panel"><h2>${esc(T_.partRead)} · ${esc(T_.durR)}</h2><ul class="focus">${[1,2,3,4].map(n=>`<li>${esc(taskTitle('r',n))} · ${esc(T_.nQ(taskCount('r',n)))}</li>`).join('')}</ul>
-      <h2>${esc(T_.partAud)} · ${esc(T_.durA)}</h2><ul class="focus">${[1,2,3,4].map(n=>`<li>${esc(taskTitle('a',n))} · ${esc(T_.nQ(taskCount('a',n)))}</li>`).join('')}</ul></section>
-    <section class="panel"><div class="radios">${[['full',T_.mockFull,T_.mockFullSub],['short',T_.mockShort,T_.mockShortSub]].map(([v,l,h])=>`<label class="radio"><input type="radio" name="mkind" value="${v}" ${(S.set.mockFull!==false)===(v==='full')?'checked':''}> <span><b>${esc(l)}</b><br><span class="note">${esc(h)}</span></span></label>`).join('')}</div></section>
-    ${varPickHTML()}
+  syncV(); const T_ = t(), full = S.set.mockFull !== false;
+  view.innerHTML = `<div class="stack">${backRow(deleHub, 'DELE A2')}<span class="eyebrow">DELE A2</span><h1>${esc(T_.mockTitle)}</h1>
+    <p class="summary">${esc(full ? T_.mSumFull : T_.mSumShort)}</p>
+    <section class="panel"><div class="radios">${[['full',T_.mockFull,T_.mockFullSub],['short',T_.mockShort,T_.mockShortSub]].map(([v,l,h])=>`<label class="radio"><input type="radio" name="mkind" value="${v}" ${full===(v==='full')?'checked':''}> <span><b>${esc(l)}</b><br><span class="note">${esc(h)}</span></span></label>`).join('')}</div></section>
+    <section class="panel"><h2>${esc(T_.rulesT)}</h2><ul class="focus">${T_.mRules(full).map(r=>`<li>${esc(r)}</li>`).join('')}</ul>
+      <details class="script"><summary>${esc(T_.breakdownT)}</summary>
+        <p><b>${esc(T_.partRead)} · ${esc(T_.durR)}</b></p><ul class="focus">${[1,2,3,4].map(n=>`<li>${esc(taskTitle('r',n))} · ${esc(T_.nQ(taskCount('r',n)))}</li>`).join('')}</ul>
+        <p><b>${esc(T_.partAud)} · ${esc(T_.durA)}</b></p><ul class="focus">${[1,2,3,4].map(n=>`<li>${esc(taskTitle('a',n))} · ${esc(T_.nQ(taskCount('a',n)))}</li>`).join('')}</ul>
+        ${full?`<p><b>${esc(T_.partWrite)} · ${esc(T_.durW)}</b></p><ul class="focus"><li>${esc(T_.wT1)}</li><li>${esc(T_.wT2)}</li></ul><p><b>${esc(T_.partSpeak)}</b></p><ul class="focus"><li>${esc(T_.sT1)}</li><li>${esc(T_.sT2)}</li><li>${esc(T_.sT3)}</li></ul>`:''}
+      </details></section>
+    <section class="panel">${varPickHTML(T_.verPick)}<p class="note">${esc(T_.verHint)}</p></section>
     <section class="panel"><h2>${esc(T_.voices)}</h2>${voiceBoxHTML()}</section>
     <div class="row"><button class="btn primary" id="m-start" type="button">${esc(T_.mockStart)} · ${esc(T_.variant)} ${CURV}</button></div></div>`;
   wireBack(deleHub); wireVoiceBox(); wireVar(deleMock);
-  view.querySelectorAll('input[name=mkind]').forEach(i => i.onchange = () => { S.set.mockFull = i.value === 'full'; save(); });
+  view.querySelectorAll('input[name=mkind]').forEach(i => i.onchange = () => { S.set.mockFull = i.value === 'full'; save(); deleMock(); });
   $('#m-start').onclick = () => { DM = {ans:{}, v:CURV, part:'r', full: S.set.mockFull !== false, end: Date.now() + 60*60000}; go(() => mockRead(1)); };
 }
 function mockTimer(onUp){
   stopTimer();
-  const tick = () => { const l = DM.end - Date.now(); setMeta('⏱ ' + fmt(l)); warnCheck(DM.end, DM); if (l <= 0){ stopTimer(); onUp(); } };
+  const tick = () => { const l = DM.end - Date.now(); setTimer(l); warnCheck(DM.end, DM); if (l <= 0){ stopTimer(); onUp(); } };
   tick(); timer = setInterval(tick, 1000);
 }
 function toListening(){ TTS.stop(); DM.part = 'a'; DM.warned = false; DM.end = Date.now() + 40*60000; go(() => mockAud(0)); }
 function mockRead(n){
   current = () => mockRead(n); CURV = DM.v || 1;
   const T_ = t(), list = RT(n);
-  view.innerHTML = `<div class="stack"><div class="row"><span class="eyebrow">${esc(T_.partRead)}</span><span class="sp"></span><span class="chip">${n}/4</span></div><h1>${esc(taskTitle('r',n))}</h1>
+  const total = list.reduce((s,R)=>s+R.qs.length,0); let qi = 0;
+  view.innerHTML = `<div class="stack mock"><span class="eyebrow">${esc(T_.readTaskOf(n))}</span><h2 class="task-t">${esc(loc(TASKN.r[n]))}</h2>
     ${list.map(R=>`<div class="group">${docHTML(R)}${R.qs.map((_,k)=>`<section class="panel qcard" id="q-${R.id}-${k}"></section>`).join('')}</div>`).join('')}
-    <div class="row"><span class="sp"></span><button class="btn primary" id="m-next" type="button">${esc(n<4?T_.nextTask:T_.toAud)}</button></div></div>`;
+    <div class="row">${n>1?`<button class="btn" id="m-prev" type="button">${esc(T_.prevTask)}</button>`:''}<span class="sp"></span><button class="btn primary" id="m-next" type="button">${esc(n<4?T_.nextTask:T_.toAud)}</button></div></div>`;
   EXAM_ON = true; saveCur({t:'dele', DM, at:{p:'r', n}});
-  list.forEach(R => R.qs.forEach((_,k) => { const key = `r:${R.id}:${k}`; readQ($(`#q-${R.id}-${k}`), R, k, {exam:true, chosen: DM.ans[key], onAnswer: j => DM.ans[key] = j}); }));
+  list.forEach(R => R.qs.forEach((_,k) => { const key = `r:${R.id}:${k}`; readQ($(`#q-${R.id}-${k}`), R, k, {exam:true, chosen: DM.ans[key], label: T_.qOf(++qi, total), toText: R.task !== 2, onAnswer: j => { DM.ans[key] = j; save(); }}); }));
+  wireToText();
+  const pv = $('#m-prev'); if (pv) pv.onclick = () => go(() => mockRead(n-1));
   $('#m-next').onclick = () => n < 4 ? go(() => mockRead(n+1)) : toListening();
   mockTimer(toListening);
 }
@@ -244,13 +253,14 @@ function mockAud(i){
   current = () => mockAud(i); CURV = DM.v || 1;
   const T_ = t(), steps = AUD_STEPS(), st = steps[i];
   const task = st.it ? st.it.task : st.G.task;
-  view.innerHTML = `<div class="stack"><div class="row"><span class="eyebrow">${esc(T_.partAud)}</span><span class="sp"></span><span class="chip">${esc(taskTitle('a',task))}</span></div>
+  const inTask = st.it ? steps.slice(0, i+1).filter(x => x.it && x.it.task === task).length : 0;
+  view.innerHTML = `<div class="stack mock"><span class="eyebrow">${esc(T_.audTaskOf(task))}${st.it?' · '+esc(T_.recOf(inTask, AT(task).length)):''}</span><h2 class="task-t">${esc(loc(TASKN.a[task]))}</h2>
     <section class="panel qcard" id="ma"></section>
     <div class="row"><span class="sp"></span><button class="btn primary" id="m-next" type="button">${esc(i+1<steps.length?T_.next:(DM.full?T_.toWrite:T_.finishMock))}</button></div></div>`;
   EXAM_ON = true; saveCur({t:'dele', DM, at:{p:'a', i}});
-  if (st.it) audItem($('#ma'), st.it, {exam:true, feedback:false, chosen: DM.ans['a:'+st.it.id], onAnswer: (ok,k) => DM.ans['a:'+st.it.id] = k});
+  if (st.it) audItem($('#ma'), st.it, {exam:true, feedback:false, chosen: DM.ans['a:'+st.it.id], onAnswer: (ok,k) => { DM.ans['a:'+st.it.id] = k; save(); }});
   else { const ch = {}; st.G.qs.forEach((_,k) => { const v = DM.ans[`a:${st.G.id}:${k}`]; if (v !== undefined) ch[k] = v; });
-    audGroup($('#ma'), st.G, {exam:true, feedback:false, chosen: ch, onAnswer: (k, v) => DM.ans[`a:${st.G.id}:${k}`] = v}); }
+    audGroup($('#ma'), st.G, {exam:true, feedback:false, chosen: ch, onAnswer: (k, v) => { DM.ans[`a:${st.G.id}:${k}`] = v; save(); }}); }
   $('#m-next').onclick = () => { TTS.stop(); i+1 < steps.length ? go(() => mockAud(i+1)) : mockFinish(); };
   mockTimer(mockFinish);
 }

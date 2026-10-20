@@ -106,7 +106,7 @@ function spTimer(btn, out, secs){
   btn.onclick = () => {
     if (SPK_T){ clearInterval(SPK_T.id); const same = SPK_T.btn === btn; SPK_T.btn.textContent = t().timerStart; SPK_T = null; if (same) return; }
     let left = secs; out.textContent = fmt(left*1000); btn.textContent = t().timerStop;
-    const id = setInterval(() => { left--; out.textContent = fmt(left*1000); if (left <= 0){ clearInterval(id); btn.textContent = t().timerStart; SPK_T = null; toast('⏱ ' + fmt(0)); } }, 1000);
+    const id = setInterval(() => { left--; out.textContent = fmt(left*1000); if (left <= 0){ clearInterval(id); btn.textContent = t().timerStart; SPK_T = null; toast(t().timerEnd); } }, 1000);
     SPK_T = {id, btn};
   };
 }

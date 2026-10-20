@@ -42,8 +42,12 @@ let PACKS_READY = false;
 const PACKS = Promise.all(['__PACK_CCSE__', '__PACK_DELE__'].map(src => new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); })))
   .then(() => { PACKS_READY = true; if (current === home) home(); });
 let timer = null, current = home;
-function setMeta(x){ $('#bar-meta').textContent = x; }
+function setMeta(x){ const m = $('#bar-meta'); m.textContent = x; m.removeAttribute('aria-label'); }
+const CLOCK = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 3h6"/></svg>';
+function setTimer(ms){ const m = $('#bar-meta'); m.innerHTML = `${CLOCK}<span>${fmt(ms)}</span>`; m.setAttribute('aria-label', t().timeLeft(fmt(ms))); }
 function stopTimer(){ if (timer){ clearInterval(timer); timer = null; } }
+// keep answers if the tab is closed or backgrounded mid-exam
+addEventListener('pagehide', () => save()); document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
 function go(fn){
   if (!PACKS_READY){ view.innerHTML = `<div class="stack" aria-busy="true"><p class="note">${esc(t().loading)}</p></div>`; PACKS.then(() => go(fn), () => { view.innerHTML = `<div class="stack"><p class="note">${esc(t().loadFail)}</p></div>`; }); return; }
   if (!S.set.langChosen && fn !== home){ S.set.langChosen = true; save(); }
@@ -166,7 +170,7 @@ function examView(){
   stopTimer(); current = examView;
   const T_ = t();
   EXAM_ON = true; saveCur({t:'ccse', E});
-  const tick = () => { const left = E.end-Date.now(); setMeta('⏱ '+fmt(left)); warnCheck(E.end, E); if (left<=0) examFinish(); };
+  const tick = () => { const left = E.end-Date.now(); setTimer(left); warnCheck(E.end, E); if (left<=0) examFinish(); };
   tick(); timer = setInterval(tick, 1000);
   const q = byId[E.qs[E.i]], answered = E.ans.filter(a=>a!==null).length, TT = trHTML(q, true);
   view.innerHTML = `<div class="stack">

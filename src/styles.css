@@ -310,3 +310,11 @@ h2.sec{font-size:18px;font-family:var(--f-display);font-weight:600;color:var(--i
 footer{gap:8px}
 @media (prefers-reduced-motion:reduce){.bigcard:hover .bc-go{transform:none}}
 .langrow .chip{font-family:var(--f-body);font-size:14px;padding:5px 11px}
+/* mock exam refinements */
+.summary{font-family:var(--f-mono);font-size:15px;letter-spacing:.02em;color:var(--accent);margin:0}
+.stack.mock{gap:18px}
+.stack.mock .task-t,.task-t{font-size:20px;margin-top:-10px}
+.bar .meta{display:inline-flex;align-items:center;gap:6px}
+.bar .meta svg{flex:none}
+.totext{font-size:13px}
+.backq{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;box-shadow:0 4px 16px rgba(0,0,0,.25);white-space:nowrap}
