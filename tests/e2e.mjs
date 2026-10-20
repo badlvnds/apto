@@ -4,7 +4,7 @@ import { serve } from '../scripts/serve.mjs';
 
 const server = await serve(4174);
 const browser = await chromium.launch({ args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'] });
-const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, permissions: ['microphone'], acceptDownloads: true });
+const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, permissions: ['microphone', 'clipboard-read', 'clipboard-write'], acceptDownloads: true });
 // Fake Spanish voices so listening tasks can be exercised headlessly.
 await ctx.addInitScript(() => {
   const voices = [{name:'Mónica',lang:'es-ES'},{name:'Jorge',lang:'es-ES'}];
@@ -110,6 +110,29 @@ await step('answer states have text labels', async () => {
   const label = await page.$eval('#try .opt.right .ot', el => getComputedStyle(el, '::after').content);
   if (!label || label === 'none') throw new Error('no label on correct answer');
 });
+await step('vocabulary cards: learn, then due tomorrow', async () => {
+  await page.click('#home-btn'); await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-voc');
+  await page.click('[data-v="casa"]');
+  for (let i = 0; i < 40; i++) { if (await page.$('#v-back:not([hidden]), #v-show') === null) break; const show = await page.$('#v-show'); if (!show) break; await show.click(); await page.click(i % 3 ? '#v-know' : '#v-again'); }
+  await page.waitForSelector('#v-card h2');
+  const n = await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('ccse2026.v1')).voc || {}).length); if (n !== 10) throw new Error('cards stored: ' + n);
+});
+await step('grammar has 12 topics', async () => {
+  await page.click('#home-btn'); await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-gram');
+  if ((await page.$$('[data-g]')).length !== 12) throw new Error('topics');
+});
+await step('writing hints', async () => {
+  await page.click('#home-btn'); await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-write'); await page.click('[data-w="W1a"]');
+  await page.fill('#w-txt', 'Gracias por la invitacion. Voy a ir con mi hermano tambien. el sabado no trabajo y puedo llevar un postre. ¿Que hora es la comida? Como no carne');
+  await page.waitForFunction(() => /también/.test(document.querySelector('#w-hints').textContent));
+  const h = await page.textContent('#w-hints'); if (!/sábado/.test(h)) throw new Error(h);
+});
+await step('report opens a prefilled email', async () => {
+  await page.click('#home-btn'); await page.click('#go-ccse'); await page.click('#try .opt'); await page.click('#try .rep-open');
+  await page.fill('#try .rep-txt', 'typo'); const href = await page.getAttribute('#try .rep-mail', 'href');
+  if (!href.startsWith('mailto:apto.feedback@icloud.com') || !href.includes('typo')) throw new Error(href);
+});
+await step('share button', async () => { await page.click('#share-btn'); await page.waitForSelector('#toast.on'); });
 await step('hub buttons share one width', async () => {
   for (const vw of [360, 430, 820]) {
     await page.setViewportSize({ width: vw, height: 900 });

@@ -10,7 +10,8 @@ Not affiliated with the Instituto Cervantes.
   a short “why” explanation for every question, study by tarea, mistakes review, spaced repetition (1/3/7/16/35 days),
   25-question / 45-minute mock exam, progress report.
 - **DELE A2** — four full reading + listening variants in the exam format (4 + 4 tasks, 25 + 25 items),
-  listening read by the device’s Spanish voices (with install help and a read-the-text fallback when there are none), grammar diagnostic with rule cards, writing practice, speaking practice with an in-browser voice recorder,
+  vocabulary flashcards (8 topics, 120 words, spaced repetition), 12 grammar topics,
+  listening read by the device’s Spanish voices (with install help and a read-the-text fallback when there are none), grammar diagnostic with rule cards, writing practice with hints (accents, ¿¡, connectors, repetition), speaking practice with an in-browser voice recorder,
   full mock exam with 60 + 40 minute timers, mistakes queue, progress by task.
 - Study plan to the exam date, exam guide with official links, offline support (PWA), progress backup as a file or a text code,
   about & privacy page. No cookies, no analytics, no third-party requests (fonts are self-hosted).

@@ -275,3 +275,8 @@ label.btn{display:inline-block}
 /* progress informs, not judges: low scores are "attention", not red */
 .trow .track .s{background:var(--accent)} .trow .track .b{background:var(--ochre)}
 .chartwrap .bno{fill:var(--line-strong)}
+.vword{font-family:var(--f-display);font-size:34px;font-weight:600;line-height:1.2;margin:8px 0 4px;text-wrap:balance}
+.vback{display:flex;flex-direction:column;gap:4px}
+.vtr{font-size:22px;color:var(--ink2)}
+.vcard{min-height:280px;justify-content:space-between}
+a.btn{text-decoration:none;display:inline-flex;align-items:center}

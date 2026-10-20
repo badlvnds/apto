@@ -60,7 +60,7 @@ function grammar(){
   view.querySelectorAll('[data-g]').forEach(b => b.onclick = () => go(() => gramTopic(b.dataset.g)));
 }
 function gramDiag(){
-  const items = shuffle(GRAM.flatMap(g => g.diag.map(it => ({it, g:g.id}))));
+  const items = shuffle(GRAM.map(g => ({it: g.diag[Math.floor(Math.random()*g.diag.length)], g:g.id})));
   const res = {}; let i = 0;
   const T_ = t();
   view.innerHTML = `<div class="stack"><div class="row"><span class="eyebrow" id="g-count"></span></div><section class="panel qcard" id="g-card"></section>

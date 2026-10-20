@@ -115,6 +115,7 @@ function deleStudy(){
       <button class="btn" id="s-read" type="button">${esc(T_.kRead)}<small>${esc(T_.readCardSub(READ.length))} · ${esc(pc(r))}</small></button>
       <button class="btn" id="s-aud" type="button">${esc(T_.kAud)}<small>${esc(T_.audCardSub(AUD.length))} · ${esc(pc(a))}</small></button>
       <button class="btn" id="s-gram" type="button">${esc(T_.kGram)}<small>${esc(T_.gramCardSub(GRAM.length))} · ${esc(pc(g))}</small></button>
+      <button class="btn" id="s-voc" type="button">${esc(T_.kVoc)}<small>${esc(T_.vocSub(VOC_TOTAL))}${vocDueKeys().length?' · '+esc(T_.vocDue(vocDueKeys().length)):''}</small></button>
       <button class="btn" id="s-write" type="button">${esc(T_.kWrite)}<small>${esc(T_.writeSub)}</small></button>
       <button class="btn" id="s-speak" type="button">${esc(T_.kSpeak)}<small>${esc(T_.speakSub)}</small></button>
     </div></div>`;
@@ -122,6 +123,7 @@ function deleStudy(){
   $('#s-read').onclick = () => go(reading);
   $('#s-aud').onclick = () => go(listening);
   $('#s-gram').onclick = () => go(grammar);
+  $('#s-voc').onclick = () => go(vocab);
   $('#s-write').onclick = () => go(writing);
   $('#s-speak').onclick = () => go(speaking);
 }

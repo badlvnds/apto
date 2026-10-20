@@ -130,10 +130,11 @@ function jumpHTML(){
   if (due) items.push(['due', T_.jumpDue(due)]);
   if (cw) items.push(['cwrong', T_.jumpCWrong(cw)]);
   if (dw) items.push(['dwrong', T_.jumpDWrong(dw)]);
+  const vd = vocDueKeys().length; if (vd) items.push(['voc', T_.kVoc + ' · ' + T_.vocDue(vd)]);
   items.push(['cmock', T_.jumpCMock], ['dmock', T_.jumpDMock]);
   return `<nav class="jump" aria-label="${esc(T_.jumpT)}"><span class="eyebrow">${esc(T_.jumpT)}</span><ul>${items.map(([k,l])=>`<li><button class="jumpbtn" type="button" data-j="${k}">${esc(l)}<span aria-hidden="true">→</span></button></li>`).join('')}</ul></nav>`;
 }
 function wireJump(){
-  const act = {due:() => go(() => study({mode:'due'})), cwrong:() => go(() => study({mode:'wrong'})), dwrong:() => go(deleMistakes), cmock:() => go(examStart), dmock:() => go(deleMock)};
+  const act = {due:() => go(() => study({mode:'due'})), cwrong:() => go(() => study({mode:'wrong'})), dwrong:() => go(deleMistakes), cmock:() => go(examStart), dmock:() => go(deleMock), voc:() => go(() => vocRun(vocDueKeys(), vocab))};
   view.querySelectorAll('[data-j]').forEach(b => b.onclick = act[b.dataset.j]);
 }

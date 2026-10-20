@@ -89,12 +89,13 @@ function writeTask(id){
     ${w.data?`<article class="panel doc" lang="es"><span class="eyebrow">${esc(T_.dataT)}</span><ul class="focus">${w.data.map(d=>`<li>${esc(d)}</li>`).join('')}</ul></article>`:''}
     <section class="panel"><p lang="es"><b>${esc(w.instr)}</b></p>${lang!=='es'?`<p class="tr">${esc(w.instrTr[lang])}</p>`:''}</section>
     <section class="panel"><label class="vrow"><span>${esc(T_.yourText)}</span><textarea id="w-txt" rows="9" lang="es" spellcheck="true">${esc(S.wr[id]||'')}</textarea></label><p class="note" id="w-count" role="status"></p></section>
+    ${hintsHTML()}
     <section class="panel"><h2>${esc(T_.checkSelf)}</h2><div class="radios">${(WCHECK[lang]||WCHECK.es).map((c,i)=>`<label class="radio"><input type="checkbox" id="wc${i}"> ${esc(c)}</label>`).join('')}</div></section>
     <section class="panel"><h2>${esc(T_.phrasesT)}</h2><ul class="focus">${WPHRASES.map(p=>`<li><span lang="es">${esc(p[0])}</span>${lang!=='es'?` — <span class="tr" style="display:inline">${esc(p[LIX[lang]])}</span>`:''}</li>`).join('')}</ul></section>
     <details class="panel script"><summary>${esc(T_.showModel)}</summary><p lang="es" style="white-space:pre-line">${esc(w.model)}</p><p class="note">${esc(T_.words(wc(w.model), w.words[0], w.words[1]))}</p></details></div>`;
   wireBack(writing);
   const ta = $('#w-txt'), cnt = $('#w-count');
-  const upd = () => { const n = wc(ta.value); cnt.textContent = T_.words(n, w.words[0], w.words[1]); cnt.className = 'note ' + (n >= w.words[0] && n <= w.words[1] ? 'okc' : n > w.words[1] ? 'badc' : ''); };
+  const upd = () => { const n = wc(ta.value); cnt.textContent = T_.words(n, w.words[0], w.words[1]); cnt.className = 'note ' + (n >= w.words[0] && n <= w.words[1] ? 'okc' : n > w.words[1] ? 'badc' : ''); clearTimeout(cnt._h); cnt._h = setTimeout(() => drawHints(ta.value, w), 250); };
   ta.oninput = () => { S.wr[id] = ta.value; upd(); clearTimeout(ta._t); ta._t = setTimeout(save, 400); };
   upd();
 }

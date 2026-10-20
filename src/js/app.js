@@ -45,8 +45,8 @@ function chrome(){
   document.documentElement.lang = S.set.lang; applyTheme();
   $('#lang').value = S.set.lang;
   $('#set-btn').setAttribute('aria-label', t().settings);
-  $('#foot').innerHTML = `<span>${esc(t().foot1)}</span><span>${esc(t().foot2)} <a href="${MANUAL_URL}" target="_blank" rel="noopener">${esc(t().manualName)}</a> ${esc(t().foot2b)}</span><span>${esc(t().foot3)} <button class="linkbtn" id="about-btn" type="button">${esc(t().aboutBtn)}</button></span>`;
-  $('#about-btn').onclick = () => guardLeave(about);
+  $('#foot').innerHTML = `<span>${esc(t().foot1)}</span><span>${esc(t().foot2)} <a href="${MANUAL_URL}" target="_blank" rel="noopener">${esc(t().manualName)}</a> ${esc(t().foot2b)}</span><span>${esc(t().foot3)} <button class="linkbtn" id="about-btn" type="button">${esc(t().aboutBtn)}</button> · <button class="linkbtn" id="share-btn" type="button">${esc(t().share)}</button></span>`;
+  $('#about-btn').onclick = () => guardLeave(about); $('#share-btn').onclick = shareApto;
 }
 
 // translation block under a question

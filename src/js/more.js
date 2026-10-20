@@ -58,7 +58,7 @@ function about(){
 }
 
 // ---------- progress file ----------
-const BACKUP_KEYS = ['q','exams','aud','audRuns','gram','read','dq','dmocks','daily','wr'];
+const BACKUP_KEYS = ['q','exams','aud','audRuns','gram','read','dq','dmocks','daily','wr','voc'];
 function backupData(){ const d = {}; BACKUP_KEYS.forEach(k => d[k] = S[k]); d.set = {dateC:S.set.dateC||'', dateD:S.set.dateD||''}; return d; }
 function applyBackup(d){
   if (!d || typeof d.q !== 'object' || !Array.isArray(d.exams)) throw new Error('bad');
