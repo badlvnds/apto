@@ -97,7 +97,7 @@ function renderQuestion(container, q, {shuffleOpts=true, onAnswer, after}){
     record(q.id, correct);
     const fb = container.querySelector('.fb');
     const sq = S.q[q.id], back = correct && sq && sq.box >= 1 ? SRS_DAYS[sq.box] : 0;
-    fb.innerHTML = `<p class="feedback ${correct?'ok':'no'}">${correct?esc(t().correct):esc(t().incorrect)+' <span lang="es">'+esc(q.opts[right])+'</span>'}</p>${back?`<p class="note srs">${esc(t().nextDue(back))}</p>`:(!correct?`<p class="note srs">${esc(t().backLater)}</p>`:'')}${typeof explHTML==='function'?explHTML(q):''}${reportHTML()}`;
+    fb.innerHTML = `<p class="feedback ${correct?'ok':'no'}">${correct?esc(t().correct):esc(t().incorrect)+' <span lang="es">'+esc(q.opts[right])+'</span>'}</p>${typeof explHTML==='function'?explHTML(q):''}${back?`<p class="note srs">${esc(t().nextDue(back))}</p>`:(!correct?`<p class="note srs">${esc(t().backLater)}</p>`:'')}${reportHTML()}`;
     wireReport(fb, 'CCSE ' + q.id, q.q);
     onAnswer && onAnswer(correct);
     after && after(fb);

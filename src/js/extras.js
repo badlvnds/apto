@@ -42,18 +42,36 @@ let EXAM_ON = false;
 function saveCur(obj){ S.cur = obj; save(); }
 function clearCur(){ S.cur = null; save(); }
 function warnCheck(end, holder){ const l = end - Date.now(); if (l < 5*60000 && l > 0 && !holder.warned){ holder.warned = true; toast(t().warn5); const m = $('#bar-meta'); if (m) m.classList.add('warn'); } }
+// compact "exam in progress" card on home: continue is the main action, ending early asks first
+function curInfo(){
+  const c = S.cur; if (!c) return null;
+  const isC = c.t === 'ccse', end = isC ? c.E.end : c.DM.end;
+  let open = 0, total = 0;
+  if (isC){ total = c.E.ans.length; open = c.E.ans.filter(a => a === null).length; }
+  else if (DELE_READY){ const ids = []; CURV = c.DM.v || 1;
+    [1,2,3,4].forEach(n => RT(n).forEach(R => R.qs.forEach((_,k) => ids.push(`r:${R.id}:${k}`))));
+    [1,2].forEach(n => AT(n).forEach(it => ids.push('a:'+it.id))); [3,4].forEach(n => AG(n).qs.forEach((_,k) => ids.push(`a:${AG(n).id}:${k}`)));
+    total = ids.length; open = ids.filter(k => c.DM.ans[k] === undefined).length; syncV(); }
+  return {c, isC, end, left: end - Date.now(), open, total};
+}
 function resumeHTML(){
-  const c = S.cur; if (!c) return '';
-  const T_ = t(), end = c.t === 'ccse' ? c.E.end : c.DM.end, left = end - Date.now();
-  return `<section class="panel resume"><span class="eyebrow">${esc(c.t === 'ccse' ? 'CCSE' : 'DELE A2')}</span><h2>${esc(T_.resumeT)}</h2><p class="note">${left>0?esc(T_.resumeLeft(fmt(left))):''}</p>
-    <div class="row"><button class="btn primary" id="cur-go" type="button">${esc(left>0?T_.resumeGo:T_.resumeEnd)}</button>${left>0?`<button class="btn" id="cur-end" type="button">${esc(T_.resumeEnd)}</button>`:''}</div></section>`;
+  const x = curInfo(); if (!x) return '';
+  const T_ = t(), up = x.left <= 0;
+  return `<section class="panel resume" id="resume"><div class="row"><span class="eyebrow">${esc(x.isC ? 'CCSE' : 'DELE A2')} · ${esc(T_.inProgress)}</span><span class="sp"></span><span class="note mono rs-left">${up ? esc(T_.timeUpShort) : CLOCK + ' ' + esc(T_.leftShort(fmt(x.left)))}</span></div>
+    <h2 class="sec">${esc(up ? T_.resumeUpT : T_.resumeWaitT)}</h2>
+    <div class="row"><button class="btn primary" id="cur-go" type="button">${esc(up ? T_.seeResult : T_.continueExam)} →</button>${up ? '' : `<button class="linkbtn" id="cur-end" type="button">${esc(T_.endEarly)}</button>`}</div><div id="cur-confirm"></div></section>`;
 }
 function wireResume(){
-  const g = $('#cur-go'), e = $('#cur-end'), c = S.cur; if (!c) return;
+  const g = $('#cur-go'), e = $('#cur-end'), x = curInfo(); if (!x) return;
+  const c = x.c;
   const finish = () => { if (c.t === 'ccse'){ E = c.E; E.done = false; examFinish(); } else { DM = c.DM; DM.done = false; DM.skipWS = true; mockFinish(); } };
   if (g) g.onclick = () => { const left = (c.t === 'ccse' ? c.E.end : c.DM.end) - Date.now(); if (left <= 0) return finish();
     if (c.t === 'ccse'){ E = c.E; go(examView); } else { DM = c.DM; const at = c.at || {p:'r', n:1}; go(() => at.p === 'r' ? mockRead(at.n) : at.p === 'w' ? mockWrite() : at.p === 's' ? mockSpeak() : mockAud(at.i)); } };
-  if (e) e.onclick = finish;
+  if (e) e.onclick = () => { const T_ = t(), y = curInfo();
+    $('#cur-confirm').innerHTML = `<div class="confirm"><span>${esc(y.open ? T_.endEarlyQ(y.open, y.total) : T_.endEarlyQ0)}</span><span class="sp"></span><button class="btn primary" id="ce-no" type="button">${esc(T_.keepGoing)}</button><button class="btn" id="ce-yes" type="button">${esc(T_.endEarlyYes)}</button></div>`;
+    $('#ce-no').onclick = () => $('#cur-confirm').innerHTML = ''; $('#ce-yes').onclick = finish; };
+  // the time left on the card keeps counting while home is open
+  const el = view.querySelector('.rs-left'); if (el && x.left > 0){ stopTimer(); timer = setInterval(() => { const l = x.end - Date.now(); if (l <= 0){ stopTimer(); if (current === home) home(); return; } el.innerHTML = CLOCK + ' ' + esc(t().leftShort(fmt(l))); }, 1000); }
 }
 function guardLeave(target){
   if (!EXAM_ON) return go(target);

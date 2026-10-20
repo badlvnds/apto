@@ -318,3 +318,7 @@ footer{gap:8px}
 .bar .meta svg{flex:none}
 .totext{font-size:13px}
 .backq{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;box-shadow:0 4px 16px rgba(0,0,0,.25);white-space:nowrap}
+.resume{gap:10px;padding:16px 18px}
+.resume .rs-left{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink2)}
+.resume .linkbtn{font-size:15px;color:var(--ink2);padding:10px 4px;min-height:44px}
+.resume .confirm{margin-top:4px}

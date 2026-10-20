@@ -163,7 +163,17 @@ await step('DELE mock: jump to text and back, previous task, answers survive a r
   await page.reload(); await page.waitForSelector('#cur-go'); await page.click('#cur-go');
   if (await page.locator('.qcard').nth(2).locator('.opt.sel').count() !== 1) throw new Error('answer lost after reload');
   await page.click('#home-btn'); const l2 = await page.$('.confirm.leave [data-yes]'); if (l2) await l2.click();
-  await page.click('#cur-end'); await page.waitForSelector('#mr-hub');
+  const endBefore = await page.evaluate(() => S.cur.DM.end);
+  await page.click('#home-btn'); const l3 = await page.$('.confirm.leave [data-yes]'); if (l3) await l3.click();
+  await page.reload(); await page.waitForSelector('#cur-go');
+  if (await page.evaluate(() => S.cur.DM.end) !== endBefore) throw new Error('timer was reset by a reload');
+  await page.click('#cur-end'); await page.waitForSelector('#ce-yes');
+  if (!/\d/.test(await page.textContent('#cur-confirm'))) throw new Error('end-early warning should count unanswered questions');
+  await page.click('#ce-no'); if (await page.$('#ce-yes')) throw new Error('cancel');
+  // time runs out while the tab is closed: the card offers the result, not "continue"
+  await page.evaluate(() => { S.cur.DM.end = Date.now() - 1000; save(); }); await page.reload();
+  await page.waitForSelector('#cur-go'); if (await page.$('#cur-end')) throw new Error('end-early shown after time ran out');
+  await page.click('#cur-go'); await page.waitForSelector('#mr-hub');
 });
 await step('hub buttons share one width', async () => {
   for (const vw of [360, 430, 820]) {
