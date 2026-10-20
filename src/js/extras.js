@@ -1,5 +1,5 @@
 // ---------- extras: exam resume, 5-min warning, leave guard, onboarding, error reports, study plan, guide ----------
-const REPORT_CONTACT = ''; // where reports should go in the public version (email or form link)
+const REPORT_CONTACT = 'apto.feedback@icloud.com'; // where reports should go in the public version (email or form link)
 Object.assign(I18N.es,{resumeT:'Tienes un examen sin terminar',resumeLeft:x=>`Quedan ${x}`,resumeGo:'Continuar',resumeEnd:'Terminar y ver el resultado',warn5:'Quedan 5 minutos.',
  leaveQ:'¿Salir del examen? Se guarda y puedes continuarlo desde el inicio. El tiempo sigue corriendo.',leaveYes:'Salir',leaveNo:'Seguir con el examen',
  welcome:'Elige el idioma de la aplicación. Las preguntas siempre están en español.',
