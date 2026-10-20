@@ -91,7 +91,7 @@ function wireReport(box, ref, text){
     const wrap = b.parentElement, T_ = t();
     wrap.innerHTML = `<textarea rows="2" class="rep-txt" aria-label="${esc(T_.reportPh)}" placeholder="${esc(T_.reportPh)}"></textarea><div class="row"><a class="btn primary rep-mail" href="#">${esc(T_.repMail)}</a><button type="button" class="btn rep-copy">${esc(T_.reportCopy)}</button><span class="note rep-msg" role="status"></span></div>`;
     const ta = wrap.querySelector('.rep-txt'); ta.focus();
-    const body = () => `Apto · ${ref}\n${text}\n${ta.value ? '— ' + ta.value : ''}`.trim();
+    const body = () => `Apto ${APP_VERSION} · ${ref}\n${text}\n${ta.value ? '— ' + ta.value : ''}`.trim();
     const mail = wrap.querySelector('.rep-mail'), setMail = () => mail.href = `mailto:${REPORT_CONTACT}?subject=${encodeURIComponent('Apto · ' + ref)}&body=${encodeURIComponent(body())}`;
     setMail(); ta.addEventListener('input', setMail);
     wrap.querySelector('.rep-copy').onclick = () => {

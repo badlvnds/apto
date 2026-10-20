@@ -1,5 +1,6 @@
 // ---------- about & privacy, progress file, voice help, spaced repetition, voice recorder ----------
 const REPO_URL = 'https://github.com/badlvnds/apto';
+const APP_VERSION = '__APP_VERSION__';
 const GH_PRIVACY = 'https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement';
 Object.assign(I18N.es,{aboutBtn:'Sobre Apto y privacidad',aboutT:'Sobre Apto y privacidad',
  aboutWhatT:'Qué es',aboutWhat:'Apto es un proyecto personal, gratuito y sin fines comerciales para preparar el CCSE y el DELE A2. No es una web oficial: no tiene relación con el Instituto Cervantes, el Ministerio de Justicia ni ningún centro de examen.',
@@ -53,6 +54,7 @@ function about(){
     <section class="panel"><h2>${esc(T_.aboutWhatT)}</h2><p>${esc(T_.aboutWhat)}</p></section>
     <section class="panel"><h2>${esc(T_.aboutSrcT)}</h2><ul class="focus"><li>${esc(T_.aboutSrc[0])} <a href="${MANUAL_URL}" target="_blank" rel="noopener">${esc(T_.manualName)}</a></li><li>${esc(T_.aboutSrc[1])} <a href="${DELE_A2_URL}" target="_blank" rel="noopener">examenes.cervantes.es</a></li><li>${esc(T_.aboutSrc[2])} ${mail}.</li></ul></section>
     <section class="panel"><h2>${esc(T_.aboutPrivT)}</h2><ul class="focus">${T_.aboutPriv.map(x=>`<li>${esc(x)}</li>`).join('')}<li>${esc(T_.aboutHost)} <a href="${GH_PRIVACY}" target="_blank" rel="noopener">${esc(T_.aboutHostLink)}</a>.</li></ul></section>
+    <section class="panel"><h2>${esc(T_.verT)}</h2><p><b>${esc(T_.verLine(APP_VERSION))}</b></p><p class="note">${esc(T_.newT)}</p><ul class="focus">${T_.newList.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
     <section class="panel"><h2>${esc(T_.aboutCodeT)}</h2><p>${esc(T_.aboutCode)} <a href="${REPO_URL}" target="_blank" rel="noopener">github.com/badlvnds/apto</a></p></section></div>`;
   wireBack(home);
 }
@@ -145,3 +147,7 @@ function wireRecorders(){
     };
   });
 }
+Object.assign(I18N.es,{verT:'Versión',verLine:v=>`Apto ${v} · octubre de 2026`,newT:'Qué hay en esta versión',newList:['CCSE: las 300 preguntas del manual de 2026 con traducción, explicaciones, repaso por días y simulacros de 45 minutos.','DELE A2: cuatro versiones de lectura y audición, examen de prueba completo con escritura y oral, 12 temas de gramática y 9 de vocabulario.','Todo en español, inglés, ruso y ucraniano; funciona sin conexión y tu progreso se queda en tu dispositivo.']});
+Object.assign(I18N.en,{verT:'Version',verLine:v=>`Apto ${v} · October 2026`,newT:'What’s in this version',newList:['CCSE: all 300 questions of the 2026 manual with translations, explanations, spaced review and 45-minute mock exams.','DELE A2: four reading and listening versions, a full mock exam with writing and speaking, 12 grammar topics and 9 vocabulary topics.','Everything in Spanish, English, Russian and Ukrainian; works offline and your progress stays on your device.']});
+Object.assign(I18N.ru,{verT:'Версия',verLine:v=>`Apto ${v} · октябрь 2026`,newT:'Что в этой версии',newList:['CCSE: все 300 вопросов мануала 2026 года с переводом, пояснениями, повторением по дням и пробными экзаменами на 45 минут.','DELE A2: четыре варианта чтения и аудирования, полный пробный экзамен с письмом и устной частью, 12 тем грамматики и 9 тем лексики.','Всё на испанском, английском, русском и украинском; работает без интернета, прогресс остаётся на вашем устройстве.']});
+Object.assign(I18N.uk,{verT:'Версія',verLine:v=>`Apto ${v} · жовтень 2026`,newT:'Що в цій версії',newList:['CCSE: усі 300 питань мануалу 2026 року з перекладом, поясненнями, повторенням за днями та пробними іспитами на 45 хвилин.','DELE A2: чотири варіанти читання й аудіювання, повний пробний іспит із письмом і усною частиною, 12 тем граматики та 9 тем лексики.','Усе іспанською, англійською, російською та українською; працює без інтернету, прогрес залишається на вашому пристрої.']});

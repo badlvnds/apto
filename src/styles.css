@@ -322,3 +322,5 @@ footer{gap:8px}
 .resume .rs-left{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink2)}
 .resume .linkbtn{font-size:15px;color:var(--ink2);padding:10px 4px;min-height:44px}
 .resume .confirm{margin-top:4px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+h1[tabindex="-1"]:focus{outline:none}

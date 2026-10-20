@@ -48,9 +48,13 @@ src/js/                 app code and DELE content (classic scripts sharing globa
 src/data/               CCSE questions, translations, explanations (JSON)
 public/                 manifest, icons, favicon.ico, link-preview image and fonts, copied as-is
 scripts/                build, validate, serve, icons
-tests/e2e.mjs           Playwright smoke test on a phone viewport
+tests/e2e.mjs           Playwright end-to-end checks on a phone viewport, incl. an axe-core accessibility audit
 .github/workflows/      test + deploy to GitHub Pages on every push to main
 ```
+
+## Content review pack
+
+`node scripts/review-pack.mjs apto-review.pdf` builds a printable PDF of all original Spanish content (DELE tasks with answers, grammar, vocabulary, writing and speaking models, CCSE explanations) for a teacher or native speaker to check.
 
 ## Icons and link preview
 

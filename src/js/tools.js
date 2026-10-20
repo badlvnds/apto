@@ -92,3 +92,13 @@ Object.assign(I18N.es,{loading:'Cargando…',loadFail:'No se ha podido cargar. C
 Object.assign(I18N.en,{loading:'Loading…',loadFail:'Couldn’t load. Check your connection and reload the page.'});
 Object.assign(I18N.ru,{loading:'Загрузка…',loadFail:'Не удалось загрузить. Проверьте подключение и обновите страницу.'});
 Object.assign(I18N.uk,{loading:'Завантаження…',loadFail:'Не вдалося завантажити. Перевірте з’єднання й оновіть сторінку.'});
+
+// ---------- screen readers: every view has one h1, focus moves to it, results are announced ----------
+let FB_WATCH = null;
+function afterNav(){
+  if (!FB_WATCH){ FB_WATCH = new MutationObserver(() => view.querySelectorAll('.fb:not([aria-live])').forEach(f => f.setAttribute('aria-live', 'polite'))); FB_WATCH.observe(view, {childList:true, subtree:true}); }
+  let h = view.querySelector('h1');
+  if (!h){ const src = view.querySelector('.eyebrow, h2'); h = document.createElement('h1'); h.className = 'sr-only'; h.textContent = src ? src.textContent.trim() : 'Apto'; view.prepend(h); }
+  document.title = (h.textContent.trim() ? h.textContent.trim() + ' · ' : '') + 'Apto';
+  h.setAttribute('tabindex', '-1'); try { h.focus({preventScroll:true}); } catch(e){}
+}

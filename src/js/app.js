@@ -51,7 +51,7 @@ addEventListener('pagehide', () => save()); document.addEventListener('visibilit
 function go(fn){
   if (!PACKS_READY){ view.innerHTML = `<div class="stack" aria-busy="true"><p class="note">${esc(t().loading)}</p></div>`; PACKS.then(() => go(fn), () => { view.innerHTML = `<div class="stack"><p class="note">${esc(t().loadFail)}</p></div>`; }); return; }
   if (!S.set.langChosen && fn !== home){ S.set.langChosen = true; save(); }
-  EXAM_ON = false; recStop(); if (typeof SPK_T !== 'undefined' && SPK_T){ clearInterval(SPK_T.id); SPK_T = null; } const mm = document.getElementById('bar-meta'); if (mm) mm.classList.remove('warn'); stopTimer(); try { TTS.stop(); } catch(e){} current = fn; setMeta(''); fn(); window.scrollTo(0,0); }
+  EXAM_ON = false; recStop(); if (typeof SPK_T !== 'undefined' && SPK_T){ clearInterval(SPK_T.id); SPK_T = null; } const mm = document.getElementById('bar-meta'); if (mm) mm.classList.remove('warn'); stopTimer(); try { TTS.stop(); } catch(e){} current = fn; setMeta(''); fn(); window.scrollTo(0,0); afterNav(); }
 function chrome(){
   document.documentElement.lang = S.set.lang; applyTheme();
   $('#lang').value = S.set.lang;

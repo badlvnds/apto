@@ -1,6 +1,10 @@
 // End-to-end smoke test on the built site (phone viewport). Run: npm test
 import { chromium } from 'playwright';
 import { serve } from '../scripts/serve.mjs';
+import { createRequire } from 'node:module';
+import { readFileSync } from 'node:fs';
+const require = createRequire(import.meta.url);
+let AXE = null; for (const p of ['axe-core/axe.min.js', '/tmp/claude-0/axe/node_modules/axe-core/axe.min.js']) { try { AXE = readFileSync(p.startsWith('/') ? p : require.resolve(p), 'utf8'); break; } catch {} }
 
 const server = await serve(4174);
 const browser = await chromium.launch({ args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'] });
@@ -174,6 +178,17 @@ await step('DELE mock: jump to text and back, previous task, answers survive a r
   await page.evaluate(() => { S.cur.DM.end = Date.now() - 1000; save(); }); await page.reload();
   await page.waitForSelector('#cur-go'); if (await page.$('#cur-end')) throw new Error('end-early shown after time ran out');
   await page.click('#cur-go'); await page.waitForSelector('#mr-hub');
+});
+await step('accessibility: no WCAG A/AA violations on key screens (axe-core)', async () => {
+  if (!AXE) { console.log('  (axe-core not installed, skipped)'); return; }
+  const bad = [];
+  const audit = async name => { await page.waitForTimeout(350); await page.addScriptTag({content: AXE}); const v = await page.evaluate(async () => (await axe.run(document, {runOnly:['wcag2a','wcag2aa','wcag21aa']})).violations.map(x => x.id + ' (' + x.nodes.length + ')')); if (v.length) bad.push(name + ': ' + v.join(', ')); };
+  await page.click('#home-btn'); const l = await page.$('.confirm.leave [data-yes]'); if (l) await l.click();
+  await audit('home'); await page.click('#go-ccse'); await page.click('#try .opt'); await audit('ccse feedback');
+  await page.click('#go-exam'); await audit('ccse mock'); await page.click('#home-btn'); await page.click('.confirm.leave [data-yes]');
+  await page.click('#go-dele'); await page.click('#d-mock'); await audit('dele overview'); await page.click('#m-start'); await audit('dele reading');
+  await page.click('#home-btn'); await page.click('.confirm.leave [data-yes]'); await page.click('#set-btn'); await audit('settings');
+  if (bad.length) throw new Error(bad.join(' | '));
 });
 await step('hub buttons share one width', async () => {
   for (const vw of [360, 430, 820]) {
