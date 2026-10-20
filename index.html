@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Apto · CCSE y DELE A2</title>
+<meta name="description" content="Prepara gratis los exámenes de nacionalidad española: CCSE (300 preguntas oficiales) y DELE A2. Interfaz en español, inglés, ruso y ucraniano.">
+<meta name="theme-color" content="#7a1f2b" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141218" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Apto">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="__CSS__">
+</head>
+<body>
+<div class="wrap">
+<header class="bar">
+  <button class="brand" id="home-btn" type="button" aria-label="Apto"><span class="seal">A</span>Apto</button>
+  <span class="sp"></span>
+  <span class="meta" id="bar-meta"></span>
+  <select id="lang" aria-label="Language"></select>
+  <button class="iconbtn" id="set-btn" type="button" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="17" x2="20" y2="17"/><circle cx="9" cy="7" r="2.2" fill="var(--surface)"/><circle cx="15" cy="17" r="2.2" fill="var(--surface)"/></svg></button>
+</header>
+<main id="view" aria-live="polite"></main>
+<footer id="foot"></footer>
+</div>
+<script src="__JS__" defer></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
+</body>
+</html>
