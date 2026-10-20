@@ -42,8 +42,9 @@ h2{font-size:21px}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn:focus-visible,.opt:focus-visible,.chip:focus-visible,input:focus-visible{outline:3px solid var(--ochre);outline-offset:2px}
 .btn:disabled{opacity:.45;cursor:default}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.actions .btn.primary{grid-column:1/-1;padding:16px}
+.actions{display:grid;grid-template-columns:1fr;gap:10px}
+.actions .btn{width:100%}
+.actions .btn.primary{padding:16px}
 .btn small{display:block;font-weight:400;color:inherit;opacity:.8;font-size:14px}
 .panel p{margin:0}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px}
@@ -105,7 +106,6 @@ footer a{color:var(--accent)}
 .confirm{background:var(--ochre-soft);border:1px solid var(--ochre);border-radius:var(--r);padding:12px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .stack{display:flex;flex-direction:column;gap:20px;padding-top:20px}
 .intro{display:flex;flex-direction:column;gap:8px}
-.actions .btn:last-child:nth-child(even){grid-column:1/-1}
 .qhead .sp{flex:1}
 .qblock{display:flex;flex-direction:column;gap:6px}
 .tr{display:block;color:var(--muted);font-size:15px;font-weight:400;line-height:1.35}
@@ -156,9 +156,6 @@ textarea{font-family:var(--f-mono);font-size:12px;width:100%;padding:10px;border
 .script li{display:flex;flex-direction:column;gap:2px}
 .script .who{font-family:var(--f-mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .sect{display:flex;flex-direction:column;gap:12px}
-.actions.three{grid-template-columns:1fr 1fr 1fr}
-.actions.three .btn:last-child{grid-column:auto}
-@media (max-width:520px){.actions.three{grid-template-columns:1fr}}
 .gap .blank{display:inline-block;min-width:3.5em;border-bottom:2px solid var(--ochre);text-align:center;color:var(--muted);margin:0 2px}
 .gap .blank.ok{color:var(--ok);border-color:var(--ok)}
 .gap .blank.no{color:var(--bad);border-color:var(--bad)}
@@ -213,5 +210,5 @@ input[type=date]{font:inherit;font-size:16px;padding:9px 10px;border-radius:8px;
 .dlog .who{font-family:var(--f-mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .photo{border-style:dashed}
 #w-txt{font-family:var(--f-body);font-size:17px}
-@media (max-width:420px){h1{font-size:26px}.qtext{font-size:20px}.actions{grid-template-columns:1fr}}
+@media (max-width:420px){h1{font-size:26px}.qtext{font-size:20px}}
 @media (prefers-reduced-motion:no-preference){.opt,.btn{transition:border-color .15s,background-color .15s}}

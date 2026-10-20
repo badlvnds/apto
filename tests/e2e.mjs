@@ -44,6 +44,18 @@ await step('writing word counter', async () => {
   await page.click('#home-btn'); await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-write'); await page.click('[data-w="W1a"]');
   await page.fill('#w-txt', 'uno dos tres'); if (!(await page.textContent('#w-count')).includes('3')) throw new Error('count');
 });
+await step('hub buttons share one width', async () => {
+  for (const vw of [360, 430, 820]) {
+    await page.setViewportSize({ width: vw, height: 900 });
+    for (const hub of ['#go-ccse', '#go-dele']) {
+      await page.click('#home-btn'); const leave = await page.$('.confirm.leave [data-yes]'); if (leave) await leave.click();
+      await page.click(hub);
+      const widths = await page.$$eval('.actions .btn', bs => [...new Set(bs.map(b => Math.round(b.getBoundingClientRect().width)))]);
+      if (widths.length !== 1) throw new Error(`${hub} at ${vw}px: widths ${widths}`);
+    }
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+});
 await step('no horizontal scroll', async () => { const w = await page.evaluate(() => document.documentElement.scrollWidth); if (w > 390) throw new Error('scrollWidth ' + w); });
 await step('works offline after first visit', async () => {
   await page.evaluate(() => navigator.serviceWorker.ready);
