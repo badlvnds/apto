@@ -1,5 +1,5 @@
 // Data checks: run before every build. Exits with code 1 on any problem.
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import { JS_ORDER } from './order.mjs';
 
@@ -54,6 +54,10 @@ for (const G of AUDG) G.qs.forEach((q, k) => {
   if (!(q.a >= 0 && q.a < max)) fail(`${G.id}:${k} answer`);
   for (const l of ['es','en','ru','uk']) if (!q.tip?.[l]) fail(`${G.id}:${k} tip ${l}`);
 });
+for (const s of X.SPEAK.t2) {
+  if (!s.photo || !s.photo.by || !s.photo.u || !existsSync(new URL('../public/photos/' + s.photo.f + '.webp', import.meta.url))) fail(`speaking ${s.id}: photo or credit`);
+  if (!X.SPEAK.t3.some(d => d.link === s.id)) fail(`speaking ${s.id}: no task 3`);
+}
 for (const d of X.SPEAK.t3) if (!d.sample || d.sample.length !== d.lines.length) fail(`speaking ${d.id}: sample answers`);
 for (const g of X.GRAM) [...g.diag, ...g.prac].forEach((it, k) => { if (!it.s.includes('___') || !(it.a >= 0 && it.a < it.o.length)) fail(`grammar ${g.id}:${k}`); });
 

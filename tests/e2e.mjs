@@ -86,6 +86,20 @@ await step('speaking: record and play back', async () => {
   await page.click('.rec-b'); await page.waitForTimeout(600); await page.click('.rec-b');
   await page.waitForSelector('.rec-a:not([hidden])');
 });
+await step('speaking photos: every photo loads and is credited', async () => {
+  const n = await page.evaluate(() => SPEAK.t2.length);
+  for (let k = 0; k < n; k++) {
+    await page.click('#home-btn'); await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-speak');
+    await page.locator('[data-s^="t2:"]').nth(k).click();
+    await page.waitForFunction(() => { const i = document.querySelector('.ph img'); return i && i.complete && i.naturalWidth > 0; });
+    const cap = await page.locator('.ph figcaption').innerText(), links = await page.locator('.ph figcaption a').evaluateAll(a => a.map(x => x.href));
+    const p = await page.evaluate(k => SPEAK.t2[k].photo, k);
+    if (!cap.includes(p.by) || !links.some(h => h.includes('unsplash.com/@' + p.u)) || !links.some(h => /unsplash\.com\/\?/.test(h))) throw new Error('credit missing for ' + p.f);
+  }
+  await page.evaluate(() => go(about));
+  const ab = await page.locator('#view').innerText();
+  for (const by of await page.evaluate(() => SPEAK.t2.map(s => s.photo.by))) if (!ab.includes(by)) throw new Error('about: no credit for ' + by);
+});
 await step('no Spanish voice: help + read the text instead', async () => {
   const c2 = await browser.newContext({ viewport: { width: 390, height: 844 } });
   await c2.addInitScript(() => { Object.defineProperty(window, 'speechSynthesis', {configurable:true, value:{getVoices:()=>[], cancel(){}, speak(){}, onvoiceschanged:null}}); window.SpeechSynthesisUtterance = function(t){ this.text = t; }; localStorage.setItem('ccse2026.v1', JSON.stringify({set:{lang:'en', langChosen:true}})); });

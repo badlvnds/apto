@@ -68,5 +68,15 @@ Edit `public/icons/icon.svg`, then `npm run icons` regenerates the PNG icons, `f
 
 ## Content and licensing
 
+Speaking task 2 photos are from [Unsplash](https://unsplash.com/?utm_source=apto&utm_medium=referral) under the [Unsplash License](https://unsplash.com/license). Each photo is credited under the image and on the About page; the list is in `public/photos/CREDITS.txt`:
+
+- `parque.webp` — photo by [Ubaldo Bitumi](https://unsplash.com/@ubigraph?utm_source=apto&utm_medium=referral) on Unsplash
+- `tienda.webp` — photo by [Richard Wang](https://unsplash.com/@rrricharddd?utm_source=apto&utm_medium=referral) on Unsplash
+- `cafeteria.webp` — photo by [Shawn](https://unsplash.com/@shawnanggg?utm_source=apto&utm_medium=referral) on Unsplash
+- `estacion.webp` — photo by [Hugh Stevenson](https://unsplash.com/@hughstevensonn?utm_source=apto&utm_medium=referral) on Unsplash
+- `mercado.webp` — photo by [Alex Hudson](https://unsplash.com/@aliffhassan91?utm_source=apto&utm_medium=referral) on Unsplash
+- `fiesta.webp` — photo by [Josh Frenette](https://unsplash.com/@joshfrenette?utm_source=apto&utm_medium=referral) on Unsplash
+
+
 Code: MIT. Fonts (Bricolage Grotesque, Source Sans 3, IBM Plex Mono): SIL OFL 1.1, see `public/fonts/LICENSES.txt`. CCSE questions © Instituto Cervantes (Manual CCSE 2026), used for non-commercial practice with attribution.
 All DELE texts, recordings scripts, explanations and translations are original to this project.

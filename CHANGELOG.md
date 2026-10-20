@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.3 · October 2026
+
+Real photos in speaking task 2.
+
+- Six Unsplash photos (park walk by a lake, vintage clothes shop, café, train station, market, home buffet), each credited under the image with links to the photographer and Unsplash, plus a credits list on the About page, in the README and in `public/photos/CREDITS.txt`.
+- Task 2 models and guide questions rewritten to describe only what is visible; guesses are marked as guesses. Photo descriptions are used as alt text.
+- Four new task 3 role-plays linked to the photos: ordering at a café, buying a train ticket, shopping at a market, accepting an invitation to lunch.
+- Review pack shows each photo with its credit. Tests check that every photo loads and is credited.
+
 ## 1.0.2 · October 2026
 
 Content fixes from the editorial audit v2.
