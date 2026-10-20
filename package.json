@@ -1,6 +1,6 @@
 {
   "name": "apto",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "description": "Free, unofficial practice app for the Spanish nationality exams (CCSE and DELE A2).",
   "type": "module",

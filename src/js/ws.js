@@ -38,15 +38,17 @@ const SPEAK = {
       model:'Trabajo en una empresa de informática en el centro de la ciudad. Trabajo organizando el desarrollo de productos digitales. Un día normal empiezo a las nueve, leo los correos y luego tengo varias reuniones con mi equipo. A las dos como con mis compañeros. Me gusta mucho mi trabajo porque es creativo y aprendo cosas nuevas cada día. Lo que no me gusta es que a veces tengo demasiadas reuniones. En el futuro me gustaría trabajar desde casa algunos días y tener más tiempo para viajar.'}],
  t2:[{id:'S2a', title:'Una familia en un parque', scene:['Es domingo por la mañana y hace sol.','Una familia (padre, madre y dos niños) está en un parque.','Los niños juegan con un perro; el padre prepara un pícnic sobre una manta.','La madre hace una foto con el móvil.','Al fondo hay árboles, un lago y gente en bicicleta.'],
       q:['¿Quiénes son? ¿Cómo son?','¿Dónde están?','¿Qué están haciendo?','¿Qué crees que van a hacer después?'],
-      model:'En la foto veo a una familia en un parque. Son el padre, la madre y dos niños pequeños. Creo que es domingo porque hace sol y hay mucha gente. Los niños están jugando con un perro marrón y el padre está preparando un pícnic encima de una manta. La madre está haciendo una foto con el móvil. Al fondo hay árboles, un lago y personas que montan en bicicleta. Creo que después van a comer y luego a pasear por el lago.'},
+      model:'En la escena hay una familia en un parque: el padre, la madre y dos niños. Es domingo por la mañana y hace sol. Los niños están jugando con un perro y el padre está preparando un pícnic encima de una manta. La madre está haciendo una foto con el móvil. Al fondo hay árboles, un lago y gente que monta en bicicleta. Creo que están contentos porque hace buen tiempo. Seguramente después van a comer juntos y a pasear por el lago.'},
      {id:'S2b', title:'En una tienda de ropa', scene:['Una tienda de ropa en el centro, con mucha luz.','Una chica joven tiene un jersey azul en la mano y habla con el dependiente.','El dependiente le enseña otro jersey de color rojo.','Al lado hay un probador y un espejo grande.','En la puerta hay un cartel: «Rebajas −30 %».'],
       q:['¿Dónde están las personas?','¿Cómo son y qué llevan?','¿Qué está pasando?','¿Qué crees que va a comprar la chica?'],
-      model:'La foto es de una tienda de ropa. Hay una chica joven, morena, con el pelo largo, que lleva vaqueros y una chaqueta. Tiene en la mano un jersey azul y está hablando con el dependiente, que le enseña otro jersey rojo. Creo que la chica quiere cambiar de talla o de color. Al lado hay un probador y un espejo grande. En la puerta hay un cartel de rebajas, así que los precios son más baratos. Creo que al final va a comprar el jersey rojo.'}],
+      model:'La escena es en una tienda de ropa del centro, con mucha luz. Hay una chica joven que tiene un jersey azul en la mano y está hablando con el dependiente. Él le enseña otro jersey, de color rojo. Quizás la chica quiere cambiar de talla o de color. Al lado hay un probador y un espejo grande. En la puerta hay un cartel de rebajas del treinta por ciento, así que la ropa está más barata. Creo que al final va a probarse los dos jerseys y va a comprar uno.'}],
  t3:[{id:'S3a', link:'S2b', title:'Cambiar un jersey', role:'Compraste un jersey ayer, pero es pequeño. Vas a la tienda para cambiarlo. Habla con el dependiente (el examinador).',
       lines:['Buenas tardes. ¿En qué puedo ayudarle?','Muy bien. ¿Tiene el tique de compra?','¿Qué talla necesita? ¿Y quiere el mismo color?','Lo siento, en azul no nos queda esa talla. Lo tenemos en rojo o en negro. ¿Le sirve alguno?','Perfecto. ¿Quiere probárselo? El probador está ahí, a la derecha.','¿Qué tal le queda? ¿Necesita algo más?'],
+      sample:['Buenas tardes. Quería cambiar este jersey: lo compré ayer, pero me queda pequeño.','Sí, aquí lo tiene.','Necesito la talla M. Y sí, me gusta mucho el azul.','Vale, entonces el negro, por favor.','Sí, me lo pruebo. Gracias.','Me queda muy bien, me lo llevo. No necesito nada más, gracias.'],
       useful:['Quería cambiar este jersey.','Me queda pequeño / grande.','Aquí tiene el tique.','¿Lo tiene en la talla M?','Me lo pruebo, gracias.','Me queda muy bien, me lo llevo.']},
      {id:'S3b', link:'S2a', title:'Organizar un pícnic', role:'Eres amigo/a de la familia de la foto. Hablas con el examinador para organizar un pícnic el próximo domingo.',
       lines:['¡Hola! ¿Qué tal? Oye, ¿te apetece hacer un pícnic el domingo?','¡Genial! ¿Dónde podemos ir? ¿Conoces algún sitio bonito?','¿Y a qué hora quedamos?','¿Qué llevamos para comer? Yo puedo hacer una tortilla.','¿Y si llueve? ¿Tienes otra idea?','Perfecto. Entonces nos vemos el domingo.'],
+      sample:['¡Hola! Muy bien. ¡Me parece muy buena idea!','¿Qué te parece si vamos al parque del lago? Es muy bonito y hay sombra.','Podemos quedar a las doce en la entrada del parque.','¡Estupendo! Yo llevo la bebida, la fruta y unos bocadillos.','Si llueve, podemos comer en mi casa y ver una película.','¡Vale! ¡Hasta el domingo!'],
       useful:['¡Me parece muy buena idea!','¿Qué te parece si…?','Podemos quedar a las…','Yo llevo la bebida y la fruta.','Si llueve, podemos ir a…','¡Hasta el domingo!']}]
 };
 const STIPS = {
@@ -126,7 +128,8 @@ function speakMono(id){
   view.innerHTML = `<div class="stack">${backRow(speaking, T_.kSpeak)}<span class="eyebrow">${esc(T_.sT1)}</span><h1 lang="es">${esc(s.title)}</h1>
     <section class="panel"><p><b>${esc(T_.pointsT)}</b></p><ul class="focus" lang="es">${s.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
       <div class="player"><span><b>${esc(T_.speakNow)}</b> · 2–3 min</span><button class="btn primary" id="sp-t" type="button">${esc(T_.timerStart)}</button><span class="note mono" id="sp-o"></span></div>${recorderHTML()}</section>
-    <details class="panel script"><summary>${esc(T_.showModel)}</summary><p lang="es">${esc(s.model)}</p><button class="trbtn" id="sp-listen" type="button">${esc(T_.listenModel)}</button></details></div>`;
+    <details class="panel script"><summary>${esc(T_.showModel)}</summary><p lang="es">${esc(s.model)}</p><button class="trbtn" id="sp-listen" type="button">${esc(T_.listenModel)}</button></details>
+    ${selfCheckHTML()}</div>`;
   wireBack(speaking); wireRecorders();
   spTimer($('#sp-t'), $('#sp-o'), 180);
   $('#sp-listen').onclick = () => { TTS.newCast(); TTS.speak([{s:'f', t:s.model}], 0.9); };
@@ -142,7 +145,9 @@ function speakPhoto(id){
     <section class="panel"><p class="note">${esc(T_.roleT)}</p><p lang="es"><b>${esc(d.role)}</b></p>
       <div class="player"><button class="btn primary" id="dl-next" type="button">${esc(T_.startDialog)}</button><span class="note mono" id="dl-o"></span></div>
       <ol class="dlog" id="dl-log" lang="es"></ol>${recorderHTML()}
-      <p><b>${esc(T_.phrasesT)}</b></p><ul class="focus" lang="es">${d.useful.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section></div>`;
+      <p><b>${esc(T_.phrasesT)}</b></p><ul class="focus" lang="es">${d.useful.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+      <details class="script"><summary>${esc(T_.sampleDlg)}</summary><ol class="dlog" lang="es">${d.lines.map((l,j)=>`<li><span class="who">${esc(T_.examiner)}</span>${esc(l)}</li><li class="you"><span class="who">${esc(T_.candidate)}</span>${esc(d.sample[j])}</li>`).join('')}</ol><p class="note">${esc(T_.sampleNote)}</p></details></section>
+    ${selfCheckHTML()}</div>`;
   wireBack(speaking); wireRecorders();
   spTimer($('#sp-t'), $('#sp-o'), 180);
   $('#sp-listen').onclick = () => { TTS.newCast(); TTS.speak([{s:'f', t:s.model}], 0.9); };

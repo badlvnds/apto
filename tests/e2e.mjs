@@ -12,7 +12,7 @@ const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, pe
 // Fake Spanish voices so listening tasks can be exercised headlessly.
 await ctx.addInitScript(() => {
   const voices = [{name:'Mónica',lang:'es-ES'},{name:'Jorge',lang:'es-ES'}];
-  Object.defineProperty(window, 'speechSynthesis', {configurable:true, value:{getVoices:()=>voices, cancel(){}, speak(u){ setTimeout(()=>u.onend&&u.onend(), 5); }, onvoiceschanged:null}});
+  Object.defineProperty(window, 'speechSynthesis', {configurable:true, value:{getVoices:()=>voices, cancel(){}, speak(u){ (window.__spoken = window.__spoken || []).push(u.text); setTimeout(()=>u.onend&&u.onend(), 5); }, onvoiceschanged:null}});
   window.SpeechSynthesisUtterance = function(t){ this.text = t; };
 });
 const page = await ctx.newPage();
@@ -189,6 +189,18 @@ await step('accessibility: no WCAG A/AA violations on key screens (axe-core)', a
   await page.click('#go-dele'); await page.click('#d-mock'); await audit('dele overview'); await page.click('#m-start'); await audit('dele reading');
   await page.click('#home-btn'); await page.click('.confirm.leave [data-yes]'); await page.click('#set-btn'); await audit('settings');
   if (bad.length) throw new Error(bad.join(' | '));
+});
+await step('listening exam mode: script hidden until answered, no labels spoken', async () => {
+  await page.click('#home-btn'); const l = await page.$('.confirm.leave [data-yes]'); if (l) await l.click();
+  await page.evaluate(() => { S.set.audMode = 'exam'; save(); window.__spoken = []; });
+  await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-aud'); await page.click('[data-n="1"]');
+  if (await page.$('#acard .script')) throw new Error('transcript visible before answering');
+  await page.click('#acard .a-play'); await page.waitForTimeout(200);
+  const spoken = await page.evaluate(() => window.__spoken);
+  if (!spoken.length) throw new Error('nothing spoken');
+  const bad = spoken.filter(x => /^(Mujer|Hombre|Woman|Man|Женщина|Мужчина|Жінка|Чоловік)\b|Pista|Transcripci|DELE|Tarea/.test(x));
+  if (bad.length) throw new Error('labels spoken: ' + bad.join(' | '));
+  await page.click('#acard .opt >> nth=0'); await page.waitForSelector('#acard .script');
 });
 await step('hub buttons share one width', async () => {
   for (const vw of [360, 430, 820]) {

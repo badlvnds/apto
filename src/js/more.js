@@ -52,7 +52,7 @@ function about(){
   const T_ = t(), mail = `<a href="mailto:${REPORT_CONTACT}">${REPORT_CONTACT}</a>`;
   view.innerHTML = `<div class="stack">${backRow(home, T_.hubBack)}<h1>${esc(T_.aboutT)}</h1>
     <section class="panel"><h2>${esc(T_.aboutWhatT)}</h2><p>${esc(T_.aboutWhat)}</p></section>
-    <section class="panel"><h2>${esc(T_.aboutSrcT)}</h2><ul class="focus"><li>${esc(T_.aboutSrc[0])} <a href="${MANUAL_URL}" target="_blank" rel="noopener">${esc(T_.manualName)}</a></li><li>${esc(T_.aboutSrc[1])} <a href="${DELE_A2_URL}" target="_blank" rel="noopener">examenes.cervantes.es</a></li><li>${esc(T_.aboutSrc[2])} ${mail}.</li></ul></section>
+    <section class="panel"><h2>${esc(T_.aboutSrcT)}</h2><ul class="focus"><li>${esc(T_.aboutSrc[0])} <a href="${MANUAL_URL}" target="_blank" rel="noopener">${esc(T_.manualName)}</a></li><li>${esc(T_.ccseMeta)}</li><li>${esc(T_.aboutSrc[1])} <a href="${DELE_A2_URL}" target="_blank" rel="noopener">examenes.cervantes.es</a></li><li>${esc(T_.aboutSrc[2])} ${mail}.</li></ul></section>
     <section class="panel"><h2>${esc(T_.aboutPrivT)}</h2><ul class="focus">${T_.aboutPriv.map(x=>`<li>${esc(x)}</li>`).join('')}<li>${esc(T_.aboutHost)} <a href="${GH_PRIVACY}" target="_blank" rel="noopener">${esc(T_.aboutHostLink)}</a>.</li></ul></section>
     <section class="panel"><h2>${esc(T_.verT)}</h2><p><b>${esc(T_.verLine(APP_VERSION))}</b></p><p class="note">${esc(T_.newT)}</p><ul class="focus">${T_.newList.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
     <section class="panel"><h2>${esc(T_.aboutCodeT)}</h2><p>${esc(T_.aboutCode)} <a href="${REPO_URL}" target="_blank" rel="noopener">github.com/badlvnds/apto</a></p></section></div>`;

@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.2 · October 2026
+
+Content fixes from the editorial audit v2.
+
+- DELE mock: "How it differs from the real exam" (original exercises, synthetic audio, no examiner marking, percentage not the official score).
+- Speaking task 2 is labelled as a described scene until real photos are added; S2a/S2b models no longer add details that aren’t in the scene. Task 3 has sample candidate answers; speaking pages have a self-check (clarity, task, vocabulary, grammar).
+- CCSE explanations: 1017 separates the test answer from how it works in practice; 1031, 1061, 1062, 5073 clarified. About states the question bank source and that a full key check against the manual is pending.
+- Grammar: "rule of thumb" label instead of absolute wording; perfect-tense items marked as usual usage in Spain; comparison items with one correct answer and an everyday example.
+- Tests: listening exam mode hides the script until answered and speaks no labels.
+
 ## 1.0.1 · October 2026
 
 Content fixes from the editorial audit of 20 October.

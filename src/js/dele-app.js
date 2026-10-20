@@ -36,7 +36,7 @@ function deleNote(){ const T_ = t(); return `<p class="note">${esc(T_.deleNote)}
 // one fill-the-gap item; calls done(ok) after answering
 function gapItem(container, it, topicId, done){
   const parts = it.s.split('___');
-  container.innerHTML = `<p class="qtext gap" lang="es">${esc(parts[0])}<span class="blank">___</span>${esc(parts[1]||'')}</p>
+  container.innerHTML = `${topicId==='pasado'?`<p class="note">${esc(t().spainNorm)}</p>`:''}<p class="qtext gap" lang="es">${esc(parts[0])}<span class="blank">___</span>${esc(parts[1]||'')}</p>
     <div class="opts row3">${it.o.map((o,k)=>`<button type="button" class="opt" data-k="${k}"><span lang="es">${esc(o)}</span></button>`).join('')}</div><div class="fb"></div>`;
   container.querySelectorAll('.opt').forEach(b => b.onclick = () => {
     const k = +b.dataset.k, ok = k === it.a;

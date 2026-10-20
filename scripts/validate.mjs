@@ -54,6 +54,7 @@ for (const G of AUDG) G.qs.forEach((q, k) => {
   if (!(q.a >= 0 && q.a < max)) fail(`${G.id}:${k} answer`);
   for (const l of ['es','en','ru','uk']) if (!q.tip?.[l]) fail(`${G.id}:${k} tip ${l}`);
 });
+for (const d of X.SPEAK.t3) if (!d.sample || d.sample.length !== d.lines.length) fail(`speaking ${d.id}: sample answers`);
 for (const g of X.GRAM) [...g.diag, ...g.prac].forEach((it, k) => { if (!it.s.includes('___') || !(it.a >= 0 && it.a < it.o.length)) fail(`grammar ${g.id}:${k}`); });
 
 for (const T of X.VOC) T.w.forEach((w, k) => { if (w.length !== 4 || w.some(x => !x)) fail(`vocab ${T.id}:${k}`); });
