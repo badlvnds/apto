@@ -20,6 +20,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Restore folder layout (files were uploaded flat)
+        run: |
+          if [ ! -d src ]; then
+            mkdir -p src/js src/data public/icons scripts tests
+            mv app.js aud-app.js aud-b.js aud.js dele-app.js dele.js engine.js extras.js flow.js i18n.js read-a.js read-b.js v2-aud.js v2-read-b.js v2-read.js v3-aud.js v3-read.js ws.js src/js/
+            mv ccse2026.json ex_all.json tr_all.json src/data/
+            mv index.html styles.css src/
+            mv manifest.webmanifest public/
+            mv apple-touch-icon.png icon-192.png icon-512.png icon-maskable-512.png icon.svg public/icons/
+            mv build.mjs icons.mjs order.mjs serve.mjs sw.template.js validate.mjs scripts/
+            mv e2e.mjs tests/
+          fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22
