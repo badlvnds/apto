@@ -19,7 +19,7 @@ for (const q of Q) {
 }
 
 // DELE: evaluate content files in a sandbox with stub globals the content code needs
-const content = ['i18n.js','aud.js','aud-b.js','v2-aud.js','v3-aud.js','v4-aud.js','read-a.js','read-b.js','v2-read.js','v2-read-b.js','v3-read.js','v4-read.js','dele.js','ws.js','more.js'];
+const content = ['i18n.js','aud.js','aud-b.js','v2-aud.js','v3-aud.js','v4-aud.js','read-a.js','read-b.js','v2-read.js','v2-read-b.js','v3-read.js','v4-read.js','dele.js','ws.js','more.js','polish.js'];
 const ctx = vm.createContext({ console, I18N: undefined });
 const exportNames = 'I18N,AUD,AUDG,AUD_TOPICS,AUD_V2,AUD_V3,AUD_V4,AUDG_V2,AUDG_V3,AUDG_V4,READ_A,READ_B,READ_V2,READ_V3,READ_V4,GRAM,WRITE,SPEAK';
 vm.runInContext(content.map(f => read('js/' + f)).join('\n') + `\n;globalThis.__x = {${exportNames}};`, ctx);

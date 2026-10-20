@@ -42,7 +42,7 @@ function setMeta(x){ $('#bar-meta').textContent = x; }
 function stopTimer(){ if (timer){ clearInterval(timer); timer = null; } }
 function go(fn){ EXAM_ON = false; recStop(); if (typeof SPK_T !== 'undefined' && SPK_T){ clearInterval(SPK_T.id); SPK_T = null; } const mm = document.getElementById('bar-meta'); if (mm) mm.classList.remove('warn'); stopTimer(); try { TTS.stop(); } catch(e){} current = fn; setMeta(''); fn(); window.scrollTo(0,0); }
 function chrome(){
-  document.documentElement.lang = S.set.lang;
+  document.documentElement.lang = S.set.lang; applyTheme();
   $('#lang').value = S.set.lang;
   $('#set-btn').setAttribute('aria-label', t().settings);
   $('#foot').innerHTML = `<span>${esc(t().foot1)}</span><span>${esc(t().foot2)} <a href="${MANUAL_URL}" target="_blank" rel="noopener">${esc(t().manualName)}</a> ${esc(t().foot2b)}</span><span>${esc(t().foot3)} <button class="linkbtn" id="about-btn" type="button">${esc(t().aboutBtn)}</button></span>`;
@@ -202,7 +202,7 @@ function examResult(idx){
     <section class="panel">
       <span class="eyebrow">${esc(T_.result)}</span>
       <div class="stat"><span class="verdict ${pass?'ok':'no'}">${esc(pass?T_.pass:T_.fail)}</span><b style="font-size:28px">${score}/25</b></div>
-      <p class="lede">${esc(pass?T_.passMsg(PASS):T_.failMsg(PASS-score, PASS))} ${esc(T_.addedWrong)}</p>
+      <p class="lede">${esc(pass?(score<20?T_.resOk+' '+T_.passMsg(PASS):T_.passMsg(PASS)):T_.failMsg(PASS-score, PASS))} ${wrongIdsN(ex)?esc(T_.addedWrong):''}</p>
       <div class="tareas">${TAREAS.map(x=>{const p=ex.perT[x.n];return `<div class="trow"><span class="tn">T${x.n}</span><span class="tt">${esc(tname(x.n))}</span><span class="tc">${p[0]}/${p[1]}</span><div class="track"><i class="m" style="width:${p[0]/p[1]*100}%"></i></div></div>`}).join('')}</div>
     </section>
     <div class="actions"><button class="btn primary" id="again" type="button">${esc(T_.again)}</button><button class="btn" id="rev" type="button">${esc(T_.wrong)}</button><button class="btn" id="rep" type="button">${esc(T_.myProgress)}</button><button class="btn" id="hub" type="button">CCSE</button></div>
@@ -239,7 +239,7 @@ function report(){
     ${!anyData ? `<section class="panel"><p class="lede">${esc(T_.repEmpty)}</p><div class="row"><button class="btn primary" id="r-exam" type="button">${esc(T_.exam)}</button></div></section>` : `
     <section class="panel">
       <div class="row"><span class="eyebrow">${esc(T_.readiness)}</span></div>
-      <div class="ready" role="img" aria-label="${esc(T_.ready[lvl])}">${T_.ready.map((r,i)=>`<span class="${i<=lvl?'on':''}">${esc(r)}</span>`).join('')}</div>
+      <div class="ready" role="img" aria-label="${esc(T_.ready[lvl])}">${T_.ready.map((r,i)=>`<span class="${i<=lvl?'on':''}">${i===lvl?'● ':''}${esc(r)}</span>`).join('')}</div><p class="note">${esc(T_.readyNote)}</p>
       <div class="kpis">
         <div><b>${ex.length}</b><span>${esc(T_.repExams)}</span></div>
         <div><b>${avg===null?'–':avg.toFixed(1)}</b><span>${esc(T_.repAvg)}</span></div>
@@ -262,6 +262,7 @@ function report(){
   const rw = $('#r-wrong'); if (rw) rw.onclick = () => go(() => study({mode:'wrong'}));
   wireBack(ccseHub);
 }
+const wrongIdsN = ex => (ex.wrong ? ex.wrong.length : 25 - ex.score);
 function chart(ex){
   const W = 360, H = 190, pl = 28, pr = 8, pt = 12, pb = 26, n = ex.length;
   const bw = Math.min(24, (W-pl-pr)/Math.max(n,1)*0.6), iw = W-pl-pr-bw-8;
@@ -333,6 +334,7 @@ function settings(){
       <div class="radios">${radio('tr','always',T_.trAlways,s.tr)}${radio('tr','tap',T_.trTap,s.tr)}${radio('tr','off',T_.trOff,s.tr)}</div>
       <label class="radio"><input type="checkbox" id="trexam" ${s.trExam?'checked':''}> ${esc(T_.setTrExam)}</label><p class="note">${esc(T_.setTrExamHint)}</p>
     </section>
+    ${appearanceHTML()}
     ${datesHTML()}
     ${fileHTML()}
     ${backupHTML()}
@@ -341,7 +343,7 @@ function settings(){
   view.querySelectorAll('input[name=lang]').forEach(i => i.onchange = () => { S.set.lang = i.value; save(); chrome(); go(settings); });
   view.querySelectorAll('input[name=tr]').forEach(i => i.onchange = () => { S.set.tr = i.value; save(); });
   $('#trexam').onchange = e => { S.set.trExam = e.target.checked; save(); };
-  wireBackup(); wireDates(); wireFile(); $('#s-about').onclick = () => go(about);
+  wireBackup(); wireDates(); wireFile(); wireAppearance(); $('#s-about').onclick = () => go(about);
   $('#s-done').onclick = () => go(home);
 }
 

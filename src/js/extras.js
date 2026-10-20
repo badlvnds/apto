@@ -93,33 +93,7 @@ function wireReport(box, ref, text){
 // ---------- study plan ----------
 const today = () => { const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
 function bumpDay(k){ const d = today(); S.daily = S.daily || {}; const x = S.daily[d] || (S.daily[d] = {c:0, d:0}); x[k]++; }
-function streak(){ const days = S.daily || {}; let n = 0; const d = new Date(); if (!days[today()]) d.setDate(d.getDate()-1);
-  for(;;){ const k = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); const x = days[k]; if (x && (x.c||x.d)) { n++; d.setDate(d.getDate()-1); } else break; } return n; }
 function daysTo(dateStr){ if (!dateStr) return null; const [y,m,dd] = dateStr.split('-').map(Number); const t0 = new Date(); t0.setHours(0,0,0,0); return Math.round((new Date(y, m-1, dd) - t0) / 86400000); }
-function planHTML(kind){
-  const T_ = t(), date = kind === 'c' ? S.set.dateC : S.set.dateD, n = daysTo(date), x = (S.daily||{})[today()] || {c:0,d:0}, st = streak();
-  if (!date) return `<section class="panel plan"><h2>${esc(T_.planT)}</h2><p class="note">${esc(T_.planNoDate)}</p><label class="vrow"><span>${esc(T_.planDate)}</span><input type="date" id="plan-date" min="${today()}"></label></section>`;
-  if (n < 0) return `<section class="panel plan"><h2>${esc(T_.planT)}</h2><p class="note">${esc(T_.planPast)}</p></section>`;
-  let target, doneN = kind === 'c' ? x.c : x.d;
-  if (kind === 'c'){ const left = Q.filter(q=>!isMastered(q.id)).length; const studyDays = Math.max(1, n - 2); target = Math.max(10, Math.min(80, Math.ceil(left * MASTER / studyDays))); }
-  else target = n <= 14 ? 25 : 15;
-  const pct = Math.min(100, Math.round(doneN / target * 100));
-  return `<section class="panel plan"><div class="row"><h2>${esc(T_.planT)}</h2><span class="sp"></span><span class="chip">${esc(T_.planDays(n))}</span></div>
-    <p><b>${esc(kind==='c'?T_.planCcse(doneN,target):T_.planDele(doneN,target))}</b>${pct>=100?' · '+esc(T_.planDone):''}</p>
-    <div class="track big" aria-hidden="true"><i class="${pct>=100?'m':'s'}" style="width:${pct}%"></i></div>
-    <p class="note">${esc(kind==='c'?T_.planCcseHint:T_.planDeleHint)}${n<=14?' '+esc(T_.planMockSoon):''}${st?' · '+esc(T_.streak(st)):''}</p>
-    <div class="row"><button class="btn primary" id="plan-go" type="button">${esc(T_.planGo)}</button></div></section>`;
-}
-function wirePlan(kind){
-  const inp = $('#plan-date'); if (inp) inp.onchange = () => { if (!inp.value) return; if (kind === 'c') S.set.dateC = inp.value; else S.set.dateD = inp.value; save(); go(current); };
-  const b = $('#plan-go'); if (!b) return;
-  b.onclick = () => {
-    if (kind === 'c'){ const wrong = Q.filter(q=>isWrong(q.id)).length; go(() => study(wrong ? {mode:'wrong'} : dueCount() ? {mode:'due'} : {tarea:0})); }
-    else { if (dWrongKeys().length) return go(deleMistakes);
-      const cand = [...[1,2,3,4].map(n=>({p:'r',n,a:taskAcc('r',n)})), ...[1,2,3,4].map(n=>({p:'a',n,a:taskAcc('a',n)}))].sort((x,y)=>(x.a===null?-1:x.a)-(y.a===null?-1:y.a))[0];
-      go(() => cand.p === 'r' ? readTask(cand.n) : (cand.n <= 2 ? audRun(cand.n, 0, []) : groupRun(cand.n))); }
-  };
-}
 function datesHTML(){ const T_ = t(); return `<section class="panel"><h2>${esc(T_.datesT)}</h2><label class="vrow"><span>CCSE</span><input type="date" id="d-ccse" value="${S.set.dateC||''}"></label><label class="vrow"><span>DELE A2</span><input type="date" id="d-dele" value="${S.set.dateD||''}"></label></section>`; }
 function wireDates(){ const c = $('#d-ccse'), d = $('#d-dele'); if (c) c.onchange = () => { S.set.dateC = c.value; save(); }; if (d) d.onchange = () => { S.set.dateD = d.value; save(); }; }
 

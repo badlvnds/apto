@@ -67,8 +67,8 @@ function home(){
     <div class="cards2">
       <button class="bigcard" id="go-ccse" type="button"><span class="bc-tag">CCSE</span><span class="bc-t">${esc(T_.ccseCard)}</span><span class="bc-s">${esc(T_.ccseCardSub)}</span></button>
       <button class="bigcard" id="go-dele" type="button"><span class="bc-tag">DELE A2</span><span class="bc-t">${esc(T_.deleCard)}</span><span class="bc-s">${esc(T_.deleCardSub)}</span></button>
-    </div>${resumeHTML()}<button class="linkbtn" id="go-guide" type="button">${esc(T_.guideBtn)}</button></div>`;
-  wireResume(); $('#go-guide').onclick = () => go(guide);
+    </div>${resumeHTML()}${S.set.langChosen && (S.exams.length || Object.keys(S.q).length || Object.keys(S.dq).length) ? jumpHTML() : ''}<button class="linkbtn" id="go-guide" type="button">${esc(T_.guideBtn)}</button></div>`;
+  wireResume(); wireJump(); $('#go-guide').onclick = () => go(guide);
   $('#go-ccse').onclick = () => go(ccseHub);
   $('#go-dele').onclick = () => go(deleHub);
 }
@@ -78,14 +78,13 @@ function ccseHub(){
   const T_ = t(), mastered = Q.filter(q=>isMastered(q.id)).length, last = S.exams[S.exams.length-1];
   view.innerHTML = `<div class="stack">${backRow(home, T_.hubBack)}
     <div class="intro"><span class="eyebrow">CCSE</span><h1>${esc(T_.h1)}</h1><p class="lede">${esc(T_.lede)}</p></div>
-    ${planHTML('c')}
     <section class="panel" aria-labelledby="h-try"><span class="eyebrow" id="h-try">${esc(T_.tryOne)}</span><div id="try" class="qcard"></div></section>
     <div class="actions">
       <button class="btn" id="go-study" type="button">${esc(T_.studyTopics)}<small>${dueCount()?esc(T_.dueSub(dueCount())):esc(T_.studyTopicsSub)}</small></button>
       <button class="btn primary" id="go-exam" type="button">${esc(T_.exam)}<small>${esc(T_.examSub)}</small></button>
       <button class="btn" id="go-report" type="button">${esc(T_.myProgress)}<small>${mastered}/300 · ${last?esc(T_.lastExam(last.score)):esc(T_.myProgressSub)}</small></button>
-    </div></div>`;
-  wireBack(home); wirePlan('c');
+    </div>${planSectionHTML('c')}</div>`;
+  wireBack(home); wirePlanSection('c');
   $('#go-study').onclick = () => go(studyPick);
   $('#go-exam').onclick = () => go(examStart);
   $('#go-report').onclick = () => go(report);
@@ -96,14 +95,13 @@ function deleHub(){
   const T_ = t(), wrong = dWrongKeys().length, last = S.dmocks[S.dmocks.length-1];
   view.innerHTML = `<div class="stack">${backRow(home, T_.hubBack)}
     <div class="intro"><span class="eyebrow">DELE A2</span><h1>${esc(T_.deleCard)}</h1><p class="lede">${esc(T_.deleCardSub)}</p></div>
-    ${planHTML('d')}
     <div class="actions">
       <button class="btn" id="d-study" type="button">${esc(T_.deleStudy)}<small>${esc(T_.deleStudySub)}</small></button>
       <button class="btn primary" id="d-mock" type="button">${esc(T_.deleMock)}<small>${esc(T_.deleMockSub)}</small></button>
       <button class="btn" id="d-wrong" type="button" ${wrong?'':'disabled'}>${esc(T_.deleWrong)}<small>${esc(T_.pending(wrong))}</small></button>
       <button class="btn" id="d-prog" type="button">${esc(T_.myProgress)}<small>${last?Math.round(last.ok/last.n*100)+' % · ':''}${esc(T_.myProgressSub)}</small></button>
-    </div>${deleNote()}</div>`;
-  wireBack(home); wirePlan('d');
+    </div>${planSectionHTML('d')}${deleNote()}</div>`;
+  wireBack(home); wirePlanSection('d');
   $('#d-study').onclick = () => go(deleStudy);
   $('#d-mock').onclick = () => go(deleMock);
   $('#d-wrong').onclick = () => go(deleMistakes);

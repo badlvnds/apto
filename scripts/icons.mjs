@@ -13,7 +13,7 @@ const p = await b.newPage();
 async function png(size, pad = 0){
   await p.setViewportSize({width:size, height:size});
   const inner = Math.round(size*(1-pad*2));
-  await p.setContent(`<html><body style="margin:0;background:${pad?'#7a1f2b':'transparent'};display:grid;place-items:center;width:${size}px;height:${size}px">${svg.replace('<svg ', `<svg width="${inner}" height="${inner}" `)}</body></html>`);
+  await p.setContent(`<html><body style="margin:0;background:${pad?'#26332F':'transparent'};display:grid;place-items:center;width:${size}px;height:${size}px">${svg.replace('<svg ', `<svg width="${inner}" height="${inner}" `)}</body></html>`);
   return p.screenshot({omitBackground: !pad});
 }
 
@@ -37,17 +37,17 @@ writeFileSync(join(dir, 'og.html'), `<!doctype html><html><head><style>
 @font-face{font-family:S;src:url(file://${fonts}source-sans-3-latin-600.woff2);font-weight:600}
 @font-face{font-family:S;src:url(file://${fonts}source-sans-3-cyrillic-600.woff2);font-weight:600;unicode-range:U+0400-045F,U+0490-0491}
 @font-face{font-family:M;src:url(file://${fonts}plex-mono-latin-500.woff2)}
-body{margin:0;width:1200px;height:630px;background:#f6ecd6;font-family:S;color:#1d1a22;display:flex;flex-direction:column;justify-content:space-between;padding:72px 80px;box-sizing:border-box}
+body{margin:0;width:1200px;height:630px;background:#26332F;font-family:S;color:#F1F5EF;display:flex;flex-direction:column;justify-content:space-between;padding:72px 80px;box-sizing:border-box}
 .top{display:flex;align-items:center;gap:28px}.top svg{width:120px;height:120px}
 h1{font-family:B;font-weight:800;font-size:112px;margin:0;letter-spacing:-.03em;line-height:1}
-.tag{font-family:B;font-weight:700;font-size:56px;color:#7a1f2b;letter-spacing:-.02em;margin:0}
+.tag{font-family:B;font-weight:700;font-size:56px;color:#B8D3B8;letter-spacing:-.02em;margin:0}
 p{font-size:36px;margin:0;line-height:1.25;max-width:980px}
-.langs{display:flex;gap:14px;font-family:M;font-size:26px}.langs span{border:2px solid #7a1f2b;color:#7a1f2b;border-radius:999px;padding:6px 18px}
-.row{display:flex;justify-content:space-between;align-items:flex-end}.free{font-size:30px;color:#5d5866}
+.langs{display:flex;gap:14px;font-family:M;font-size:26px}.langs span{border:2px solid #4A5B53;color:#C8D1C9;border-radius:999px;padding:6px 18px}
+.row{display:flex;justify-content:space-between;align-items:flex-end}.free{font-size:30px;color:#A8B8AD}
 </style></head><body>
 <div class="top">${svg}<h1>Apto</h1></div>
 <div><p class="tag">CCSE · DELE A2</p><p>Prepara gratis los exámenes de nacionalidad española</p></div>
-<div class="row"><div class="langs"><span>ES</span><span>EN</span><span>RU</span><span>UK</span></div><span class="free">gratis · sin registro</span></div>
+<div class="row"><div class="langs"><span>ES</span><span>EN</span><span>RU</span><span>UK</span></div><span class="free">gratis · sin registro · tu progreso es tuyo</span></div>
 </body></html>`);
 await p.setViewportSize({width:1200, height:630});
 await p.goto('file://' + join(dir, 'og.html'));

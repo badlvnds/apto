@@ -90,6 +90,26 @@ await step('no third-party requests', async () => {
   await page.reload(); await page.click('#go-ccse'); await page.waitForTimeout(300);
   if (ext.length) throw new Error(ext.join(', '));
 });
+await step('study plan is optional: set, edit, remove', async () => {
+  await page.click('#home-btn'); await page.click('#go-ccse');
+  if (await page.$('.plan-line')) throw new Error('plan shown without a date');
+  await page.click('#plan-open'); const d = new Date(Date.now() + 30*86400000).toISOString().slice(0,10);
+  await page.fill('#plan-date', d); await page.click('#plan-save'); await page.waitForSelector('#plan-go');
+  await page.click('#back'); await page.waitForSelector('.plan-line');
+  await page.click('#plan-open'); await page.click('#plan-clear'); await page.click('#back');
+  if (await page.$('.plan-line')) throw new Error('date not removed');
+});
+await step('appearance switch', async () => {
+  await page.click('#set-btn'); await page.check('input[name=theme][value=light]');
+  if (await page.evaluate(() => document.documentElement.dataset.theme) !== 'light') throw new Error('light');
+  await page.check('input[name=theme][value=system]');
+  if (await page.evaluate(() => document.documentElement.dataset.theme)) throw new Error('system');
+});
+await step('answer states have text labels', async () => {
+  await page.click('#home-btn'); await page.click('#go-ccse'); await page.click('#try .opt');
+  const label = await page.$eval('#try .opt.right .ot', el => getComputedStyle(el, '::after').content);
+  if (!label || label === 'none') throw new Error('no label on correct answer');
+});
 await step('hub buttons share one width', async () => {
   for (const vw of [360, 430, 820]) {
     await page.setViewportSize({ width: vw, height: 900 });

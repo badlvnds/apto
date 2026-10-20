@@ -10,5 +10,6 @@ export const JS_ORDER = [
   'ws.js',                                     // writing and speaking
   'extras.js',                                 // plan, guide, resume, reports, explanations
   'more.js',                                   // about, progress file, voice help, spaced repetition, recorder
+  'polish.js',                                 // appearance, answer labels, microcopy, optional plan, home shortcuts
   'app.js'                                     // CCSE core, storage, settings, boot
 ];
