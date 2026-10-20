@@ -67,8 +67,8 @@ function home(){
     <div class="cards2">
       <button class="bigcard" id="go-ccse" type="button"><span class="bc-tag">CCSE</span><span class="bc-t">${esc(T_.ccseCard)}</span><span class="bc-s">${esc(T_.ccseCardSub)}</span></button>
       <button class="bigcard" id="go-dele" type="button"><span class="bc-tag">DELE A2</span><span class="bc-t">${esc(T_.deleCard)}</span><span class="bc-s">${esc(T_.deleCardSub)}</span></button>
-    </div>${resumeHTML()}${S.set.langChosen && (S.exams.length || Object.keys(S.q).length || Object.keys(S.dq).length) ? jumpHTML() : ''}<button class="linkbtn" id="go-guide" type="button">${esc(T_.guideBtn)}</button></div>`;
-  wireResume(); wireJump(); $('#go-guide').onclick = () => go(guide);
+    </div>${resumeHTML()}${S.set.langChosen && (S.exams.length || Object.keys(S.q).length || Object.keys(S.dq).length) ? jumpHTML() : ''}${installHTML()}<button class="linkbtn" id="go-guide" type="button">${esc(T_.guideBtn)}</button></div>`;
+  wireResume(); wireJump(); wireInstall(); $('#go-guide').onclick = () => go(guide);
   $('#go-ccse').onclick = () => go(ccseHub);
   $('#go-dele').onclick = () => go(deleHub);
 }

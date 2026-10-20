@@ -133,6 +133,19 @@ await step('report opens a prefilled email', async () => {
   if (!href.startsWith('mailto:apto.feedback@icloud.com') || !href.includes('typo')) throw new Error(href);
 });
 await step('share button', async () => { await page.click('#share-btn'); await page.waitForSelector('#toast.on'); });
+await step('full DELE mock: reading → listening → writing → speaking → result', async () => {
+  await page.click('#home-btn'); const l = await page.$('.confirm.leave [data-yes]'); if (l) await l.click();
+  await page.click('#go-dele'); await page.click('#d-mock'); await page.check('input[name=mkind][value=full]'); await page.click('#m-start');
+  for (let i = 0; i < 4; i++) await page.click('#m-next');
+  for (let i = 0; i < 30 && !(await page.$('#mw-next')); i++) await page.click('#m-next');
+  await page.fill('.mw-txt[data-k="t1"]', 'Hola, Carmen: muchas gracias por la invitación. Un beso.');
+  await page.click('#mw-next'); await page.waitForSelector('#ms-done'); await page.click('#ms-done');
+  await page.waitForSelector('text=' + 'Письмо и устная часть: самопроверка');
+});
+await step('keyboard: number key answers', async () => {
+  await page.click('#home-btn'); await page.click('#go-ccse'); await page.click('#go-study'); await page.click('[data-t="2"]');
+  await page.keyboard.press('2'); await page.waitForSelector('#card .opt.right');
+});
 await step('hub buttons share one width', async () => {
   for (const vw of [360, 430, 820]) {
     await page.setViewportSize({ width: vw, height: 900 });

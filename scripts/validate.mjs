@@ -19,8 +19,8 @@ for (const q of Q) {
 }
 
 // DELE: evaluate content files in a sandbox with stub globals the content code needs
-const content = ['i18n.js','aud.js','aud-b.js','v2-aud.js','v3-aud.js','v4-aud.js','read-a.js','read-b.js','v2-read.js','v2-read-b.js','v3-read.js','v4-read.js','dele.js','gram-b.js','ws.js','more.js','polish.js','vocab.js','tools.js'];
-const ctx = vm.createContext({ console, I18N: undefined });
+const content = ['i18n.js','aud.js','aud-b.js','v2-aud.js','v3-aud.js','v4-aud.js','read-a.js','read-b.js','v2-read.js','v2-read-b.js','v3-read.js','v4-read.js','dele.js','gram-b.js','ws.js','more.js','polish.js','vocab.js','tools.js','mock-ws.js'];
+const ctx = vm.createContext({ console, I18N: undefined, document: { addEventListener(){} }, addEventListener(){} });
 const exportNames = 'I18N,AUD,AUDG,AUD_TOPICS,AUD_V2,AUD_V3,AUD_V4,AUDG_V2,AUDG_V3,AUDG_V4,READ_A,READ_B,READ_V2,READ_V3,READ_V4,GRAM,WRITE,SPEAK,VOC';
 vm.runInContext(content.map(f => read('js/' + f)).join('\n') + `\n;globalThis.__x = {${exportNames}};`, ctx);
 const X = ctx.__x;
@@ -57,7 +57,7 @@ for (const G of AUDG) G.qs.forEach((q, k) => {
 for (const g of X.GRAM) [...g.diag, ...g.prac].forEach((it, k) => { if (!it.s.includes('___') || !(it.a >= 0 && it.a < it.o.length)) fail(`grammar ${g.id}:${k}`); });
 
 for (const T of X.VOC) T.w.forEach((w, k) => { if (w.length !== 4 || w.some(x => !x)) fail(`vocab ${T.id}:${k}`); });
-if (X.VOC.length !== 8) fail('vocab: expected 8 topics');
+if (X.VOC.length !== 9) fail('vocab: expected 9 topics');
 
 // Interface strings: every language has the same keys as Spanish
 const keys = l => Object.keys(X.I18N[l]).sort().join();

@@ -10,9 +10,9 @@ Not affiliated with the Instituto Cervantes.
   a short “why” explanation for every question, study by tarea, mistakes review, spaced repetition (1/3/7/16/35 days),
   25-question / 45-minute mock exam, progress report.
 - **DELE A2** — four full reading + listening variants in the exam format (4 + 4 tasks, 25 + 25 items),
-  vocabulary flashcards (8 topics, 120 words, spaced repetition), 12 grammar topics,
+  vocabulary flashcards (9 topics incl. paperwork, 135 words, spaced repetition), 12 grammar topics,
   listening read by the device’s Spanish voices (with install help and a read-the-text fallback when there are none), grammar diagnostic with rule cards, writing practice with hints (accents, ¿¡, connectors, repetition), speaking practice with an in-browser voice recorder,
-  full mock exam with 60 + 40 minute timers, mistakes queue, progress by task.
+  full mock exam: reading (60 min) + listening (40) + writing (45) + speaking with recording, or reading + listening only, mistakes queue, progress by task.
 - Study plan to the exam date, exam guide with official links, offline support (PWA), progress backup as a file or a text code,
   about & privacy page. No cookies, no analytics, no third-party requests (fonts are self-hosted).
 
@@ -26,7 +26,9 @@ npm test                           # validate + build + end-to-end checks
 ```
 
 No framework and no runtime dependencies: `scripts/build.mjs` concatenates `src/js/*` (in the order from
-`scripts/order.mjs`) with the JSON data into one hashed bundle and writes `dist/` plus a service worker.
+`scripts/order.mjs`) into a hashed core bundle (code + the 300 CCSE questions) and two data packs loaded right after it:
+`ccse.*.js` (translations, explanations) and `dele.*.js` (reading and listening texts). It writes `dist/` plus a service worker
+that precaches everything for offline use.
 
 ## Project layout
 

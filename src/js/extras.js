@@ -50,9 +50,9 @@ function resumeHTML(){
 }
 function wireResume(){
   const g = $('#cur-go'), e = $('#cur-end'), c = S.cur; if (!c) return;
-  const finish = () => { if (c.t === 'ccse'){ E = c.E; E.done = false; examFinish(); } else { DM = c.DM; DM.done = false; mockFinish(); } };
+  const finish = () => { if (c.t === 'ccse'){ E = c.E; E.done = false; examFinish(); } else { DM = c.DM; DM.done = false; DM.skipWS = true; mockFinish(); } };
   if (g) g.onclick = () => { const left = (c.t === 'ccse' ? c.E.end : c.DM.end) - Date.now(); if (left <= 0) return finish();
-    if (c.t === 'ccse'){ E = c.E; go(examView); } else { DM = c.DM; const at = c.at || {p:'r', n:1}; go(() => at.p === 'r' ? mockRead(at.n) : mockAud(at.i)); } };
+    if (c.t === 'ccse'){ E = c.E; go(examView); } else { DM = c.DM; const at = c.at || {p:'r', n:1}; go(() => at.p === 'r' ? mockRead(at.n) : at.p === 'w' ? mockWrite() : at.p === 's' ? mockSpeak() : mockAud(at.i)); } };
   if (e) e.onclick = finish;
 }
 function guardLeave(target){
@@ -67,6 +67,7 @@ function guardLeave(target){
 
 // ---------- first run ----------
 function firstRun(){
+  current = firstRun;
   view.innerHTML = `<div class="stack"><div class="intro"><span class="eyebrow">Apto</span><h1>Hola · Hello · Привет · Привіт</h1>
     <p class="lede">${Object.keys(I18N).map(l=>esc(I18N[l].welcome)).join('<br>')}</p></div>
     <div class="cards2">${Object.keys(I18N).map(l=>`<button class="bigcard lang" type="button" data-l="${l}"><span class="bc-tag">${l.toUpperCase()}</span><span class="bc-t">${esc(I18N[l].lang)}</span></button>`).join('')}</div></div>`;

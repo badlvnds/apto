@@ -1,14 +1,19 @@
 // ---------- DELE A2 full format: reading 4 tareas, listening 4 tareas ----------
-[...READ_A, ...READ_B].forEach(R => R.v = R.v || 1); AUD.forEach(a => a.v = a.v || 1); AUDG.forEach(g => g.v = g.v || 1);
-AUD.push(...AUD_V2, ...AUD_V3, ...AUD_V4); AUDG.push(...AUDG_V2, ...AUDG_V3, ...AUDG_V4);
-const READ = [...READ_A, ...READ_B, ...READ_V2, ...READ_V3, ...READ_V4].sort((a,b) => a.task - b.task);
+// The reading/listening texts arrive in a separate data pack (dele.*.js), which calls deleInit() when loaded.
+let READ = [], R_TOTAL = 0, A_TOTAL = 0, DELE_READY = false;
+function deleInit(){
+  [...READ_A, ...READ_B].forEach(R => R.v = R.v || 1); AUD.forEach(a => a.v = a.v || 1); AUDG.forEach(g => g.v = g.v || 1);
+  AUD.push(...AUD_V2, ...AUD_V3, ...AUD_V4); AUDG.push(...AUDG_V2, ...AUDG_V3, ...AUDG_V4);
+  READ = [...READ_A, ...READ_B, ...READ_V2, ...READ_V3, ...READ_V4].sort((a,b) => a.task - b.task);
+  R_TOTAL = READ.filter(R => R.v === 1).reduce((s,R) => s + R.qs.length, 0);
+  A_TOTAL = AUD.filter(a => a.v === 1).length + AUDG.filter(g => g.v === 1).reduce((s,g) => s + g.qs.length, 0);
+  DELE_READY = true;
+}
 const VARIANTS = [1,2,3,4];
 let CURV = 1;
 const RT = (n, v = CURV) => READ.filter(R => R.task === n && R.v === v);
 const AT = (n, v = CURV) => AUD.filter(a => a.task === n && a.v === v);
 const AG = (n, v = CURV) => AUDG.find(g => g.task === n && g.v === v);
-const R_TOTAL = READ.filter(R => R.v === 1).reduce((s,R) => s + R.qs.length, 0);
-const A_TOTAL = AUD.filter(a => a.v === 1).length + AUDG.filter(g => g.v === 1).reduce((s,g) => s + g.qs.length, 0);
 Object.assign(I18N.es,{variant:'Variante'}); Object.assign(I18N.en,{variant:'Version'}); Object.assign(I18N.ru,{variant:'Вариант'}); Object.assign(I18N.uk,{variant:'Варіант'});
 function syncV(){ CURV = (S.set && S.set.dv) || 1; }
 function varPickHTML(){ return `<div class="filters" role="group" aria-label="${esc(t().variant)}"><span class="note" style="align-self:center">${esc(t().variant)}:</span>${VARIANTS.map(v=>`<button type="button" class="chip" data-v="${v}" aria-pressed="${v===CURV}">${v}</button>`).join('')}</div>`; }
@@ -40,6 +45,7 @@ I18N.es.speaker.n='Locutor'; I18N.en.speaker.n='Announcer'; I18N.ru.speaker.n='�
 // ---------- item lookup for mistakes ----------
 function dItem(key){
   const [kind, a, b] = key.split(':');
+  if (kind !== 'g' && !DELE_READY) return null;
   if (kind === 'g'){ const g = GRAM.find(x=>x.id===a); if (!g) return null; const it = (b[0]==='d'?g.diag:g.prac)[+b.slice(1)]; return it ? {kind, g, it} : null; }
   if (kind === 'r'){ const R = READ.find(x=>x.id===a); return R && R.qs[+b] ? {kind, R, k:+b} : null; }
   if (kind === 'a' && b === undefined){ const it = AUD.find(x=>x.id===a); return it ? {kind, it} : null; }
@@ -209,11 +215,13 @@ function deleMock(){
   view.innerHTML = `<div class="stack">${backRow(deleHub, 'DELE A2')}<span class="eyebrow">DELE A2</span><h1>${esc(T_.mockTitle)}</h1><p class="lede">${esc(T_.mockLede)}</p>
     <section class="panel"><h2>${esc(T_.partRead)} · ${esc(T_.durR)}</h2><ul class="focus">${[1,2,3,4].map(n=>`<li>${esc(taskTitle('r',n))} · ${esc(T_.nQ(taskCount('r',n)))}</li>`).join('')}</ul>
       <h2>${esc(T_.partAud)} · ${esc(T_.durA)}</h2><ul class="focus">${[1,2,3,4].map(n=>`<li>${esc(taskTitle('a',n))} · ${esc(T_.nQ(taskCount('a',n)))}</li>`).join('')}</ul></section>
+    <section class="panel"><div class="radios">${[['full',T_.mockFull,T_.mockFullSub],['short',T_.mockShort,T_.mockShortSub]].map(([v,l,h])=>`<label class="radio"><input type="radio" name="mkind" value="${v}" ${(S.set.mockFull!==false)===(v==='full')?'checked':''}> <span><b>${esc(l)}</b><br><span class="note">${esc(h)}</span></span></label>`).join('')}</div></section>
     ${varPickHTML()}
     <section class="panel"><h2>${esc(T_.voices)}</h2>${voiceBoxHTML()}</section>
     <div class="row"><button class="btn primary" id="m-start" type="button">${esc(T_.mockStart)} · ${esc(T_.variant)} ${CURV}</button></div></div>`;
   wireBack(deleHub); wireVoiceBox(); wireVar(deleMock);
-  $('#m-start').onclick = () => { DM = {ans:{}, v:CURV, part:'r', end: Date.now() + 60*60000}; go(() => mockRead(1)); };
+  view.querySelectorAll('input[name=mkind]').forEach(i => i.onchange = () => { S.set.mockFull = i.value === 'full'; save(); });
+  $('#m-start').onclick = () => { DM = {ans:{}, v:CURV, part:'r', full: S.set.mockFull !== false, end: Date.now() + 60*60000}; go(() => mockRead(1)); };
 }
 function mockTimer(onUp){
   stopTimer();
@@ -238,7 +246,7 @@ function mockAud(i){
   const task = st.it ? st.it.task : st.G.task;
   view.innerHTML = `<div class="stack"><div class="row"><span class="eyebrow">${esc(T_.partAud)}</span><span class="sp"></span><span class="chip">${esc(taskTitle('a',task))}</span></div>
     <section class="panel qcard" id="ma"></section>
-    <div class="row"><span class="sp"></span><button class="btn primary" id="m-next" type="button">${esc(i+1<steps.length?T_.next:T_.finishMock)}</button></div></div>`;
+    <div class="row"><span class="sp"></span><button class="btn primary" id="m-next" type="button">${esc(i+1<steps.length?T_.next:(DM.full?T_.toWrite:T_.finishMock))}</button></div></div>`;
   EXAM_ON = true; saveCur({t:'dele', DM, at:{p:'a', i}});
   if (st.it) audItem($('#ma'), st.it, {exam:true, feedback:false, chosen: DM.ans['a:'+st.it.id], onAnswer: (ok,k) => DM.ans['a:'+st.it.id] = k});
   else { const ch = {}; st.G.qs.forEach((_,k) => { const v = DM.ans[`a:${st.G.id}:${k}`]; if (v !== undefined) ch[k] = v; });
@@ -247,7 +255,15 @@ function mockAud(i){
   mockTimer(mockFinish);
 }
 function mockFinish(){
-  if (!DM || DM.done) return; DM.done = true; stopTimer(); TTS.stop(); clearCur(); EXAM_ON = false; CURV = DM.v || 1;
+  if (!DM || DM.done) return; stopTimer(); TTS.stop(); CURV = DM.v || 1;
+  if (!DM.res) mockScore();
+  // full exam: after reading + listening come writing and speaking
+  if (DM.full && !DM.wsDone && !DM.skipWS){ if (DM.part === 'w') return go(mockWrite); if (DM.part === 's') return go(mockSpeak); return toWriting(); }
+  DM.done = true; clearCur(); EXAM_ON = false;
+  const R = DM.res, D = DM;
+  go(() => mockResult(R.r, R.a, R.tasks, R.review, D));
+}
+function mockScore(){
   const tasks = {}, review = [];
   const add = (p, n, key, ok) => { const id = p+n; tasks[id] = tasks[id] || [0,0]; tasks[id][1]++; if (ok) tasks[id][0]++; drec(key, ok); if (!ok) review.push(key); };
   [1,2,3,4].forEach(n => RT(n).forEach(R => R.qs.forEach((q,k) => { const key=`r:${R.id}:${k}`; add('r', n, key, DM.ans[key] === q.a); })));
@@ -256,8 +272,7 @@ function mockFinish(){
   const sum = p => [1,2,3,4].reduce((s,n) => [s[0]+tasks[p+n][0], s[1]+tasks[p+n][1]], [0,0]);
   const r = sum('r'), a = sum('a');
   S.dmocks.push({at:Date.now(), v:CURV, ok:r[0]+a[0], n:r[1]+a[1], r, a, tasks}); save();
-  const ans = DM.ans;
-  go(() => mockResult(r, a, tasks, review, ans));
+  DM.res = {r, a, tasks, review};
 }
 function rightTxt(d){
   if (d.kind === 'r'){ const q = d.R.qs[d.k]; return d.R.match ? `${q.o[q.a]} · ${d.R.docs[q.a].title}` : q.o[q.a]; }
@@ -266,14 +281,15 @@ function rightTxt(d){
 }
 function qTxt(d){ return d.kind === 'r' ? d.R.qs[d.k].q : d.kind === 'a' ? d.it.q : d.G.qs[d.k].q; }
 function tipTxt(d){ return loc(d.kind === 'r' ? d.R.qs[d.k].tip : d.kind === 'a' ? d.it.tip : d.G.qs[d.k].tip); }
-function mockResult(r, a, tasks, review){
-  current = () => mockResult(r, a, tasks, review);
+function mockResult(r, a, tasks, review, D){
+  current = () => mockResult(r, a, tasks, review, D);
   const T_ = t(), pr = Math.round(r[0]/r[1]*100), pa = Math.round(a[0]/a[1]*100), tot = Math.round((r[0]+a[0])/(r[1]+a[1])*100), pass = pr >= 60 && pa >= 60;
   const row = (label, x) => { const p = Math.round(x[0]/x[1]*100); return `<div class="trow"><span class="tt">${esc(label)}</span><span class="tc">${x[0]}/${x[1]}</span><div class="track"><i class="${barCls(p)}" style="width:${p}%"></i></div></div>`; };
   view.innerHTML = `<div class="stack"><section class="panel"><span class="eyebrow">${esc(T_.mockRes)}</span>
     <div class="stat"><span class="verdict ${pass?'ok':'no'}">${tot} %</span></div>
     <div class="tareas">${row(T_.kRead, r)}${row(T_.kAud, a)}</div><p class="note">${esc(T_.mockRef)} ${review.length?esc(T_.mockAdded):''}</p></section>
     <section class="panel"><h2>${esc(T_.byTask)}</h2><div class="tareas">${[1,2,3,4].map(n=>row(`${T_.kRead} · ${taskTitle('r',n)}`, tasks['r'+n])).join('')}${[1,2,3,4].map(n=>row(`${T_.kAud} · ${taskTitle('a',n)}`, tasks['a'+n])).join('')}</div></section>
+    ${wsResultHTML(D)}
     ${review.length?`<section class="panel"><h2>${esc(T_.review)}</h2><div class="blist">${review.map(k=>{const d=dItem(k); return `<div class="bitem"><span class="bm">${esc(d.kind==='r'?T_.kRead:T_.kAud)}</span><span class="bq" lang="es">${esc(qTxt(d))}</span><span class="ba" lang="es">${esc(rightTxt(d))}</span><span>${esc(tipTxt(d))}</span></div>`}).join('')}</div></section>`:''}
     <div class="actions"><button class="btn primary" id="mr-wrong" type="button" ${review.length?'':'disabled'}>${esc(T_.deleWrong)}</button><button class="btn" id="mr-prog" type="button">${esc(T_.myProgress)}</button><button class="btn" id="mr-hub" type="button">DELE A2</button></div></div>`;
   $('#mr-wrong').onclick = () => go(deleMistakes);

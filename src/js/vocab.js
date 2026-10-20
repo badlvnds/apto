@@ -73,18 +73,28 @@ const VOC = [
   ['de vacaciones','on holiday','в отпуске','у відпустці'],['el puente','long weekend; bridge','длинные выходные; мост','довгі вихідні; міст'],
   ['la playa / la montaña','beach / mountains','пляж / горы','пляж / гори'],['la excursión','day trip, outing','поездка, экскурсия','поїздка, екскурсія'],
   ['merecer la pena','to be worth it','стоить того','бути вартим']]}
+,
+ {id:'tramites', name:{es:'Trámites y papeles',en:'Paperwork and admin',ru:'Документы и госуслуги',uk:'Документи й держпослуги'}, w:[
+  ['el empadronamiento','registration at the town hall (padrón)','прописка (регистрация в мэрии)','реєстрація за місцем проживання'],['el certificado de empadronamiento','proof of address from the town hall','справка о прописке','довідка про реєстрацію'],
+  ['la cita previa','appointment (booked in advance)','предварительная запись','попередній запис'],['pedir cita','to book an appointment','записаться на приём','записатися на прийом'],
+  ['el NIE','foreigner identity number','идентификационный номер иностранца (NIE)','ідентифікаційний номер іноземця (NIE)'],['la tarjeta de residencia (TIE)','residence card','вид на жительство (TIE)','посвідка на проживання (TIE)'],
+  ['renovar','to renew','продлить','продовжити'],['caducar','to expire','истечь (о сроке)','закінчитися (про строк)'],
+  ['la solicitud','application form; application','заявление','заява'],['rellenar un formulario','to fill in a form','заполнить анкету','заповнити анкету'],
+  ['el justificante','proof, receipt','подтверждение, квитанция','підтвердження, квитанція'],['la tasa','fee (official)','госпошлина','державне мито'],
+  ['la Seguridad Social','Social Security','социальное страхование','соціальне страхування'],['la ventanilla','service window, counter','окошко (в учреждении)','віконце (в установі)'],
+  ['el plazo','deadline; period','срок','строк']]}
 ];
 VOC.forEach(tp => tp.w.forEach((w, k) => w.key = `v:${tp.id}:${k}`));
 const VLX = {en:1, ru:2, uk:3};
 const vocById = key => { const [, tp, k] = key.split(':'); const T = VOC.find(x => x.id === tp); return T && T.w[+k] ? {T, w:T.w[+k]} : null; };
 
-Object.assign(I18N.es,{kVoc:'Vocabulario',vocSub:n=>`8 temas · ${n} palabras`,vocTitle:'Vocabulario A2',vocLede:'Tarjetas por temas del DELE A2. Mira la palabra, piensa qué significa y dale la vuelta. Las que sabes vuelven al cabo de unos días; las que no, mañana.',
+Object.assign(I18N.es,{kVoc:'Vocabulario',vocSub:n=>`${VOC.length} temas · ${n} palabras`,vocTitle:'Vocabulario A2',vocLede:'Tarjetas por temas del DELE A2. Mira la palabra, piensa qué significa y dale la vuelta. Las que sabes vuelven al cabo de unos días; las que no, mañana.',
  vocDue:n=>n?`${n} para repasar hoy`:'Nada pendiente hoy',vocAll:'Repasar las de hoy',vocNew:n=>`${n} nuevas`,vocShow:'Ver la traducción',vocKnow:'La sabía',vocAgain:'Todavía no',vocDoneT:'Hecho por ahora',vocDone:(k,n)=>`Has repasado ${n} tarjetas y sabías ${k}. Las demás vuelven mañana.`,vocLearned:(k,n)=>`${k}/${n} aprendidas`,vocMeaning:'Significado'});
-Object.assign(I18N.en,{kVoc:'Vocabulary',vocSub:n=>`8 topics · ${n} words`,vocTitle:'A2 vocabulary',vocLede:'Flashcards by DELE A2 topic. Look at the word, think what it means, then flip it. Words you know come back in a few days; the rest tomorrow.',
+Object.assign(I18N.en,{kVoc:'Vocabulary',vocSub:n=>`${VOC.length} topics · ${n} words`,vocTitle:'A2 vocabulary',vocLede:'Flashcards by DELE A2 topic. Look at the word, think what it means, then flip it. Words you know come back in a few days; the rest tomorrow.',
  vocDue:n=>n?`${n} to review today`:'Nothing due today',vocAll:'Review today’s cards',vocNew:n=>`${n} new`,vocShow:'Show translation',vocKnow:'I knew it',vocAgain:'Not yet',vocDoneT:'Done for now',vocDone:(k,n)=>`You reviewed ${n} cards and knew ${k}. The rest come back tomorrow.`,vocLearned:(k,n)=>`${k}/${n} learned`,vocMeaning:'Meaning'});
-Object.assign(I18N.ru,{kVoc:'Лексика',vocSub:n=>`8 тем · ${n} слов`,vocTitle:'Лексика A2',vocLede:'Карточки по темам DELE A2. Посмотрите на слово, вспомните значение и переверните карточку. Знакомые слова вернутся через несколько дней, остальные — завтра.',
+Object.assign(I18N.ru,{kVoc:'Лексика',vocSub:n=>`${VOC.length} тем · ${n} слов`,vocTitle:'Лексика A2',vocLede:'Карточки по темам DELE A2. Посмотрите на слово, вспомните значение и переверните карточку. Знакомые слова вернутся через несколько дней, остальные — завтра.',
  vocDue:n=>n?`На сегодня: ${n}`:'На сегодня ничего',vocAll:'Повторить на сегодня',vocNew:n=>`новых: ${n}`,vocShow:'Показать перевод',vocKnow:'Знаю',vocAgain:'Пока нет',vocDoneT:'На этом всё',vocDone:(k,n)=>`Вы повторили карточек: ${n}, знали ${k}. Остальные вернутся завтра.`,vocLearned:(k,n)=>`выучено ${k}/${n}`,vocMeaning:'Значение'});
-Object.assign(I18N.uk,{kVoc:'Лексика',vocSub:n=>`8 тем · ${n} слів`,vocTitle:'Лексика A2',vocLede:'Картки за темами DELE A2. Подивіться на слово, згадайте значення й переверніть картку. Знайомі слова повернуться за кілька днів, решта — завтра.',
+Object.assign(I18N.uk,{kVoc:'Лексика',vocSub:n=>`${VOC.length} тем · ${n} слів`,vocTitle:'Лексика A2',vocLede:'Картки за темами DELE A2. Подивіться на слово, згадайте значення й переверніть картку. Знайомі слова повернуться за кілька днів, решта — завтра.',
  vocDue:n=>n?`На сьогодні: ${n}`:'На сьогодні нічого',vocAll:'Повторити на сьогодні',vocNew:n=>`нових: ${n}`,vocShow:'Показати переклад',vocKnow:'Знаю',vocAgain:'Ще ні',vocDoneT:'На цьому все',vocDone:(k,n)=>`Ви повторили карток: ${n}, знали ${k}. Решта повернеться завтра.`,vocLearned:(k,n)=>`вивчено ${k}/${n}`,vocMeaning:'Значення'});
 
 // state: S.voc[key] = {box, due, n}

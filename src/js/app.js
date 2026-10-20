@@ -37,10 +37,16 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function shuffle(a){ a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 const view = $('#view');
+// Data packs (CCSE translations + explanations, DELE texts) load right after the app shell; navigation waits for them.
+let PACKS_READY = false;
+const PACKS = Promise.all(['__PACK_CCSE__', '__PACK_DELE__'].map(src => new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); })))
+  .then(() => { PACKS_READY = true; if (current === home) home(); });
 let timer = null, current = home;
 function setMeta(x){ $('#bar-meta').textContent = x; }
 function stopTimer(){ if (timer){ clearInterval(timer); timer = null; } }
-function go(fn){ EXAM_ON = false; recStop(); if (typeof SPK_T !== 'undefined' && SPK_T){ clearInterval(SPK_T.id); SPK_T = null; } const mm = document.getElementById('bar-meta'); if (mm) mm.classList.remove('warn'); stopTimer(); try { TTS.stop(); } catch(e){} current = fn; setMeta(''); fn(); window.scrollTo(0,0); }
+function go(fn){
+  if (!PACKS_READY){ view.innerHTML = `<div class="stack" aria-busy="true"><p class="note">${esc(t().loading)}</p></div>`; PACKS.then(() => go(fn), () => { view.innerHTML = `<div class="stack"><p class="note">${esc(t().loadFail)}</p></div>`; }); return; }
+  EXAM_ON = false; recStop(); if (typeof SPK_T !== 'undefined' && SPK_T){ clearInterval(SPK_T.id); SPK_T = null; } const mm = document.getElementById('bar-meta'); if (mm) mm.classList.remove('warn'); stopTimer(); try { TTS.stop(); } catch(e){} current = fn; setMeta(''); fn(); window.scrollTo(0,0); }
 function chrome(){
   document.documentElement.lang = S.set.lang; applyTheme();
   $('#lang').value = S.set.lang;
@@ -131,7 +137,7 @@ function study({tarea=0, mode='all'}){
   view.innerHTML = `<div class="stack">
     <div class="row"><span class="eyebrow">${esc(label)}</span><span class="sp"></span><span class="chip" id="sess">${esc(T_.zero)}</span></div>
     <section class="panel qcard" id="card"></section>
-    <div class="row"><button class="btn" id="exit" type="button">${esc(T_.finish)}</button></div></div>`;
+    <div class="row"><button class="btn" id="exit" type="button">${esc(T_.finish)}</button></div>${kbdHintHTML()}</div>`;
   $('#exit').onclick = () => go(ccseHub);
   function next(){
     const pool = poolFn();
@@ -172,7 +178,7 @@ function examView(){
     </section>
     <div class="row"><button class="btn" id="prev" type="button" ${E.i===0?'disabled':''}>${esc(T_.prev)}</button><span class="sp"></span>${E.i<24?`<button class="btn primary" id="nxt" type="button">${esc(T_.next)}</button>`:''}</div>
     <div class="row"><button class="btn" id="fin" type="button">${esc(T_.submit)}</button></div>
-    <div id="fin-box"></div></div>`;
+    <div id="fin-box"></div>${kbdHintHTML()}</div>`;
   wireTr($('#ecard'));
   view.querySelectorAll('.opts .opt').forEach(b => b.onclick = () => { E.ans[E.i] = +b.dataset.k; if (E.i<24) E.i++; examView(); });
   view.querySelectorAll('.dots button').forEach(b => b.onclick = () => { E.i = +b.dataset.k; examView(); });

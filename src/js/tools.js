@@ -48,3 +48,47 @@ function shareApto(){
   if (navigator.share) return navigator.share(data).catch(() => {});
   try { navigator.clipboard.writeText(SITE_URL).then(() => toast(T_.shareCopied), () => toast(SITE_URL)); } catch(e){ toast(SITE_URL); }
 }
+
+// ---------- keyboard: 1–4 / a–d pick an answer, ←/→ move in the mock exam ----------
+Object.assign(I18N.es,{kbdHint:'Teclado: 1–3 o A–C para responder, Enter para seguir.',instT:'Apto como aplicación',instAndroid:'Instálala en la pantalla de inicio: se abre a pantalla completa y funciona sin conexión.',instIOS:'En Safari, pulsa «Compartir» y luego «Añadir a pantalla de inicio». Se abre a pantalla completa y funciona sin conexión.',instBtn:'Instalar',instLater:'Ahora no'});
+Object.assign(I18N.en,{kbdHint:'Keyboard: 1–3 or A–C to answer, Enter to continue.',instT:'Apto as an app',instAndroid:'Install it on your home screen: it opens full screen and works offline.',instIOS:'In Safari, tap “Share”, then “Add to Home Screen”. It opens full screen and works offline.',instBtn:'Install',instLater:'Not now'});
+Object.assign(I18N.ru,{kbdHint:'Клавиатура: 1–3 или A–C — ответ, Enter — дальше.',instT:'Apto как приложение',instAndroid:'Установите на главный экран: откроется на весь экран и работает без интернета.',instIOS:'В Safari нажмите «Поделиться», затем «На экран „Домой“». Откроется на весь экран и работает без интернета.',instBtn:'Установить',instLater:'Не сейчас'});
+Object.assign(I18N.uk,{kbdHint:'Клавіатура: 1–3 або A–C — відповідь, Enter — далі.',instT:'Apto як застосунок',instAndroid:'Установіть на головний екран: відкриється на весь екран і працює без інтернету.',instIOS:'У Safari натисніть «Поділитися», потім «На початковий екран». Відкриється на весь екран і працює без інтернету.',instBtn:'Установити',instLater:'Не зараз'});
+const hasKeyboard = () => { try { return matchMedia('(hover:hover) and (pointer:fine)').matches; } catch(e){ return false; } };
+function kbdHintHTML(){ return hasKeyboard() ? `<p class="note kbd">${esc(t().kbdHint)}</p>` : ''; }
+document.addEventListener('keydown', e => {
+  if (e.altKey || e.ctrlKey || e.metaKey) return;
+  const el = document.activeElement, tag = el && el.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (el && el.isContentEditable)) return;
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){ const b = document.getElementById(e.key === 'ArrowLeft' ? 'prev' : 'nxt'); if (b && !b.disabled){ e.preventDefault(); b.click(); } return; }
+  const k = e.key.toLowerCase(), idx = '1234'.indexOf(k) >= 0 ? '1234'.indexOf(k) : 'abcd'.indexOf(k);
+  if (idx < 0 || k.length !== 1) return;
+  // the answer group: the one holding focus, else the first one still open on the page
+  const groups = [...view.querySelectorAll('.opts')].filter(g => g.offsetParent !== null);
+  const g = (el && el.closest && el.closest('.opts')) || groups.find(x => x.querySelector('.opt:not(:disabled)') && !x.querySelector('.opt.sel, .opt.right, .opt.wrong')) || groups.find(x => x.querySelector('.opt:not(:disabled)'));
+  if (!g) return;
+  const b = g.querySelectorAll('.opt')[idx]; if (b && !b.disabled){ e.preventDefault(); b.click(); }
+});
+
+// ---------- install hint (only after some real use, never in the installed app) ----------
+let INSTALL_EVT = null;
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); INSTALL_EVT = e; const h = document.getElementById('inst'); if (!h && current === home) go(home); });
+const isStandalone = () => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch(e){ return false; } };
+const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+function installHTML(){
+  if (isStandalone() || S.set.installDismissed) return '';
+  const used = S.exams.length || S.dmocks.length || Object.keys(S.q).length >= 10 || Object.keys(S.dq).length >= 10;
+  if (!used || !(INSTALL_EVT || isIOS())) return '';
+  const T_ = t();
+  return `<div class="plan-line" id="inst"><span class="eyebrow">${esc(T_.instT)}</span><p>${esc(INSTALL_EVT ? T_.instAndroid : T_.instIOS)}</p>
+    <div class="row">${INSTALL_EVT?`<button class="btn primary" id="inst-go" type="button">${esc(T_.instBtn)}</button>`:''}<button class="btn" id="inst-no" type="button">${esc(T_.instLater)}</button></div></div>`;
+}
+function wireInstall(){
+  const g = document.getElementById('inst-go'), n = document.getElementById('inst-no');
+  if (g) g.onclick = async () => { try { INSTALL_EVT.prompt(); await INSTALL_EVT.userChoice; } catch(e){} INSTALL_EVT = null; go(home); };
+  if (n) n.onclick = () => { S.set.installDismissed = true; save(); const b = document.getElementById('inst'); if (b) b.remove(); };
+}
+Object.assign(I18N.es,{loading:'Cargando…',loadFail:'No se ha podido cargar. Comprueba la conexión y recarga la página.'});
+Object.assign(I18N.en,{loading:'Loading…',loadFail:'Couldn’t load. Check your connection and reload the page.'});
+Object.assign(I18N.ru,{loading:'Загрузка…',loadFail:'Не удалось загрузить. Проверьте подключение и обновите страницу.'});
+Object.assign(I18N.uk,{loading:'Завантаження…',loadFail:'Не вдалося завантажити. Перевірте з’єднання й оновіть сторінку.'});
