@@ -215,6 +215,7 @@ function deleMock(){
   syncV(); const T_ = t(), full = S.set.mockFull !== false;
   view.innerHTML = `<div class="stack">${backRow(deleHub, 'DELE A2')}<span class="eyebrow">DELE A2</span><h1>${esc(T_.mockTitle)}</h1>
     <p class="summary">${esc(full ? T_.mSumFull : T_.mSumShort)}</p>
+    <p class="note">${esc(T_.mFormatNote)} <a href="${DELE_A2_URL}" target="_blank" rel="noopener">${esc(T_.deleNoteLink)}</a>.</p>
     <section class="panel"><div class="radios">${[['full',T_.mockFull,T_.mockFullSub],['short',T_.mockShort,T_.mockShortSub]].map(([v,l,h])=>`<label class="radio"><input type="radio" name="mkind" value="${v}" ${full===(v==='full')?'checked':''}> <span><b>${esc(l)}</b><br><span class="note">${esc(h)}</span></span></label>`).join('')}</div></section>
     <section class="panel"><h2>${esc(T_.rulesT)}</h2><ul class="focus">${T_.mRules(full).map(r=>`<li>${esc(r)}</li>`).join('')}</ul>
       <details class="script"><summary>${esc(T_.breakdownT)}</summary>
