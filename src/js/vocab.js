@@ -89,20 +89,22 @@ const VLX = {en:1, ru:2, uk:3};
 const vocById = key => { const [, tp, k] = key.split(':'); const T = VOC.find(x => x.id === tp); return T && T.w[+k] ? {T, w:T.w[+k]} : null; };
 
 Object.assign(I18N.es,{kVoc:'Vocabulario',vocSub:n=>`${VOC.length} temas · ${n} palabras`,vocTitle:'Vocabulario A2',vocLede:'Tarjetas por temas del DELE A2. Mira la palabra, piensa qué significa y dale la vuelta. Las que sabes vuelven al cabo de unos días; las que no, mañana.',
- vocDue:n=>n?`${n} para repasar hoy`:'Nada pendiente hoy',vocAll:'Repasar las de hoy',vocNew:n=>`${n} nuevas`,vocShow:'Ver la traducción',vocKnow:'La sabía',vocAgain:'Todavía no',vocDoneT:'Hecho por ahora',vocDone:(k,n)=>`Has repasado ${n} tarjetas y sabías ${k}. Las demás vuelven mañana.`,vocLearned:(k,n)=>`${k}/${n} aprendidas`,vocMeaning:'Significado'});
+ vocCardOf:(i,n)=>`Tarjeta ${i} de ${n}`,vocLearnedOf:(k,n)=>`${k} de ${n} palabras aprendidas`,vocRepeat:'Otra vez',vocDue:n=>n?`${n} para repasar hoy`:'Nada pendiente hoy',vocAll:'Repasar las de hoy',vocNew:n=>`${n} nuevas`,vocShow:'Ver la traducción',vocKnow:'La sabía',vocAgain:'Todavía no',vocDoneT:'Hecho por ahora',vocDone:(k,n)=>`Has repasado ${n} tarjetas y sabías ${k}. Las demás vuelven mañana.`,vocLearned:(k,n)=>`${k}/${n} aprendidas`,vocMeaning:'Significado'});
 Object.assign(I18N.en,{kVoc:'Vocabulary',vocSub:n=>`${VOC.length} topics · ${n} words`,vocTitle:'A2 vocabulary',vocLede:'Flashcards by DELE A2 topic. Look at the word, think what it means, then flip it. Words you know come back in a few days; the rest tomorrow.',
- vocDue:n=>n?`${n} to review today`:'Nothing due today',vocAll:'Review today’s cards',vocNew:n=>`${n} new`,vocShow:'Show translation',vocKnow:'I knew it',vocAgain:'Not yet',vocDoneT:'Done for now',vocDone:(k,n)=>`You reviewed ${n} cards and knew ${k}. The rest come back tomorrow.`,vocLearned:(k,n)=>`${k}/${n} learned`,vocMeaning:'Meaning'});
+ vocCardOf:(i,n)=>`Card ${i} of ${n}`,vocLearnedOf:(k,n)=>`${k} of ${n} words learned`,vocRepeat:'One more time',vocDue:n=>n?`${n} to review today`:'Nothing due today',vocAll:'Review today’s cards',vocNew:n=>`${n} new`,vocShow:'Show translation',vocKnow:'I knew it',vocAgain:'Not yet',vocDoneT:'Done for now',vocDone:(k,n)=>`You reviewed ${n} cards and knew ${k}. The rest come back tomorrow.`,vocLearned:(k,n)=>`${k}/${n} learned`,vocMeaning:'Meaning'});
 Object.assign(I18N.ru,{kVoc:'Лексика',vocSub:n=>`${VOC.length} тем · ${n} слов`,vocTitle:'Лексика A2',vocLede:'Карточки по темам DELE A2. Посмотрите на слово, вспомните значение и переверните карточку. Знакомые слова вернутся через несколько дней, остальные — завтра.',
- vocDue:n=>n?`На сегодня: ${n}`:'На сегодня ничего',vocAll:'Повторить на сегодня',vocNew:n=>`новых: ${n}`,vocShow:'Показать перевод',vocKnow:'Знаю',vocAgain:'Пока нет',vocDoneT:'На этом всё',vocDone:(k,n)=>`Вы повторили карточек: ${n}, знали ${k}. Остальные вернутся завтра.`,vocLearned:(k,n)=>`выучено ${k}/${n}`,vocMeaning:'Значение'});
+ vocCardOf:(i,n)=>`Карточка ${i} из ${n}`,vocLearnedOf:(k,n)=>`выучено ${k} из ${n} слов`,vocRepeat:'Ещё раз',vocDue:n=>n?`На сегодня: ${n}`:'На сегодня ничего',vocAll:'Повторить на сегодня',vocNew:n=>`новых: ${n}`,vocShow:'Показать перевод',vocKnow:'Знаю',vocAgain:'Пока нет',vocDoneT:'На этом всё',vocDone:(k,n)=>`Вы повторили карточек: ${n}, знали ${k}. Остальные вернутся завтра.`,vocLearned:(k,n)=>`выучено ${k}/${n}`,vocMeaning:'Значение'});
 Object.assign(I18N.uk,{kVoc:'Лексика',vocSub:n=>`${VOC.length} тем · ${n} слів`,vocTitle:'Лексика A2',vocLede:'Картки за темами DELE A2. Подивіться на слово, згадайте значення й переверніть картку. Знайомі слова повернуться за кілька днів, решта — завтра.',
- vocDue:n=>n?`На сьогодні: ${n}`:'На сьогодні нічого',vocAll:'Повторити на сьогодні',vocNew:n=>`нових: ${n}`,vocShow:'Показати переклад',vocKnow:'Знаю',vocAgain:'Ще ні',vocDoneT:'На цьому все',vocDone:(k,n)=>`Ви повторили карток: ${n}, знали ${k}. Решта повернеться завтра.`,vocLearned:(k,n)=>`вивчено ${k}/${n}`,vocMeaning:'Значення'});
+ vocCardOf:(i,n)=>`Картка ${i} з ${n}`,vocLearnedOf:(k,n)=>`вивчено ${k} з ${n} слів`,vocRepeat:'Ще раз',vocDue:n=>n?`На сьогодні: ${n}`:'На сьогодні нічого',vocAll:'Повторити на сьогодні',vocNew:n=>`нових: ${n}`,vocShow:'Показати переклад',vocKnow:'Знаю',vocAgain:'Ще ні',vocDoneT:'На цьому все',vocDone:(k,n)=>`Ви повторили карток: ${n}, знали ${k}. Решта повернеться завтра.`,vocLearned:(k,n)=>`вивчено ${k}/${n}`,vocMeaning:'Значення'});
 
 // state: S.voc[key] = {box, due, n}
 function vst(key){ S.voc = S.voc || {}; return S.voc[key]; }
 const vocDueKeys = (tp) => VOC.filter(T => !tp || T.id === tp).flatMap(T => T.w.map(w => w.key)).filter(k => { const s = vst(k); return s && s.due <= endOfToday(); });
 const vocLearned = T => T.w.filter(w => { const s = vst(w.key); return s && s.box >= 3; }).length;
 const VOC_TOTAL = VOC.reduce((a, T) => a + T.w.length, 0);
-function vrec(key, know){ S.voc = S.voc || {}; const s = S.voc[key] || (S.voc[key] = {box:0, due:0, n:0}); s.n++; bumpDay('d'); srsUpdate(s, know); save(); }
+// One step up per word per day: seeing a word again the same day never counts twice towards "learned".
+function vrec(key, know){ S.voc = S.voc || {}; const s = S.voc[key] || (S.voc[key] = {box:0, due:0, n:0}); s.n++; bumpDay('d');
+  const d = today(); if (!(know && s.last === d && s.box > 0)) srsUpdate(s, know); s.last = d; save(); }
 
 function vocab(){
   const T_ = t(), due = vocDueKeys().length;
@@ -119,16 +121,18 @@ function vocab(){
 function vocRun(keys, back){
   const T_ = t(), lang = S.set.lang, queue = shuffle(keys), seen = new Set(); let i = 0, known = 0;
   current = () => vocRun(keys, back);
-  view.innerHTML = `<div class="stack">${backRow(back, T_.kVoc)}<div class="row"><span class="eyebrow" id="v-count"></span></div><section class="panel qcard vcard" id="v-card"></section></div>`;
+  view.innerHTML = `<div class="stack">${backRow(back, T_.kVoc)}<div class="vhead"><span class="eyebrow" id="v-count"></span><span class="note" id="v-prog"></span></div><section class="panel qcard vcard" id="v-card"></section></div>`;
   wireBack(back);
   function step(){
     if (i >= queue.length){
-      $('#v-count').textContent = '';
+      $('#v-count').textContent = ''; $('#v-prog').textContent = '';
       $('#v-card').innerHTML = `<h2>${esc(T_.vocDoneT)}</h2><p class="lede">${esc(T_.vocDone(known, seen.size))}</p><div class="row"><button class="btn primary" id="v-back" type="button">${esc(T_.kVoc)}</button></div>`;
       $('#v-back').onclick = () => go(back); return;
     }
     const key = queue[i], d = vocById(key), w = d.w;
-    $('#v-count').textContent = `${loc(d.T.name)} · ${i+1} / ${queue.length} · ${T_.vocLearned(vocLearned(d.T), d.T.w.length)}`;
+    const total = new Set(keys).size, rep = seen.has(key);
+    $('#v-count').textContent = loc(d.T.name);
+    $('#v-prog').textContent = `${rep ? T_.vocRepeat : T_.vocCardOf(Math.min(seen.size + 1, total), total)} · ${T_.vocLearnedOf(vocLearned(d.T), d.T.w.length)}`;
     const tr = lang === 'es' ? w[1] : w[VLX[lang]];
     $('#v-card').innerHTML = `<div class="qhead"><span class="sp"></span>${TTS.ok?`<button type="button" class="iconbtn sm" id="v-say" aria-label="${esc(T_.listenQ)}">${SPK}</button>`:''}</div>
       <p class="vword" lang="es">${esc(w[0])}</p><div class="vback" id="v-back" hidden><span class="eyebrow">${esc(T_.vocMeaning)}</span><p class="vtr">${esc(tr)}</p></div>

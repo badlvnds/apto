@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.5 · October 2026
+
+- Vocabulary: the card shows the topic, then "Card 1 of 10 · 0 of 15 words learned" on its own line; repeats are marked "One more time". A word moves up at most one step per day, so seeing it again the same day no longer counts twice towards "learned".
+- The explanation label is now "The clue" (was "How not to get caught"), in all four languages.
+- Tests: the mock exam shows no answers or explanations before the end; same-day reviews don't count as learned.
+
 ## 1.0.4 · October 2026
 
 UI review fixes.

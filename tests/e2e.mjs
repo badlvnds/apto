@@ -140,6 +140,12 @@ await step('vocabulary cards: learn, then due tomorrow', async () => {
   for (let i = 0; i < 40; i++) { if (await page.$('#v-back:not([hidden]), #v-show') === null) break; const show = await page.$('#v-show'); if (!show) break; await show.click(); await page.click(i % 3 ? '#v-know' : '#v-again'); }
   await page.waitForSelector('#v-card h2');
   const n = await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('ccse2026.v1')).voc || {}).length); if (n !== 10) throw new Error('cards stored: ' + n);
+  // same day again: knowing every card does not make anything "learned"
+  await page.click('#v-back');
+  for (let r = 0; r < 3; r++) { await page.click('[data-v="casa"]');
+    for (let j = 0; j < 40; j++) { const sh = await page.$('#v-show'); if (!sh) break; await sh.click(); await page.click('#v-know'); }
+    await page.click('#v-back'); }
+  const lt = await page.textContent('[data-v="casa"] small'); if (!/(^|\s)0\/15/.test(lt)) throw new Error('same-day reviews counted as learned: ' + lt);
 });
 await step('grammar has 12 topics', async () => {
   await page.click('#home-btn'); await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-gram');
@@ -178,6 +184,7 @@ await step('DELE mock: jump to questions, to text and back, previous task, answe
   await page.click('#m-start'); await toq(); await page.evaluate(() => scrollTo(0, 0));
   if (!/1/.test(await page.textContent('.stack.mock .eyebrow'))) throw new Error('progress label');
   const card = page.locator('.qcard').nth(2); await card.locator('.opt').nth(1).click();
+  if (await page.locator('.stack.mock .tipbox, .stack.mock .opt.right, .stack.mock .opt.wrong, .stack.mock .feedback').count()) throw new Error('mock shows answers before the end');
   await card.locator('.totext').click(); await page.waitForSelector('#backq'); await page.click('#backq');
   await page.click('#m-next'); await page.click('#m-prev');
   if (await page.locator('.qcard').nth(2).locator('.opt.sel').count() !== 1) throw new Error('answer lost after going back');
