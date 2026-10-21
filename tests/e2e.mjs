@@ -109,6 +109,17 @@ await step('no Spanish voice: help + read the text instead', async () => {
   await p2.goto('http://localhost:4174/'); await p2.click('#go-dele'); await p2.click('#d-study'); await p2.click('#s-aud'); await p2.click('[data-n="1"]');
   await p2.waitForSelector('.novoice details'); await c2.close();
 });
+await step('visit counter: one anonymous count per section', async () => {
+  const ok = await page.evaluate(() => !!(window.goatcounter && window.goatcounter.count) && document.querySelector('script[data-goatcounter]').src.startsWith(location.origin));
+  if (!ok) throw new Error('count.js not loaded from this site');
+  await page.evaluate(() => { window.__gc = []; window.goatcounter.count = v => window.__gc.push(v); });
+  await page.click('#home-btn'); await page.click('#go-ccse'); await page.click('#go-exam'); await page.click('.opts .opt >> nth=0'); await page.click('.opts .opt >> nth=0');
+  const sent = await page.evaluate(() => window.__gc);
+  const paths = sent.map(v => v.path);
+  if (paths.length < 2 || new Set(paths).size !== paths.length) throw new Error('counts: ' + JSON.stringify(paths));
+  if (sent.some(v => Object.keys(v).some(k => !['path','title'].includes(k)) || !/^\/[a-z-]+$/.test(v.path))) throw new Error('count payload: ' + JSON.stringify(sent));
+  await page.click('#home-btn'); const l = await page.$('.confirm.leave [data-yes]'); if (l) await l.click();
+});
 await step('no third-party requests', async () => {
   const ext = []; page.on('request', r => { const u = new URL(r.url()); if (!['localhost', ''].includes(u.hostname) && !u.protocol.startsWith('blob')) ext.push(r.url()); });
   await page.reload(); await page.click('#go-ccse'); await page.waitForTimeout(300);

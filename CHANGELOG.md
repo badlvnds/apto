@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1 · October 2026
+
+- Anonymous visit counter (GoatCounter, no cookies): one count per section (e.g. /ccse-hub, /mock-read, /exam-result), never answers or progress. count.js is served from the site itself; nothing is counted on localhost.
+- About → Privacy explains exactly what is counted, in all four languages.
+
 ## 1.1 · October 2026
 
 - New address: https://getapto.app/ (GitHub Pages custom domain). The old address redirects there.

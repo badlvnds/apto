@@ -96,10 +96,20 @@ Object.assign(I18N.uk,{loading:'Завантаження…',loadFail:'Не вд
 
 // ---------- screen readers: every view has one h1, focus moves to it, results are announced ----------
 let FB_WATCH = null;
+// ---------- anonymous visit counter (GoatCounter, no cookies) ----------
+// One count per section (e.g. /ccse-hub, /mock-read, /mock-result), not per question. Never answers or progress.
+// count.js skips localhost, so tests and local runs are never counted.
+let GC_LAST = '';
+function routeOf(fn){ if (!fn) return 'home'; const src = String(fn); if (fn.name && !/^\s*(async\s*)?\(/.test(src)) return fn.name; const m = src.match(/^\s*\(\)\s*=>\s*([A-Za-z_$][\w$]*)/); return m ? m[1] : 'view'; }
+function routePath(fn){ return '/' + routeOf(fn).replace(/[A-Z]/g, c => '-' + c.toLowerCase()); }
+function countRoute(){ const p = routePath(current); if (p === GC_LAST) return; const gc = window.goatcounter; if (!gc || !gc.count) return; GC_LAST = p; try { gc.count({path: p, title: p}); } catch(e){} }
+addEventListener('load', () => countRoute());
+
 function afterNav(){
   if (!FB_WATCH){ FB_WATCH = new MutationObserver(() => view.querySelectorAll('.fb:not([aria-live])').forEach(f => f.setAttribute('aria-live', 'polite'))); FB_WATCH.observe(view, {childList:true, subtree:true}); }
   let h = view.querySelector('h1');
   if (!h){ const src = view.querySelector('.eyebrow, h2'); h = document.createElement('h1'); h.className = 'sr-only'; h.textContent = src ? src.textContent.trim() : 'Apto'; view.prepend(h); }
   document.title = (h.textContent.trim() ? h.textContent.trim() + ' · ' : '') + 'Apto';
   h.setAttribute('tabindex', '-1'); try { h.focus({preventScroll:true}); } catch(e){}
+  countRoute();
 }

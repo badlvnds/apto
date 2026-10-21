@@ -23,7 +23,7 @@ Not affiliated with the Instituto Cervantes.
   listening read by the device’s Spanish voices (with install help and a read-the-text fallback when there are none), grammar diagnostic with rule cards, writing practice with hints (accents, ¿¡, connectors, repetition), speaking practice with an in-browser voice recorder,
   full mock exam: reading (60 min) + listening (40) + writing (45) + speaking with recording, or reading + listening only, mistakes queue, progress by task.
 - Study plan to the exam date, exam guide with official links, offline support (PWA), progress backup as a file or a text code,
-  about & privacy page. No cookies, no analytics, no third-party requests (fonts are self-hosted).
+  about & privacy page. No cookies and no third-party requests except an anonymous, cookie-free visit count to [GoatCounter](https://www.goatcounter.com/) (count.js is self-hosted in `public/`; one count per section, never answers or progress).
 
 ## Develop
 
