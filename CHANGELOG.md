@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6 · October 2026
+
+- Home-screen icon on iPhone/iPad: the touch icon has a new file name (icons/apple-icon-180.png, no query string) so iOS fetches it fresh, and the web manifest no longer lists an SVG icon (iOS can't use it and may fall back to a generic icon). The manifest now lists only PNG icons, including the 180×180 one.
+
 ## 1.0.5 · October 2026
 
 - Vocabulary: the card shows the topic, then "Card 1 of 10 · 0 of 15 words learned" on its own line; repeats are marked "One more time". A word moves up at most one step per day, so seeing it again the same day no longer counts twice towards "learned".

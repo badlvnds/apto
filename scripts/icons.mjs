@@ -18,7 +18,7 @@ async function png(size, pad = 0){
 }
 
 // PWA / Apple / browser-tab icons. Apple and maskable icons are opaque with a safe margin.
-for (const [name, size, pad] of [['icon-192.png',192,0],['icon-512.png',512,0],['favicon-32.png',32,0],['favicon-16.png',16,0],['apple-touch-icon.png',180,0.1],['icon-maskable-512.png',512,0.1]])
+for (const [name, size, pad] of [['icon-192.png',192,0],['icon-512.png',512,0],['favicon-32.png',32,0],['favicon-16.png',16,0],['apple-icon-180.png',180,0.1],['icon-maskable-512.png',512,0.1]])
   writeFileSync(pub('icons/' + name), await png(size, pad));
 
 // favicon.ico with embedded PNGs (16, 32, 48): some browsers only ever ask for /favicon.ico.
