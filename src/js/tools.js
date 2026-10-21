@@ -44,7 +44,8 @@ function drawHints(text, w){ const el = $('#w-hints'); if (!el) return; const h 
 // ---------- share ----------
 const SITE_URL = 'https://badlvnds.github.io/apto/';
 function shareApto(){
-  const T_ = t(), data = {title:'Apto', text:T_.shareText, url:SITE_URL};
+  // URL only: with extra text, iOS and messengers send a plain message instead of a link preview card.
+  const T_ = t(), data = {url:SITE_URL};
   if (navigator.share) return navigator.share(data).catch(() => {});
   try { navigator.clipboard.writeText(SITE_URL).then(() => toast(T_.shareCopied), () => toast(SITE_URL)); } catch(e){ toast(SITE_URL); }
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.7 · October 2026
+
+- Share Apto: the share sheet now gets only the link (no extra text), so iMessage, WhatsApp and Telegram show the preview card. Added og:image:type and twitter:image.
+
 ## 1.0.6 · October 2026
 
 - Home-screen icon on iPhone/iPad: the touch icon has a new file name (icons/apple-icon-180.png, no query string) so iOS fetches it fresh, and the web manifest no longer lists an SVG icon (iOS can't use it and may fall back to a generic icon). The manifest now lists only PNG icons, including the 180×180 one.
