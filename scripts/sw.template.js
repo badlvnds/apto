@@ -13,6 +13,12 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET') return;
   if (url.origin !== location.origin) return;
+  // Icons, manifest and preview image: straight from the network (cache only offline), so the
+  // home-screen icon and link previews never depend on what this worker has stored.
+  if (/\/(icons\/|favicon|manifest\.webmanifest|og-image)/.test(url.pathname)) {
+    e.respondWith(fetch(e.request).catch(() => caches.match(e.request, {ignoreSearch: true})));
+    return;
+  }
   // Navigations: network first so a new version shows up, cached shell offline.
   if (e.request.mode === 'navigate') {
     e.respondWith(fetch(e.request).catch(() => caches.match('index.html')));

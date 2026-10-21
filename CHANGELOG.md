@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.8 · October 2026
+
+- Home-screen icon on iPad/iPhone: added 152×152 and 167×167 touch icons and a size-less fallback, all with absolute URLs; the service worker now fetches icons, the manifest and the preview image from the network (cache only offline).
+
 ## 1.0.7 · October 2026
 
 - Share Apto: the share sheet now gets only the link (no extra text), so iMessage, WhatsApp and Telegram show the preview card. Added og:image:type and twitter:image.
