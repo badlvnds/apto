@@ -166,8 +166,8 @@ await step('share button', async () => { await page.click('#share-btn'); await p
   // with a share sheet, only the URL is passed, so messengers build a link preview
   await page.evaluate(() => { Object.defineProperty(navigator, 'share', {configurable:true, value: d => { window.__shared = d; return Promise.resolve(); }}); });
   await page.click('#share-btn'); const d = await page.evaluate(() => window.__shared);
-  if (!d || Object.keys(d).join() !== 'url' || d.url !== 'https://badlvnds.github.io/apto/') throw new Error('share data: ' + JSON.stringify(d));
-  const og = await page.$eval('meta[property="og:image"]', m => m.content); if (!/^https:\/\/badlvnds\.github\.io\/apto\/og-image\.png/.test(og)) throw new Error('og:image ' + og);
+  if (!d || Object.keys(d).join() !== 'url' || d.url !== 'https://getapto.app/') throw new Error('share data: ' + JSON.stringify(d));
+  const og = await page.$eval('meta[property="og:image"]', m => m.content); if (!/^https:\/\/getapto\.app\/og-image\.png/.test(og)) throw new Error('og:image ' + og);
   await page.evaluate(() => { delete navigator.share; }); });
 await step('full DELE mock: reading → listening → writing → speaking → result', async () => {
   await page.click('#home-btn'); const l = await page.$('.confirm.leave [data-yes]'); if (l) await l.click();

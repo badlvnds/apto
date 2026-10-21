@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1 · October 2026
+
+- New address: https://getapto.app/ (GitHub Pages custom domain). The old address redirects there.
+- The site address lives in one place (package.json "homepage") and is filled in at build time for the share link, the link preview and the home-screen icons.
+
 ## 1.0.8 · October 2026
 
 - Home-screen icon on iPad/iPhone: added 152×152 and 167×167 touch icons and a size-less fallback, all with absolute URLs; the service worker now fetches icons, the manifest and the preview image from the network (cache only offline).

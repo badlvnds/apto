@@ -4,7 +4,7 @@ Free, independent practice app for Spain’s **CCSE** (constitution and society)
 Interface in Spanish, English, Russian and Ukrainian. Progress is stored only on the user’s device.
 Not affiliated with the Instituto Cervantes.
 
-**Live:** https://badlvnds.github.io/apto/
+**Live:** https://getapto.app/
 
 <p>
   <img src="docs/screenshots/home.png" width="200" alt="Home: choose CCSE or DELE A2">

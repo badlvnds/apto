@@ -42,7 +42,7 @@ function hintsHTML(){ const T_ = t(); return `<section class="panel" aria-live="
 function drawHints(text, w){ const el = $('#w-hints'); if (!el) return; const h = writeHints(text, w); el.parentElement.hidden = !h.length; el.innerHTML = h.map(x => `<li>${esc(x)}</li>`).join(''); }
 
 // ---------- share ----------
-const SITE_URL = 'https://badlvnds.github.io/apto/';
+const SITE_URL = '__SITE__';
 function shareApto(){
   // URL only: with extra text, iOS and messengers send a plain message instead of a link preview card.
   const T_ = t(), data = {url:SITE_URL};
