@@ -140,7 +140,7 @@ footer a{color:var(--accent)}
 .trbtn{font:inherit;font-size:14px;font-weight:600;color:var(--ink2);background:none;border:1px solid var(--line);border-radius:999px;padding:6px 12px;min-height:36px;cursor:pointer}
 .trbtn[aria-expanded="true"]{background:var(--tint);border-color:var(--accent);color:var(--ink)}
 .trbtn:focus-visible,select:focus-visible,textarea:focus-visible,.radio input:focus-visible{outline:3px solid var(--ochre);outline-offset:2px}
-.bar select{font:inherit;font-family:var(--f-mono);font-size:13px;background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:0 8px;height:44px}
+.bar select{font:inherit;font-family:var(--f-mono);font-size:13px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:0 8px;height:44px}
 .iconbtn{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:10px;width:44px;height:44px;display:grid;place-items:center;cursor:pointer;padding:0}
 .iconbtn svg{width:18px;height:18px}
 .ready{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
@@ -328,3 +328,6 @@ h1[tabindex="-1"]:focus{outline:none}
 .dlog li.you{background:var(--tint)}
 
 .passbar{position:relative;height:10px;border-radius:6px;background:var(--line);margin-top:14px;overflow:visible}.passbar i{display:block;height:100%;border-radius:6px;background:var(--bad)}.passbar i.ok{background:var(--ok)}.passbar .pl{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--ink)}.passlbl{margin:4px 0 0}
+
+/* Native dropdown lists (e.g. Chrome on Windows) take their colours from the options: keep them readable in both themes */
+select option{background:var(--surface);color:var(--ink)}

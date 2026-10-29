@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1 · October 2026
+
+- Language dropdown and other selects: the open list has readable colours in the dark theme (Chrome on Windows drew light text on a white list).
+
 ## 1.2 · October 2026
 
 - Home: "Pick up where you left off" card reopens the last topic you studied (CCSE block, DELE reading/listening task and version, grammar topic, vocabulary topic, writing or speaking task), also after a reload. An unfinished exam still takes that place first.
