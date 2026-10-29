@@ -31,6 +31,29 @@ await step('CCSE mock exam', async () => {
   await page.click('#go-exam');
   for (let i = 0; i < 25; i++) await page.click('.opts .opt >> nth=0');
   await page.click('#fin'); await page.waitForSelector('.verdict');
+  // result: pass line on the bar + practise exactly this exam's misses
+  await page.waitForSelector('.passbar .pl');
+  const nm = await page.evaluate(() => S.exams[S.exams.length-1].wrong.length);
+  if (nm) { await page.click('#miss'); let k = 0;
+    while (await page.$('#card .opt:not([disabled])')) { await page.click('#card .opt >> nth=0'); await page.click('#nx'); if (++k > 30) throw new Error('missed list never ends'); }
+    if (k !== nm) throw new Error(`practised ${k} of ${nm} missed`); await page.waitForSelector('#l-hub'); }
+});
+await step('five minutes: 5 CCSE questions, then 5 grammar gaps', async () => {
+  await page.click('#home-btn'); await page.click('.jump [data-j="qc"]'); let k = 0;
+  while (await page.$('#card .opt:not([disabled])')) { await page.click('#card .opt >> nth=0'); await page.click('#nx'); k++; }
+  if (k !== 5) throw new Error('quick CCSE answered ' + k); await page.waitForSelector('#l-more');
+  await page.click('#home-btn'); await page.click('.jump [data-j="qg"]');
+  for (let i = 0; i < 5; i++) await page.click(`#qg${i} .opt >> nth=0`);
+  await page.waitForSelector('#qg-end:not([hidden])');
+});
+await step('continue where you left off: home card reopens the last topic, also after a reload', async () => {
+  await page.click('#home-btn'); await page.click('#go-ccse'); await page.click('#go-study'); await page.click('[data-t="3"]');
+  await page.click('#card .opt >> nth=0');
+  await page.click('#home-btn'); await page.waitForSelector('#cont-go');
+  if (!/3/.test(await page.textContent('#cont h2'))) throw new Error('continue label: ' + await page.textContent('#cont h2'));
+  await page.reload(); await page.waitForSelector('#cont-go'); await page.click('#cont-go');
+  await page.waitForSelector('#card .opt'); if (!/3/.test(await page.textContent('.stack .eyebrow'))) throw new Error('continued to the wrong place');
+  await page.click('#home-btn');
 });
 await step('DELE reading task (variant 2)', async () => {
   await page.click('#home-btn'); await page.click('#go-dele'); await page.click('#d-study'); await page.click('#s-read');

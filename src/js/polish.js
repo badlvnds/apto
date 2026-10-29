@@ -126,7 +126,7 @@ function planGo(kind){
 // ---------- home: quiet shortcuts back into practice ----------
 function jumpHTML(){
   const T_ = t(), due = dueCount(), cw = Q.filter(q=>isWrong(q.id)).length, dw = dWrongKeys().length;
-  const items = [];
+  const items = [['qc', T_.quickCcse], ['qg', T_.quickGram]];
   if (due) items.push(['due', T_.jumpDue(due)]);
   if (cw) items.push(['cwrong', T_.jumpCWrong(cw)]);
   if (dw) items.push(['dwrong', T_.jumpDWrong(dw)]);
@@ -138,7 +138,7 @@ function jumpHTML(){
   return `<nav class="jump" aria-label="${esc(title)}"><span class="eyebrow">${esc(title)}</span><ul>${items.map(([k,l])=>`<li><button class="jumpbtn" type="button" data-j="${k}">${esc(l)}<span aria-hidden="true">→</span></button></li>`).join('')}</ul></nav>`;
 }
 function wireJump(){
-  const act = {due:() => go(() => study({mode:'due'})), cwrong:() => go(() => study({mode:'wrong'})), dwrong:() => go(deleMistakes), ctry:() => go(ccseHub), cmock:() => go(examStart), dmock:() => go(deleMock), voc:() => go(() => vocRun(vocDueKeys(), vocab))};
+  const act = {due:() => go(() => study({mode:'due'})), cwrong:() => go(() => study({mode:'wrong'})), dwrong:() => go(deleMistakes), ctry:() => go(ccseHub), cmock:() => go(examStart), dmock:() => go(deleMock), voc:() => go(() => vocRun(vocDueKeys(), vocab)), qc:() => go(quickCcse), qg:() => go(quickGram)};
   view.querySelectorAll('[data-j]').forEach(b => b.onclick = act[b.dataset.j]);
 }
 Object.assign(I18N.es,{homeEyebrow:'CCSE · DELE A2',homeH1:'Tus exámenes en España, un poco más fáciles.',homeLede:'Prepara el CCSE (Constitución y sociedad española) y el DELE A2 (español). Un poco de práctica cunde mucho.',ccseCard:'Constitución, Gobierno y sociedad de España',ccseCardSub:'300 preguntas oficiales · 25 en el examen',deleCard:'Diploma de español del Instituto Cervantes, nivel A2',deleCardSub:'Lectura, audición, escritura, oral, gramática y vocabulario',incorrect:'No del todo. Mira por qué.',nextDue:d=>d===1?'Próximo repaso: mañana':`Próximo repaso: dentro de ${d} días`,backLater:'La volveremos a sacar para que la practiques.',foot1:'Gratis, independiente y hecho con cariño.',foot3:'Tu progreso se queda en tu dispositivo.',startT:'Empieza por aquí',tryCcse:'CCSE · prueba una pregunta',langPick:'Idioma',attrib:'Preguntas y respuestas del',attribB:'© Instituto Cervantes.'});

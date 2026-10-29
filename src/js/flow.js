@@ -64,11 +64,11 @@ function home(){
   const T_ = t();
   view.innerHTML = `<div class="stack home">
     ${S.set.langChosen ? '' : langRowHTML()}<div class="intro"><span class="eyebrow">${esc(T_.homeEyebrow)}</span><h1>${esc(T_.homeH1)}</h1><p class="lede">${esc(T_.homeLede)}</p></div>
-    ${resumeHTML()}<div class="cards2">
+    ${resumeHTML()}${continueHTML()}<div class="cards2">
       <button class="bigcard" id="go-ccse" type="button"><span class="bc-tag">CCSE<span class="bc-go" aria-hidden="true">→</span></span><span class="bc-t">${esc(T_.ccseCard)}</span><span class="bc-s">${esc(T_.ccseCardSub)}</span></button>
       <button class="bigcard" id="go-dele" type="button"><span class="bc-tag">DELE A2<span class="bc-go" aria-hidden="true">→</span></span><span class="bc-t">${esc(T_.deleCard)}</span><span class="bc-s">${esc(T_.deleCardSub)}</span></button>
     </div>${jumpHTML()}${installHTML()}<button class="linkbtn" id="go-guide" type="button">${esc(T_.guideBtn)}</button></div>`;
-  wireResume(); wireJump(); wireInstall(); wireLangRow(); $('#go-guide').onclick = () => go(guide);
+  wireResume(); wireContinue(); wireJump(); wireInstall(); wireLangRow(); $('#go-guide').onclick = () => go(guide);
   $('#go-ccse').onclick = () => go(ccseHub);
   $('#go-dele').onclick = () => go(deleHub);
 }

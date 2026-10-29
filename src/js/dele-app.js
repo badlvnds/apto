@@ -91,6 +91,7 @@ function gramDiagDone(res){
   $('#g-hub').onclick = () => go(grammar);
 }
 function gramTopic(id){
+  markLast('gram', {id});
   const T_ = t(), g = GRAM.find(x => x.id === id);
   let done = 0, ok = 0;
   view.innerHTML = `<div class="stack"><span class="eyebrow">DELE A2 · ${esc(T_.gramBtn)}</span><h1 lang="es">${esc(loc(g.name))}</h1>

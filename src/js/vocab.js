@@ -114,9 +114,7 @@ function vocab(){
       return `<button class="btn" data-v="${T.id}" type="button">${esc(loc(T.name))}<small>${esc(T_.vocLearned(vocLearned(T), T.w.length))}${d?' · '+esc(T_.vocDue(d)):''}${nNew?' · '+esc(T_.vocNew(nNew)):''}</small></button>`}).join('')}</div></div>`;
   wireBack(deleStudy);
   $('#v-due').onclick = () => go(() => vocRun(vocDueKeys(), vocab));
-  view.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { const T = VOC.find(x => x.id === b.dataset.v);
-    const keys = [...vocDueKeys(T.id), ...T.w.filter(w => !vst(w.key)).slice(0, 10).map(w => w.key)];
-    go(() => vocRun(keys.length ? keys : shuffle(T.w.map(w => w.key)).slice(0, 10), vocab)); });
+  view.querySelectorAll('[data-v]').forEach(b => b.onclick = () => go(() => vocTopic(b.dataset.v)));
 }
 function vocRun(keys, back){
   const T_ = t(), lang = S.set.lang, queue = shuffle(keys), seen = new Set(); let i = 0, known = 0;

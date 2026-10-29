@@ -96,7 +96,7 @@ function reading(){
   view.querySelectorAll('[data-n]').forEach(b => b.onclick = () => go(() => readTask(+b.dataset.n)));
 }
 function readTask(n){
-  current = () => readTask(n);
+  current = () => readTask(n); markLast('read', {n, v: CURV});
   const T_ = t(), list = RT(n); let total = list.reduce((s,R)=>s+R.qs.length,0), done = 0, ok = 0;
   view.innerHTML = `<div class="stack">${backRow(reading, T_.backTasks)}<span class="eyebrow">DELE A2 · ${esc(T_.kRead)}</span><h1>${esc(taskTitle('r',n))}</h1><span class="chip" style="align-self:flex-start">${esc(T_.variant)} ${CURV}</span>
     ${list.map(R=>`<div class="group">${R.task !== 2?`<button type="button" class="trbtn toqs" data-q="q-${R.id}-0">↓ ${esc(T_.toQs)}</button>`:''}${docHTML(R)}${R.qs.map((_,k)=>`<section class="panel qcard" id="q-${R.id}-${k}"></section>`).join('')}<div class="trd" id="trd-${R.id}" hidden>${trDetails(R)}</div></div>`).join('')}
@@ -177,6 +177,7 @@ function listening(){
   view.querySelectorAll('[data-n]').forEach(b => b.onclick = () => { const n = +b.dataset.n; go(() => n <= 2 ? audRun(n, 0, []) : groupRun(n)); });
 }
 function audRun(n, i, results){
+  if (i === 0) markLast('aud', {n, v: CURV});
   current = () => audRun(n, i, results);
   const T_ = t(), list = AT(n), exam = S.set.audMode !== 'practice';
   view.innerHTML = `<div class="stack">${backRow(listening, T_.backTasks)}<div class="row"><span class="eyebrow">${esc(taskTitle('a',n))} · ${i+1}/${list.length}</span><span class="sp"></span><span class="chip">${esc(exam?T_.modeExam:T_.modePractice)}</span></div>
@@ -199,6 +200,7 @@ function audDone(n, results){
   $('#a-all').onclick = () => go(listening);
 }
 function groupRun(n){
+  markLast('aud', {n, v: CURV});
   current = () => groupRun(n);
   const T_ = t(), G = AG(n), exam = S.set.audMode !== 'practice'; let ok = 0, done = 0;
   view.innerHTML = `<div class="stack">${backRow(listening, T_.backTasks)}<div class="row"><span class="eyebrow">DELE A2 · ${esc(T_.kAud)}</span><span class="sp"></span><span class="chip">${esc(exam?T_.modeExam:T_.modePractice)}</span></div>

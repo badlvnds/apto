@@ -118,6 +118,7 @@ function writing(){
   view.querySelectorAll('[data-w]').forEach(b => b.onclick = () => go(() => writeTask(b.dataset.w)));
 }
 function writeTask(id){
+  markLast('write', {id});
   const T_ = t(), w = WRITE.find(x => x.id === id), lang = S.set.lang;
   S.wr = S.wr || {};
   view.innerHTML = `<div class="stack">${backRow(writing, T_.kWrite)}<span class="eyebrow">${esc(w.task===1?T_.wT1:T_.wT2)}</span>
@@ -163,6 +164,7 @@ function speaking(){
   view.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { const [k,id] = b.dataset.s.split(':'); go(() => k === 't1' ? speakMono(id) : speakPhoto(id)); });
 }
 function speakMono(id){
+  markLast('speak', {id, t:'mono'});
   const T_ = t(), s = SPEAK.t1.find(x=>x.id===id);
   view.innerHTML = `<div class="stack">${backRow(speaking, T_.kSpeak)}<span class="eyebrow">${esc(T_.sT1)}</span><h1 lang="es">${esc(s.title)}</h1>
     <section class="panel"><p><b>${esc(T_.pointsT)}</b></p><ul class="focus" lang="es">${s.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
@@ -174,6 +176,7 @@ function speakMono(id){
   $('#sp-listen').onclick = () => { TTS.newCast(); TTS.speak([{s:'f', t:s.model}], 0.9); };
 }
 function speakPhoto(id){
+  markLast('speak', {id, t:'photo'});
   const T_ = t(), s = SPEAK.t2.find(x=>x.id===id), d = SPEAK.t3.find(x=>x.link===id);
   view.innerHTML = `<div class="stack">${backRow(speaking, T_.kSpeak)}<span class="eyebrow">${esc(T_.sT2)}</span><h1 lang="es">${esc(s.title)}</h1>
     ${photoHTML(s)}

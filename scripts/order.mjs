@@ -13,6 +13,7 @@ export const JS_CORE = [
   'vocab.js',                                  // DELE vocabulary cards
   'tools.js',                                  // writing hints, report by email, share, keyboard, install hint
   'mock-ws.js',                                // full DELE mock: writing + speaking parts
+  'continue.js',                               // continue card, five-minute sessions
   'app.js'                                     // CCSE core, storage, settings, boot
 ];
 export const PACK_DELE = [

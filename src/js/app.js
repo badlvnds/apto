@@ -134,11 +134,12 @@ function nextFor(pool, prevId){
   if (best === 4){ tier.sort((a,b)=>(srs(a.id).due)-(srs(b.id).due)); return tier[0]; }
   return tier[Math.floor(Math.random()*tier.length)];
 }
-function study({tarea=0, mode='all'}){
+function study({tarea=0, mode='all', ids=null, quick=false}){
   const T_ = t();
-  const label = mode==='wrong' ? T_.wrong : mode==='due' ? T_.dueBtn : tarea ? `${T_.tarea} ${tarea}` : T_.allT;
+  if (mode !== 'list') markLast('ccse', {tarea, mode});
+  const label = mode==='list' ? (quick ? T_.quickT : T_.missedThis(ids.length)) : mode==='wrong' ? T_.wrong : mode==='due' ? T_.dueBtn : tarea ? `${T_.tarea} ${tarea}` : T_.allT;
   let done = 0, okc = 0, prev = null; const answeredNow = new Set();
-  const poolFn = () => mode==='wrong' ? Q.filter(q=>isWrong(q.id)) : mode==='due' ? Q.filter(q=>isDue(q.id) && !answeredNow.has(q.id)) : Q.filter(q=>!tarea || q.tarea===tarea);
+  const poolFn = () => mode==='list' ? ids.map(id=>byId[id]).filter(q=>q && !answeredNow.has(q.id)) : mode==='wrong' ? Q.filter(q=>isWrong(q.id)) : mode==='due' ? Q.filter(q=>isDue(q.id) && !answeredNow.has(q.id)) : Q.filter(q=>!tarea || q.tarea===tarea);
   view.innerHTML = `<div class="stack">
     <div class="row"><span class="eyebrow">${esc(label)}</span><span class="sp"></span><span class="chip" id="sess">${esc(T_.zero)}</span></div>
     <section class="panel qcard" id="card"></section>
@@ -146,6 +147,9 @@ function study({tarea=0, mode='all'}){
   $('#exit').onclick = () => go(ccseHub);
   function next(){
     const pool = poolFn();
+    if (!pool.length && mode==='list'){
+      $('#card').innerHTML = `<h2>${esc(quick ? T_.quickDoneT : T_.listDoneT)}</h2><p class="lede">${esc(T_.quickScore(okc, done))}</p><div class="row">${quick?`<button class="btn primary" id="l-more" type="button">${esc(T_.quickMore)}</button>`:''}<button class="btn${quick?'':' primary'}" id="l-hub" type="button">CCSE</button><button class="btn" id="l-home" type="button">${esc(T_.home)}</button></div>`;
+      $('#exit').hidden = true; const m = $('#l-more'); if (m) m.onclick = () => go(quickCcse); $('#l-hub').onclick = () => go(ccseHub); $('#l-home').onclick = () => go(home); (m || $('#l-hub')).focus(); return; }
     if (!pool.length){ $('#card').innerHTML = mode==='due' ? `<h2>${esc(T_.dueNone)}</h2><p class="lede">${esc(T_.dueNoneLede)}</p><div class="row"><button class="btn primary" id="h" type="button">${esc(T_.keepStudying)}</button></div>` : `<h2>${esc(T_.noErr)}</h2><p class="lede">${esc(T_.noErrLede(MASTER))}</p><div class="row"><button class="btn primary" id="h" type="button">${esc(T_.back)}</button></div>`; $('#h').onclick=()=>go(mode==='due' ? () => study({tarea:0}) : ccseHub); return; }
     const q = nextFor(pool, prev); prev = q.id;
     renderQuestion($('#card'), q, {
@@ -213,14 +217,17 @@ function examResult(idx){
     <section class="panel">
       <span class="eyebrow">${esc(T_.result)}</span>
       <div class="stat"><span class="verdict ${pass?'ok':'no'}">${esc(pass?T_.pass:T_.fail)}</span><b style="font-size:28px">${score}/25</b></div>
+      <div class="passbar" role="img" aria-label="${score}/25 · ${esc(T_.passLine(PASS))}"><i class="${pass?'ok':'no'}" style="width:${score/25*100}%"></i><span class="pl" style="left:${PASS/25*100}%"></span></div>
+      <p class="note passlbl" style="padding-left:calc(${PASS/25*100}% - 2.5em)">${esc(T_.passLine(PASS))}</p>
       <p class="lede">${esc(pass?(score<20?T_.resOk+' '+T_.passMsg(PASS):T_.passMsg(PASS)):T_.failMsg(PASS-score, PASS))} ${wrongIdsN(ex)?esc(T_.addedWrong):''}</p>
       <div class="tareas">${TAREAS.map(x=>{const p=ex.perT[x.n];return `<div class="trow"><span class="tn">T${x.n}</span><span class="tt">${esc(tname(x.n))}</span><span class="tc">${p[0]}/${p[1]}</span><div class="track"><i class="m" style="width:${p[0]/p[1]*100}%"></i></div></div>`}).join('')}</div>
     </section>
-    <div class="actions"><button class="btn primary" id="again" type="button">${esc(T_.again)}</button><button class="btn" id="rev" type="button">${esc(T_.wrong)}</button><button class="btn" id="rep" type="button">${esc(T_.myProgress)}</button><button class="btn" id="hub" type="button">CCSE</button></div>
+    <div class="actions">${(ex.wrong||[]).length?`<button class="btn primary" id="miss" type="button">${esc(T_.missedThis(ex.wrong.length))}</button>`:''}<button class="btn${(ex.wrong||[]).length?'':' primary'}" id="again" type="button">${esc(T_.again)}</button><button class="btn" id="rev" type="button">${esc(T_.wrong)}</button><button class="btn" id="rep" type="button">${esc(T_.myProgress)}</button><button class="btn" id="hub" type="button">CCSE</button></div>
     ${E && E.done && S.exams.length-1===idx ? `<h2>${esc(T_.review)}</h2><div class="blist">${E.qs.map((id,k)=>{const q=byId[id],a=E.ans[k],r=L.indexOf(q.ans),c=a===r,x=trOf(q);
       return `<div class="bitem"><span class="bm">${k+1} · ${T_.tarea} ${q.tarea} · ${q.id} · ${esc(c?T_.hit:T_.miss)}</span><span class="bq" lang="es">${esc(q.q)}</span>${x?`<span class="tr">${esc(x.q)}</span>`:''}
       ${!c&&a!==null?`<span class="bx" lang="es">${esc(q.opts[a])}</span>`:''}${a===null?`<span class="bm">${esc(T_.unanswered)}</span>`:''}<span class="ba" lang="es">${esc(q.opts[r])}</span>${x?`<span class="tr">${esc(x.opts[r])}</span>`:''}${!c&&EX[q.id]?`<span class="why">${esc(EX[q.id][EXL[S.set.lang] ?? 1])}</span>`:''}</div>`}).join('')}</div>` : ''}</div>`;
   $('#again').onclick = () => go(examStart);
+  const ms = $('#miss'); if (ms) ms.onclick = () => go(() => study({mode:'list', ids: ex.wrong.slice()}));
   $('#rev').onclick = () => go(() => study({mode:'wrong'}));
   $('#rep').onclick = () => go(report);
   $('#hub').onclick = () => go(ccseHub);

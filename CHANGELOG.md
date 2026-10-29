@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2 · October 2026
+
+- Home: "Pick up where you left off" card reopens the last topic you studied (CCSE block, DELE reading/listening task and version, grammar topic, vocabulary topic, writing or speaking task), also after a reload. An unfinished exam still takes that place first.
+- Five-minute sessions from the home list: 5 CCSE questions (missed and due first, then unseen) or 5 grammar gaps from all DELE topics, with a short score and "5 more".
+- CCSE mock result: a bar with the pass mark at 15/25, and "Practise the N you missed" for exactly that exam's mistakes.
+
 ## 1.1.1 · October 2026
 
 - Anonymous visit counter (GoatCounter, no cookies): one count per section (e.g. /ccse-hub, /mock-read, /exam-result), never answers or progress. count.js is served from the site itself; nothing is counted on localhost.
